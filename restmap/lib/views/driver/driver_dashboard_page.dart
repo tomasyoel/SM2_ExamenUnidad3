@@ -6,7 +6,7 @@ import 'package:restmap/views/driver/pedidosdriver.dart';
 import 'package:restmap/views/driver/pedidoencamino.dart';
 
 class DriverDashboardPage extends StatefulWidget {
-  const DriverDashboardPage({Key? key}) : super(key: key);
+  const DriverDashboardPage({super.key});
 
   @override
   _DriverDashboardPageState createState() => _DriverDashboardPageState();
@@ -65,13 +65,13 @@ class _DriverDashboardPageState extends State<DriverDashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Menú Principal Conductor"),
+        title: const Text("Menú Principal Conductor"),
       ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            DrawerHeader(
+            const DrawerHeader(
               decoration: BoxDecoration(
                 color: Colors.green,
               ),
@@ -84,13 +84,13 @@ class _DriverDashboardPageState extends State<DriverDashboardPage> {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.local_shipping),
-              title: Text('Pedidos'),
+              leading: const Icon(Icons.local_shipping),
+              title: const Text('Pedidos'),
               onTap: () => _onSelectPage('pedidos'),
             ),
             ListTile(
-              leading: Icon(Icons.exit_to_app),
-              title: Text('Salir'),
+              leading: const Icon(Icons.exit_to_app),
+              title: const Text('Salir'),
               onTap: _signOut,
             ),
           ],
@@ -107,10 +107,10 @@ class _DriverDashboardPageState extends State<DriverDashboardPage> {
       case 'pedidoEnCamino':
         return _currentOrderId != null
             ? PedidoEnCaminoPage(orderId: _currentOrderId!)
-            : Center(child: Text("No hay pedidos en camino"));
+            : const Center(child: Text("No hay pedidos en camino"));
       case 'home':
       default:
-        return Center(child: Text("Bienvenido a la página principal"));
+        return const Center(child: Text("Bienvenido a la página principal"));
     }
   }
 }

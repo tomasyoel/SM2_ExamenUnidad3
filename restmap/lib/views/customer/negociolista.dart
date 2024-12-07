@@ -5,7 +5,7 @@ import 'carta.dart';
 class NegocioListaPage extends StatefulWidget {
   final String userId;
 
-  NegocioListaPage({required this.userId});
+  const NegocioListaPage({super.key, required this.userId});
 
   @override
   _NegocioListaPageState createState() => _NegocioListaPageState();
@@ -47,7 +47,7 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Lista de Negocios'),
+        title: const Text('Lista de Negocios'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -61,7 +61,7 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
                 }),
                 decoration: InputDecoration(
                   hintText: 'Buscar Restaurante o Platos',
-                  prefixIcon: Icon(Icons.search),
+                  prefixIcon: const Icon(Icons.search),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -76,7 +76,7 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
               stream: FirebaseFirestore.instance.collection('tipococina').snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 var tiposCocina = snapshot.data!.docs;
@@ -100,7 +100,7 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
                           });
                         },
                         child: AnimatedContainer(
-                          duration: Duration(milliseconds: 300),
+                          duration: const Duration(milliseconds: 300),
                           width: 90,
                           margin: const EdgeInsets.symmetric(horizontal: 8.0),
                           decoration: BoxDecoration(
@@ -115,7 +115,7 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
                                 color: Colors.grey.withOpacity(0.2),
                                 spreadRadius: 1,
                                 blurRadius: 5,
-                                offset: Offset(0, 3),
+                                offset: const Offset(0, 3),
                               ),
                             ],
                           ),
@@ -135,11 +135,11 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
                                         },
                                       ),
                                     )
-                                  : Icon(Icons.image, size: 50),
-                              SizedBox(height: 5),
+                                  : const Icon(Icons.image, size: 50),
+                              const SizedBox(height: 5),
                               Text(
                                 tipoData['nombre'],
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,
@@ -161,28 +161,28 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
               stream: FirebaseFirestore.instance.collection('negocios').snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 var negocios = snapshot.data!.docs;
 
                 return ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: negocios.length,
                   itemBuilder: (context, index) {
                     var negocio = negocios[index];
 
                     if (selectedTipoCocinaId != null &&
                         negocio['tipoCocinaId'] != selectedTipoCocinaId) {
-                      return SizedBox.shrink();
+                      return const SizedBox.shrink();
                     }
 
                     return FutureBuilder<bool>(
                       future: _checkSearchMatch(negocio),
                       builder: (context, searchSnapshot) {
                         if (!searchSnapshot.hasData || !searchSnapshot.data!) {
-                          return SizedBox.shrink();
+                          return const SizedBox.shrink();
                         }
 
                         var negocioData = negocio.data() as Map<String, dynamic>;
@@ -203,14 +203,14 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 negocioData['logo'] != null
                                     ? ClipRRect(
                                         borderRadius:
-                                            BorderRadius.vertical(top: Radius.circular(12)),
+                                            const BorderRadius.vertical(top: Radius.circular(12)),
                                         child: Image.network(
                                           negocioData['logo'],
                                           width: double.infinity,
@@ -218,28 +218,28 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
                                           fit: BoxFit.cover,
                                         ),
                                       )
-                                    : SizedBox.shrink(),
+                                    : const SizedBox.shrink(),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Row(
                                     children: [
                                       negocioData['logo'] != null
                                           ? Image.network(negocioData['logo'], width: 50, height: 50)
-                                          : Icon(Icons.store, size: 50),
-                                      SizedBox(width: 10),
+                                          : const Icon(Icons.store, size: 50),
+                                      const SizedBox(width: 10),
                                       Expanded(
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               negocioData['nombre'],
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   fontWeight: FontWeight.bold, fontSize: 16),
                                             ),
-                                            SizedBox(height: 5),
+                                            const SizedBox(height: 5),
                                             Text(
                                               'Dirección: ${negocioData['direccion']}',
-                                              style: TextStyle(color: Colors.grey, fontSize: 12),
+                                              style: const TextStyle(color: Colors.grey, fontSize: 12),
                                             ),
                                           ],
                                         ),

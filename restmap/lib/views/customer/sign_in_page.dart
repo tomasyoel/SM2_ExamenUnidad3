@@ -6,7 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignInPage extends StatefulWidget {
-  const SignInPage({Key? key}) : super(key: key);
+  const SignInPage({super.key});
 
   @override
   _SignInPageState createState() => _SignInPageState();
@@ -83,11 +83,11 @@ class _SignInPageState extends State<SignInPage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Error de Autenticación'),
+        title: const Text('Error de Autenticación'),
         content: Text(message),
         actions: <Widget>[
           TextButton(
-            child: Text('Okay'),
+            child: const Text('Okay'),
             onPressed: () {
               Navigator.of(ctx).pop();
             },
@@ -127,7 +127,7 @@ class _SignInPageState extends State<SignInPage> {
                           'assets/belv1.png',
                           height: 250,
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         TextField(
                           controller: _emailController,
                           decoration: InputDecoration(
@@ -137,7 +137,7 @@ class _SignInPageState extends State<SignInPage> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         TextField(
                           controller: _passwordController,
                           decoration: InputDecoration(
@@ -148,20 +148,20 @@ class _SignInPageState extends State<SignInPage> {
                           ),
                           obscureText: true,
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         ElevatedButton(
                           onPressed: _signIn,
                           style: ElevatedButton.styleFrom(
                             foregroundColor: Colors.white,
                             backgroundColor: Colors.red,
-                            minimumSize: Size(double.infinity, 50),
+                            minimumSize: const Size(double.infinity, 50),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0),
                             ),
                           ),
-                          child: Text("Iniciar Sesión"),
+                          child: const Text("Iniciar Sesión"),
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         TextButton(
                           onPressed: () {
                             Navigator.push(
@@ -172,7 +172,7 @@ class _SignInPageState extends State<SignInPage> {
                               ),
                             );
                           },
-                          child: Text("¿No tienes una cuenta? Regístrate"),
+                          child: const Text("¿No tienes una cuenta? Regístrate"),
                         ),
                       ],
                     ),

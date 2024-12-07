@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:restmap/services/firebase_auth_service.dart';
 
 class CreateUserNegocioPage extends StatefulWidget {
-  const CreateUserNegocioPage({Key? key}) : super(key: key);
+  const CreateUserNegocioPage({super.key});
 
   @override
   _CreateUserNegocioPageState createState() => _CreateUserNegocioPageState();

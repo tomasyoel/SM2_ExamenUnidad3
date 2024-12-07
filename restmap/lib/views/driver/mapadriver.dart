@@ -11,7 +11,7 @@ import 'dart:convert';
 class MapaDriverPage extends StatefulWidget {
   final String orderId;
 
-  MapaDriverPage({required this.orderId});
+  const MapaDriverPage({super.key, required this.orderId});
 
   @override
   _MapaDriverPageState createState() => _MapaDriverPageState();
@@ -21,13 +21,13 @@ class _MapaDriverPageState extends State<MapaDriverPage> {
   GoogleMapController? _mapController;
   DocumentSnapshot? _orderData;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  LatLng _driverLocation = LatLng(-12.0464, -77.0428);
+  LatLng _driverLocation = const LatLng(-12.0464, -77.0428);
   late BitmapDescriptor _driverIcon;
   late BitmapDescriptor _customerIcon;
   String? _mapStyle;
-  Set<Marker> _markers = {};
+  final Set<Marker> _markers = {};
   List<LatLng> _polylineCoordinates = [];
-  Set<Polyline> _polylines = {};
+  final Set<Polyline> _polylines = {};
 
   @override
   void initState() {
@@ -48,11 +48,11 @@ class _MapaDriverPageState extends State<MapaDriverPage> {
 
   Future<void> _setCustomMapPins() async {
     _driverIcon = await BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(devicePixelRatio: 2.5),
+      const ImageConfiguration(devicePixelRatio: 2.5),
       'assets/driver.png',
     );
     _customerIcon = await BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(devicePixelRatio: 2.5),
+      const ImageConfiguration(devicePixelRatio: 2.5),
       'assets/customer.png',
     );
   }
@@ -81,14 +81,14 @@ class _MapaDriverPageState extends State<MapaDriverPage> {
         _markers.clear();
         _markers.add(
           Marker(
-            markerId: MarkerId('driver'),
+            markerId: const MarkerId('driver'),
             position: _driverLocation,
             icon: _driverIcon,
           ),
         );
         _markers.add(
           Marker(
-            markerId: MarkerId('customer'),
+            markerId: const MarkerId('customer'),
             position: customerLocation,
             icon: _customerIcon,
           ),
@@ -114,7 +114,7 @@ class _MapaDriverPageState extends State<MapaDriverPage> {
           _polylines.clear();
           _polylines.add(
             Polyline(
-              polylineId: PolylineId('route'),
+              polylineId: const PolylineId('route'),
               points: _polylineCoordinates,
               width: 5,
               color: Colors.blue,
@@ -173,9 +173,9 @@ class _MapaDriverPageState extends State<MapaDriverPage> {
     if (_orderData == null) {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Cargando...'),
+          title: const Text('Cargando...'),
         ),
-        body: Center(
+        body: const Center(
           child: CircularProgressIndicator(),
         ),
       );
@@ -188,7 +188,7 @@ class _MapaDriverPageState extends State<MapaDriverPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pedido en camino'),
+        title: const Text('Pedido en camino'),
       ),
       body: Stack(
         children: [
@@ -222,17 +222,17 @@ class _MapaDriverPageState extends State<MapaDriverPage> {
                     Row(
                       children: [
                         IconButton(
-                          icon: Icon(Icons.phone),
+                          icon: const Icon(Icons.phone),
                           onPressed: () => _callCustomer(customerPhone),
                         ),
                         IconButton(
-                          icon: Icon(Icons.message),
+                          icon: const Icon(Icons.message),
                           onPressed: () => _messageCustomer(customerPhone),
                         ),
                       ],
                     ),
                     ElevatedButton(
-                      child: Text('Entregado'),
+                      child: const Text('Entregado'),
                       onPressed: () {
                         _firestore.collection('pedidos').doc(widget.orderId).update({
                           'orderStatus': 'entregado',

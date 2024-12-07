@@ -7,7 +7,7 @@ class CartaPage extends StatefulWidget {
   final String negocioId;
   final String userId;
 
-  CartaPage({required this.negocioId, required this.userId});
+  const CartaPage({super.key, required this.negocioId, required this.userId});
 
   @override
   _CartaPageState createState() => _CartaPageState();
@@ -299,7 +299,7 @@ void agregarProductoaCarrito() async {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Carta del Negocio'),
+        title: const Text('Carta del Negocio'),
       ),
       body: Stack(
         children: [
@@ -320,7 +320,7 @@ void agregarProductoaCarrito() async {
                     productosPorCategoria.isNotEmpty && productosPorCategoria.entries.first.value.isNotEmpty
                         ? Image.network(productosPorCategoria.entries.first.value[0]['urlImagen'],
                             width: double.infinity, height: 200, fit: BoxFit.cover)
-                        : SizedBox(height: 200, child: Icon(Icons.store, size: 100)),
+                        : const SizedBox(height: 200, child: Icon(Icons.store, size: 100)),
 
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -328,11 +328,11 @@ void agregarProductoaCarrito() async {
                         children: [
                           negocio['logo'] != null
                               ? Image.network(negocio['logo'], width: 50, height: 50)
-                              : Icon(Icons.store, size: 50),
-                          SizedBox(width: 10),
+                              : const Icon(Icons.store, size: 50),
+                          const SizedBox(width: 10),
                           Text(
                             negocio['nombre'],
-                            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
@@ -341,7 +341,7 @@ void agregarProductoaCarrito() async {
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Text(
                         'Dirección: ${negocio['direccion']}',
-                        style: TextStyle(fontSize: 16),
+                        style: const TextStyle(fontSize: 16),
                       ),
                     ),
                     if (ubicacion != null)
@@ -349,14 +349,14 @@ void agregarProductoaCarrito() async {
                         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                         child: ElevatedButton.icon(
                           onPressed: () => _iniciarRuta(ubicacion.latitude, ubicacion.longitude),
-                          icon: Icon(Icons.directions),
-                          label: Text('Iniciar Ruta'),
+                          icon: const Icon(Icons.directions),
+                          label: const Text('Iniciar Ruta'),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.orange.shade500,
                           ),
                         ),
                       ),
-                    Divider(),
+                    const Divider(),
 
                     productosPorCategoria.isNotEmpty
                         ? Column(
@@ -372,12 +372,12 @@ void agregarProductoaCarrito() async {
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
                                       categoria,
-                                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                   ListView.builder(
                                     shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
+                                    physics: const NeverScrollableScrollPhysics(),
                                     itemCount: productos.length,
                                     itemBuilder: (context, index) {
                                       var producto = productos[index];
@@ -393,11 +393,11 @@ void agregarProductoaCarrito() async {
                                       bool canAddMore = isStockLimited ? selectedQuantity < stock : true;
 
                                       return Card(
-                                        margin: EdgeInsets.symmetric(vertical: 8),
+                                        margin: const EdgeInsets.symmetric(vertical: 8),
                                         child: ListTile(
                                           leading: producto['urlImagen'] != null
                                               ? Image.network(producto['urlImagen'], width: 80, height: 80, fit: BoxFit.cover)
-                                              : Icon(Icons.fastfood, size: 50),
+                                              : const Icon(Icons.fastfood, size: 50),
                                           title: Text(producto['nombre']),
                                           subtitle: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -417,14 +417,14 @@ void agregarProductoaCarrito() async {
                                                   },
                                                   child: Text(
                                                     mostrarDescripcionCompleta ? 'Leer menos' : 'Leer más',
-                                                    style: TextStyle(color: Colors.blue),
+                                                    style: const TextStyle(color: Colors.blue),
                                                   ),
                                                 ),
                                               Text('S/${producto['precio']}'),
                                               if (isStockLimited)
-                                                Text('Stock: $stock', style: TextStyle(color: Colors.green)),
+                                                Text('Stock: $stock', style: const TextStyle(color: Colors.green)),
                                               if (estado == 'agotado')
-                                                Text('Agotado', style: TextStyle(color: Colors.red)),
+                                                const Text('Agotado', style: TextStyle(color: Colors.red)),
                                             ],
                                           ),
                                           trailing: isAvailable
@@ -433,7 +433,7 @@ void agregarProductoaCarrito() async {
                                                   children: [
                                                     if (selectedQuantity > 0)
                                                       IconButton(
-                                                        icon: Icon(Icons.remove),
+                                                        icon: const Icon(Icons.remove),
                                                         onPressed: () {
                                                           setState(() {
                                                             selectedQuantities[producto['codigo']] =
@@ -444,7 +444,7 @@ void agregarProductoaCarrito() async {
                                                       ),
                                                     Text('$selectedQuantity'),
                                                     IconButton(
-                                                      icon: Icon(Icons.add),
+                                                      icon: const Icon(Icons.add),
                                                       onPressed: canAddMore
                                                           ? () {
                                                               setState(() {
@@ -457,7 +457,7 @@ void agregarProductoaCarrito() async {
                                                     ),
                                                   ],
                                                 )
-                                              : ElevatedButton(
+                                              : const ElevatedButton(
                                                   onPressed: null,
                                                   child: Text(
                                                     'Agotado',
@@ -472,7 +472,7 @@ void agregarProductoaCarrito() async {
                               );
                             }).toList(),
                           )
-                        : Center(
+                        : const Center(
                             child: Text('No hay productos disponibles'),
                           ),
                   ],
@@ -491,11 +491,11 @@ void agregarProductoaCarrito() async {
                   children: [
                     Text(
                       '$totalProducts producto(s)',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     Text(
                       'S/${total.toStringAsFixed(1)}',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -503,10 +503,10 @@ void agregarProductoaCarrito() async {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                       ),
                       onPressed: agregarProductoaCarrito,
-                      child: Text(
+                      child: const Text(
                         'Ordenar',
                         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),

@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:intl/intl.dart';
 
 class ListaPedidosPage extends StatefulWidget {
-  const ListaPedidosPage({Key? key}) : super(key: key);
+  const ListaPedidosPage({super.key});
 
   @override
   _ListaPedidosPageState createState() => _ListaPedidosPageState();
@@ -239,18 +239,18 @@ class _ListaPedidosPageState extends State<ListaPedidosPage> {
                 style: const TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 8),
-              Text(
+              const Text(
                 "Notas:",
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               Text(
                 pedido['notas'] ?? 'Sin Notas',
                 textAlign: TextAlign.justify,
               ),
               const Divider(),
-              Text(
+              const Text(
                 "Productos:",
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               ...productos.map((producto) {
                 return ListTile(
@@ -261,7 +261,7 @@ class _ListaPedidosPageState extends State<ListaPedidosPage> {
                     style: const TextStyle(fontSize: 14),
                   ),
                 );
-              }).toList(),
+              }),
               const Divider(),
               Align(
                 alignment: Alignment.centerRight,

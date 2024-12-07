@@ -7,6 +7,8 @@ class ManageNegocioPage extends StatelessWidget {
   final CollectionReference usuarios = FirebaseFirestore.instance.collection('usuarios');
   final FirebaseAuthService authService = FirebaseAuthService();
 
+  ManageNegocioPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final User? currentUser = FirebaseAuth.instance.currentUser;

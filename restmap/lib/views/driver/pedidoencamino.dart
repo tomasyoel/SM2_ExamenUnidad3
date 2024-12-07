@@ -10,7 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 class PedidoEnCaminoPage extends StatefulWidget {
   final String orderId;
 
-  PedidoEnCaminoPage({required this.orderId});
+  const PedidoEnCaminoPage({super.key, required this.orderId});
 
   @override
   _PedidoEnCaminoPageState createState() => _PedidoEnCaminoPageState();
@@ -69,7 +69,7 @@ class _PedidoEnCaminoPageState extends State<PedidoEnCaminoPage> {
   Future<void> _updatePolylines() async {
     if (driverLocation == null || clientLocation == null) return;
 
-    final String apiKey = 'TU_API_KEY';
+    const String apiKey = 'TU_API_KEY';
     final String url =
         'https://maps.googleapis.com/maps/api/directions/json?origin=${driverLocation!.latitude},${driverLocation!.longitude}&destination=${clientLocation!.latitude},${clientLocation!.longitude}&key=$apiKey';
 
@@ -89,7 +89,7 @@ class _PedidoEnCaminoPageState extends State<PedidoEnCaminoPage> {
         setState(() {
           _polylines = {
             Polyline(
-              polylineId: PolylineId('route'),
+              polylineId: const PolylineId('route'),
               points: polylineCoordinates,
               color: Colors.blue,
               width: 6,
@@ -155,7 +155,9 @@ class _PedidoEnCaminoPageState extends State<PedidoEnCaminoPage> {
     } while (index < len);
 
     /*adding to previous value as done in encoding */
-    for (var i = 2; i < lList.length; i++) lList[i] += lList[i - 2];
+    for (var i = 2; i < lList.length; i++) {
+      lList[i] += lList[i - 2];
+    }
 
     List<LatLng> points = [];
     for (var i = 0; i < lList.length; i += 2) {
@@ -186,7 +188,7 @@ class _PedidoEnCaminoPageState extends State<PedidoEnCaminoPage> {
         title: const Text('Pedido En Camino'),
       ),
       body: orderData == null || clientData == null
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : Column(
               children: [
                 Expanded(
@@ -195,7 +197,7 @@ class _PedidoEnCaminoPageState extends State<PedidoEnCaminoPage> {
                       _mapController = controller;
                       _updatePolylines();
                     },
-                    initialCameraPosition: CameraPosition(
+                    initialCameraPosition: const CameraPosition(
                       target: LatLng(0, 0),
                       zoom: 10,
                     ),
@@ -205,14 +207,14 @@ class _PedidoEnCaminoPageState extends State<PedidoEnCaminoPage> {
                         ? {}
                         : {
                             Marker(
-                              markerId: MarkerId('driverLocation'),
+                              markerId: const MarkerId('driverLocation'),
                               position: driverLocation!,
-                              infoWindow: InfoWindow(title: 'Tu ubicación'),
+                              infoWindow: const InfoWindow(title: 'Tu ubicación'),
                             ),
                             Marker(
-                              markerId: MarkerId('clientLocation'),
+                              markerId: const MarkerId('clientLocation'),
                               position: clientLocation!,
-                              infoWindow: InfoWindow(title: 'Ubicación del cliente'),
+                              infoWindow: const InfoWindow(title: 'Ubicación del cliente'),
                             ),
                           },
                     polylines: _polylines,
@@ -229,15 +231,15 @@ class _PedidoEnCaminoPageState extends State<PedidoEnCaminoPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           ElevatedButton.icon(
-                            icon: Icon(Icons.call),
-                            label: Text('Llamar'),
+                            icon: const Icon(Icons.call),
+                            label: const Text('Llamar'),
                             onPressed: () {
                               _launchURL('tel:${orderData!['userPhone']}');
                             },
                           ),
                           ElevatedButton.icon(
-                            icon: Icon(Icons.message),
-                            label: Text('Escribir'),
+                            icon: const Icon(Icons.message),
+                            label: const Text('Escribir'),
                             onPressed: () {
                               _launchURL('https://wa.me/${orderData!['userPhone']}');
                             },
@@ -246,14 +248,14 @@ class _PedidoEnCaminoPageState extends State<PedidoEnCaminoPage> {
                       ),
                       Center(
                         child: ElevatedButton(
-                          child: Text('Entregado'),
                           onPressed: _markAsDelivered,
+                          child: const Text('Entregado'),
                         ),
                       ),
                       Center(
                         child: ElevatedButton(
-                          child: Text('Como llegar'),
                           onPressed: _updatePolylines,
+                          child: const Text('Como llegar'),
                         ),
                       ),
                     ],

@@ -4,7 +4,7 @@ import 'package:location/location.dart' as loc;
 
 class MapaAdminPage extends StatefulWidget {
 
-  const MapaAdminPage({Key? key}) : super(key: key);
+  const MapaAdminPage({super.key});
 
   @override
   _MapaAdminPageState createState() => _MapaAdminPageState();
@@ -13,7 +13,7 @@ class MapaAdminPage extends StatefulWidget {
 class _MapaAdminPageState extends State<MapaAdminPage> {
   GoogleMapController? mapController;
   loc.Location location = loc.Location();
-  LatLng _currentPosition = LatLng(-12.0464, -77.0428);
+  LatLng _currentPosition = const LatLng(-12.0464, -77.0428);
   LatLng? _selectedPosition;
   bool _isLocationReady = false;
   bool _initialPositionSet = false;
@@ -150,11 +150,11 @@ class _MapaAdminPageState extends State<MapaAdminPage> {
                   right: 16.0,
                   child: ElevatedButton(
                     onPressed: _saveLocation,
-                    child: const Text('Guardar Ubicación'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF6BBE92),
                       minimumSize: const Size(double.infinity, 50),
                     ),
+                    child: const Text('Guardar Ubicación'),
                   ),
                 ),
               ],

@@ -3,13 +3,13 @@ import 'package:restmap/views/admin/gestionarnegocio.dart';
 import 'package:restmap/views/admin/perfiladmin.dart';
 import 'package:restmap/views/admin/agregarnegocio.dart';
 import 'package:restmap/views/admin/agregartipococina.dart';
-import 'package:restmap/views/admin/gestionartipococina.dart';
+// import 'package:restmap/views/admin/gestionartipococina.dart';
 import 'package:restmap/views/admin/agregarusuarionegocio.dart';
 import 'package:restmap/views/admin/gestionarusuarionegocio.dart';
 import 'package:restmap/services/firebase_auth_service.dart';
 
 class PaginaPrincipalAdmin extends StatefulWidget {
-  const PaginaPrincipalAdmin({Key? key}) : super(key: key);
+  const PaginaPrincipalAdmin({super.key});
 
   @override
   _PaginaPrincipalAdminState createState() => _PaginaPrincipalAdminState();
@@ -43,13 +43,13 @@ class _PaginaPrincipalAdminState extends State<PaginaPrincipalAdmin> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            DrawerHeader(
-              decoration: const BoxDecoration(
+            const DrawerHeader(
+              decoration: BoxDecoration(
                 color: Colors.green,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   Icon(
                     Icons.admin_panel_settings,
                     color: Colors.white,
@@ -133,8 +133,8 @@ class _PaginaPrincipalAdminState extends State<PaginaPrincipalAdmin> {
         return ManageNegocioPage();
       case 'agregar_tipococina':
         return const AgregarTipoCocinaPage();
-      case 'gestionar_tipococina':
-        return GestionarTipoCocinaPage();
+      // case 'gestionar_tipococina':
+      //   return const GestionarTipoCocinaPage();
       case 'perfil':
         return const PerfilAdminPage();
       default:

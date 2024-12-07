@@ -5,7 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:file_picker/file_picker.dart';
 
 class AgregarTipoCocinaPage extends StatefulWidget {
-  const AgregarTipoCocinaPage({Key? key}) : super(key: key);
+  const AgregarTipoCocinaPage({super.key});
 
   @override
   _AgregarTipoCocinaPageState createState() => _AgregarTipoCocinaPageState();
@@ -118,7 +118,7 @@ class _AgregarTipoCocinaPageState extends State<AgregarTipoCocinaPage> {
                 radius: 50,
                 backgroundImage: _imageFile != null ? FileImage(_imageFile!) : null,
                 child: _imageFile == null
-                    ? Icon(Icons.camera_alt, size: 50, color: Colors.white70)
+                    ? const Icon(Icons.camera_alt, size: 50, color: Colors.white70)
                     : null,
               ),
             ),

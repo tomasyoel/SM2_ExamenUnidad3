@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 class ProductManagementPage extends StatefulWidget {
   final String negocioId;
 
-  const ProductManagementPage({Key? key, required this.negocioId}) : super(key: key);
+  const ProductManagementPage({super.key, required this.negocioId});
 
   @override
   _ProductManagementPageState createState() => _ProductManagementPageState();
@@ -49,16 +49,16 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
   }
 
   Future<void> _editarProducto(Map<String, dynamic> producto) async {
-    final TextEditingController _nombreController =
+    final TextEditingController nombreController =
         TextEditingController(text: producto['nombre']);
-    final TextEditingController _descripcionController =
+    final TextEditingController descripcionController =
         TextEditingController(text: producto['descripcion']);
-    final TextEditingController _precioController =
+    final TextEditingController precioController =
         TextEditingController(text: producto['precio'].toString());
-    final TextEditingController _stockController =
+    final TextEditingController stockController =
         TextEditingController(text: producto['stock']?.toString() ?? '0');
-    String _estadoSeleccionado = producto['estado'] ?? 'disponible';
-    String? _categoriaSeleccionada = producto['catprod'];
+    String estadoSeleccionado = producto['estado'] ?? 'disponible';
+    String? categoriaSeleccionada = producto['catprod'];
 
 
     List<Map<String, dynamic>> categorias = await _getCategorias();
@@ -72,20 +72,20 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
             child: Column(
               children: [
                 TextField(
-                  controller: _nombreController,
+                  controller: nombreController,
                   decoration: const InputDecoration(labelText: 'Nombre del Producto'),
                 ),
                 TextField(
-                  controller: _descripcionController,
+                  controller: descripcionController,
                   decoration: const InputDecoration(labelText: 'Descripción'),
                 ),
                 TextField(
-                  controller: _precioController,
+                  controller: precioController,
                   decoration: const InputDecoration(labelText: 'Precio'),
                   keyboardType: TextInputType.number,
                 ),
                 TextField(
-                  controller: _stockController,
+                  controller: stockController,
                   decoration: const InputDecoration(labelText: 'Stock (0 - 1000)'),
                   keyboardType: TextInputType.number,
                   inputFormatters: [
@@ -93,7 +93,7 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
                   ],
                 ),
                 DropdownButtonFormField<String>(
-                  value: _categoriaSeleccionada,
+                  value: categoriaSeleccionada,
                   items: categorias.map((categoria) {
                     return DropdownMenuItem<String>(
                       value: categoria['id'],
@@ -102,7 +102,7 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
                   }).toList(),
                   onChanged: (newValue) {
                     setState(() {
-                      _categoriaSeleccionada = newValue;
+                      categoriaSeleccionada = newValue;
                     });
                   },
                   decoration: const InputDecoration(labelText: 'Categoría'),
@@ -114,7 +114,7 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
                   },
                 ),
                 DropdownButtonFormField<String>(
-                  value: _estadoSeleccionado,
+                  value: estadoSeleccionado,
                   items: ['disponible', 'agotado', 'promocion'].map((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -123,7 +123,7 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
                   }).toList(),
                   onChanged: (newValue) {
                     setState(() {
-                      _estadoSeleccionado = newValue!;
+                      estadoSeleccionado = newValue!;
                     });
                   },
                   decoration: const InputDecoration(labelText: 'Estado'),
@@ -142,14 +142,14 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
               child: const Text('Guardar'),
               onPressed: () async {
             
-                int stock = int.tryParse(_stockController.text) ?? 0;
+                int stock = int.tryParse(stockController.text) ?? 0;
                 if (stock < 0) {
                   stock = 0;
                 } else if (stock > 1000) {
                   stock = 1000; 
                 }
 
-                if (_categoriaSeleccionada == null || _categoriaSeleccionada!.isEmpty) {
+                if (categoriaSeleccionada == null || categoriaSeleccionada!.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Por favor selecciona una categoría.')),
                   );
@@ -158,13 +158,13 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
 
                 final nuevoProducto = {
                   'codigo': producto['codigo'],
-                  'nombre': _nombreController.text,
-                  'descripcion': _descripcionController.text,
-                  'precio': double.parse(_precioController.text),
+                  'nombre': nombreController.text,
+                  'descripcion': descripcionController.text,
+                  'precio': double.parse(precioController.text),
                   'stock': stock, 
-                  'estado': _estadoSeleccionado,
+                  'estado': estadoSeleccionado,
                   'urlImagen': producto['urlImagen'],
-                  'catprod': _categoriaSeleccionada,
+                  'catprod': categoriaSeleccionada,
                 };
 
                

@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 
 class DriverProfilePage extends StatefulWidget {
+  const DriverProfilePage({super.key});
+
   @override
   _DriverProfilePageState createState() => _DriverProfilePageState();
 }
@@ -111,10 +113,10 @@ class _DriverProfilePageState extends State<DriverProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Perfil del Conductor'),
+        title: const Text('Perfil del Conductor'),
         actions: [
           IconButton(
-            icon: Icon(Icons.save),
+            icon: const Icon(Icons.save),
             onPressed: _updateUserData,
           ),
         ],
@@ -129,12 +131,12 @@ class _DriverProfilePageState extends State<DriverProfilePage> {
                 radius: 50,
                 backgroundImage: _photoUrl != null
                     ? NetworkImage(_photoUrl!)
-                    : AssetImage('assets/placeholder.png') as ImageProvider,
+                    : const AssetImage('assets/placeholder.png') as ImageProvider,
                 child:
-                    _photoUrl == null ? Icon(Icons.camera_alt, size: 50) : null,
+                    _photoUrl == null ? const Icon(Icons.camera_alt, size: 50) : null,
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             _buildTextField('Nombre', _nombreController),
             _buildTextField('Apellido', _apellidoController),
             _buildTextField('DNI', _dniController),
@@ -151,7 +153,7 @@ class _DriverProfilePageState extends State<DriverProfilePage> {
                       'Correo para restablecer contraseña enviado.');
                 }
               },
-              child: Text('Cambiar Contraseña'),
+              child: const Text('Cambiar Contraseña'),
             ),
           ],
         ),
@@ -183,16 +185,16 @@ class _DriverProfilePageState extends State<DriverProfilePage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: Icon(Icons.photo_library),
-                title: Text('Elegir desde galería'),
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Elegir desde galería'),
                 onTap: () {
                   Navigator.of(context).pop();
                   _pickImage();
                 },
               ),
               ListTile(
-                leading: Icon(Icons.photo_camera),
-                title: Text('Tomar una foto'),
+                leading: const Icon(Icons.photo_camera),
+                title: const Text('Tomar una foto'),
                 onTap: () {
                   Navigator.of(context).pop();
                   _takePicture();
@@ -209,11 +211,11 @@ class _DriverProfilePageState extends State<DriverProfilePage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Información'),
+        title: const Text('Información'),
         content: Text(message),
         actions: <Widget>[
           TextButton(
-            child: Text('Okay'),
+            child: const Text('Okay'),
             onPressed: () {
               Navigator.of(ctx).pop();
             },

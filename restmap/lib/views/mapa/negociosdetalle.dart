@@ -8,7 +8,7 @@ class NegociosDetallePage extends StatelessWidget {
   final String negocioId;
   final LatLng userLocation;
 
-  NegociosDetallePage({required this.negocioId, required this.userLocation});
+  const NegociosDetallePage({super.key, required this.negocioId, required this.userLocation});
 
   Future<Map<String, dynamic>?> _getNegocioData() async {
     DocumentSnapshot negocioSnapshot =
@@ -128,9 +128,9 @@ class NegociosDetallePage extends StatelessWidget {
                     if (productoMasBarato != null)
                       Column(
                         children: [
-                          Text(
+                          const Text(
                             'Producto más barato:',
-                            style: const TextStyle(
+                            style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 10),

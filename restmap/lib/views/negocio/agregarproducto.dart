@@ -8,7 +8,7 @@ import 'package:uuid/uuid.dart';
 class AgregarProductoPage extends StatefulWidget {
   final String negocioId;
 
-  const AgregarProductoPage({Key? key, required this.negocioId}) : super(key: key);
+  const AgregarProductoPage({super.key, required this.negocioId});
 
   @override
   _AgregarProductoPageState createState() => _AgregarProductoPageState();
@@ -30,7 +30,7 @@ class _AgregarProductoPageState extends State<AgregarProductoPage> {
 
   void _generarCodigo() {
     if (_nombreController.text.isNotEmpty) {
-      var uuid = Uuid();
+      var uuid = const Uuid();
       _idProdController.text = uuid.v4();
     }
   }
@@ -47,7 +47,7 @@ class _AgregarProductoPageState extends State<AgregarProductoPage> {
             _urlImagen = nombreImagen;
             _isImageUploaded = true;
             ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Imagen subida exitosamente')));
+                const SnackBar(content: Text('Imagen subida exitosamente')));
           });
         }
       } else {
@@ -79,7 +79,7 @@ class _AgregarProductoPageState extends State<AgregarProductoPage> {
         _categoriaSeleccionadaId == null ||
         _urlImagen == null ||
         !_isImageUploaded) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text(
               'Por favor, completa todos los campos, selecciona una imagen y asegúrate de que esté cargada.')));
       return;
@@ -114,7 +114,7 @@ class _AgregarProductoPageState extends State<AgregarProductoPage> {
     });
 
     ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text('Producto agregado exitosamente')));
+        .showSnackBar(const SnackBar(content: Text('Producto agregado exitosamente')));
 
     _limpiarFormulario();
   }
@@ -156,34 +156,34 @@ class _AgregarProductoPageState extends State<AgregarProductoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Agregar Producto'),
+        title: const Text('Agregar Producto'),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Column(
           children: [
             TextField(
               controller: _idProdController,
-              decoration: InputDecoration(labelText: 'Código del Producto'),
+              decoration: const InputDecoration(labelText: 'Código del Producto'),
               enabled: false,
             ),
             TextField(
               controller: _nombreController,
-              decoration: InputDecoration(labelText: 'Nombre del Producto'),
+              decoration: const InputDecoration(labelText: 'Nombre del Producto'),
               onEditingComplete: _generarCodigo,
             ),
             TextField(
               controller: _descripcionController,
-              decoration: InputDecoration(labelText: 'Descripción breve'),
+              decoration: const InputDecoration(labelText: 'Descripción breve'),
             ),
             TextField(
               controller: _precioController,
-              decoration: InputDecoration(labelText: 'Precio'),
+              decoration: const InputDecoration(labelText: 'Precio'),
               keyboardType: TextInputType.number,
             ),
             TextField(
               controller: _stockController,
-              decoration: InputDecoration(labelText: 'Stock'),
+              decoration: const InputDecoration(labelText: 'Stock'),
               keyboardType: TextInputType.number,
             ),
             DropdownButtonFormField<String>(
@@ -199,7 +199,7 @@ class _AgregarProductoPageState extends State<AgregarProductoPage> {
                   child: Text(categoria['nombre']),
                 );
               }).toList(),
-              decoration: InputDecoration(labelText: 'Categoría'),
+              decoration: const InputDecoration(labelText: 'Categoría'),
             ),
             DropdownButtonFormField<String>(
               value: _estadoSeleccionado,
@@ -214,14 +214,14 @@ class _AgregarProductoPageState extends State<AgregarProductoPage> {
                   child: Text(value),
                 );
               }).toList(),
-              decoration: InputDecoration(labelText: 'Estado'),
+              decoration: const InputDecoration(labelText: 'Estado'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             _imagen == null
-                ? Icon(Icons.image_not_supported, size: 150)
+                ? const Icon(Icons.image_not_supported, size: 150)
                 : Image.file(_imagen!, height: 150, width: 150),
-            ElevatedButton(onPressed: seleccionarImagen, child: Text('Seleccionar Imagen')),
-            ElevatedButton(onPressed: agregarProducto, child: Text('Agregar Producto')),
+            ElevatedButton(onPressed: seleccionarImagen, child: const Text('Seleccionar Imagen')),
+            ElevatedButton(onPressed: agregarProducto, child: const Text('Agregar Producto')),
           ],
         ),
       ),

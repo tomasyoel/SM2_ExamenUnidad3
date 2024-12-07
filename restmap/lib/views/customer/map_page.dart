@@ -11,7 +11,7 @@ import 'package:location/location.dart' as loc;
 class MapPage extends StatefulWidget {
   final String userId;
 
-  MapPage({required this.userId});
+  const MapPage({super.key, required this.userId});
 
   @override
   _MapPageState createState() => _MapPageState();
@@ -20,10 +20,10 @@ class MapPage extends StatefulWidget {
   class _MapPageState extends State<MapPage> {
   GoogleMapController? mapController;
   loc.Location location = loc.Location();
-  LatLng _currentPosition = LatLng(-12.0464, -77.0428); 
+  LatLng _currentPosition = const LatLng(-12.0464, -77.0428); 
   LatLng? _selectedPosition;
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _addressController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
   final String _googleApiKey = 'API_KEY';
   bool _isLocationReady = false;
   bool _initialPositionSet = false;
@@ -142,7 +142,7 @@ class MapPage extends StatefulWidget {
   void _saveAddress() async {
   if (_selectedPosition == null) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Selecciona una ubicación en el mapa')),
+      const SnackBar(content: Text('Selecciona una ubicación en el mapa')),
     );
     return;
   }
@@ -199,8 +199,8 @@ class MapPage extends StatefulWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Añadir Dirección'),
-        backgroundColor: Color(0xFF6BBE92),
+        title: const Text('Añadir Dirección'),
+        backgroundColor: const Color(0xFF6BBE92),
       ),
       body: _isLocationReady
           ? Stack(
@@ -214,7 +214,7 @@ class MapPage extends StatefulWidget {
                   markers: _selectedPosition != null
                       ? {
                           Marker(
-                            markerId: MarkerId('selected-location'),
+                            markerId: const MarkerId('selected-location'),
                             position: _selectedPosition!,
                           ),
                         }
@@ -233,11 +233,11 @@ class MapPage extends StatefulWidget {
                   left: 16.0,
                   right: 16.0,
                   child: Container(
-                    padding: EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(16.0),
                     decoration: BoxDecoration(
-                      color: Color(0xFFFFE3B0),
+                      color: const Color(0xFFFFE3B0),
                       borderRadius: BorderRadius.circular(8.0),
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
                           color: Colors.black26,
                           blurRadius: 10,
@@ -249,28 +249,28 @@ class MapPage extends StatefulWidget {
                       children: [
                         TextField(
                           controller: _nameController,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Nombre',
                             border: OutlineInputBorder(),
                           ),
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         TextField(
                           controller: _addressController,
                           readOnly: true,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Dirección',
                             border: OutlineInputBorder(),
                           ),
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         ElevatedButton(
                           onPressed: _saveAddress,
-                          child: Text('Guardar Dirección'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF6BBE92),
-                            minimumSize: Size(double.infinity, 50),
+                            backgroundColor: const Color(0xFF6BBE92),
+                            minimumSize: const Size(double.infinity, 50),
                           ),
+                          child: const Text('Guardar Dirección'),
                         ),
                       ],
                     ),
@@ -278,7 +278,7 @@ class MapPage extends StatefulWidget {
                 ),
               ],
             )
-          : Center(child: CircularProgressIndicator()),
+          : const Center(child: CircularProgressIndicator()),
     );
   }
 }

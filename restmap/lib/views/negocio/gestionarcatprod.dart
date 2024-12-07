@@ -4,24 +4,24 @@ import 'package:flutter/material.dart';
 class GestionarCatProdPage extends StatelessWidget {
   final String negocioId;
 
-  GestionarCatProdPage({required this.negocioId});
+  const GestionarCatProdPage({super.key, required this.negocioId});
 
   Future<void> _confirmarEliminacionCategoria(String categoriaId, String categoriaNombre, BuildContext context) async {
     bool confirmacion = await showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirmar Eliminación'),
+          title: const Text('Confirmar Eliminación'),
           content: Text('¿Estás seguro de que deseas eliminar la categoría "$categoriaNombre"? Esta acción no se puede deshacer.'),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancelar'),
+              child: const Text('Cancelar'),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
             ElevatedButton(
-              child: Text('Eliminar'),
+              child: const Text('Eliminar'),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
@@ -46,7 +46,7 @@ class GestionarCatProdPage extends StatelessWidget {
         .get();
 
     if (productos.docs.isNotEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('No se puede eliminar la categoría porque está en uso por algún producto.')));
     } else {
 
@@ -62,34 +62,34 @@ class GestionarCatProdPage extends StatelessWidget {
       });
 
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Categoría eliminada exitosamente.')));
+          .showSnackBar(const SnackBar(content: Text('Categoría eliminada exitosamente.')));
     }
   }
 
   Future<void> _editarCategoria(Map<String, dynamic> categoria, BuildContext context) async {
-    TextEditingController _categoriaController = TextEditingController(text: categoria['nombre']);
+    TextEditingController categoriaController = TextEditingController(text: categoria['nombre']);
 
 
     await showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Editar Categoría'),
+          title: const Text('Editar Categoría'),
           content: TextField(
-            controller: _categoriaController,
-            decoration: InputDecoration(labelText: 'Nuevo nombre de la categoría'),
+            controller: categoriaController,
+            decoration: const InputDecoration(labelText: 'Nuevo nombre de la categoría'),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancelar'),
+              child: const Text('Cancelar'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             ElevatedButton(
-              child: Text('Guardar'),
+              child: const Text('Guardar'),
               onPressed: () async {
-                String nuevoNombre = _categoriaController.text;
+                String nuevoNombre = categoriaController.text;
 
                 if (nuevoNombre.isNotEmpty) {
                 
@@ -110,7 +110,7 @@ class GestionarCatProdPage extends StatelessWidget {
 
                   Navigator.of(context).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Categoría actualizada exitosamente.')));
+                      const SnackBar(content: Text('Categoría actualizada exitosamente.')));
                 }
               },
             ),
@@ -124,13 +124,13 @@ class GestionarCatProdPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Gestionar Categorías de Producto'),
+        title: const Text('Gestionar Categorías de Producto'),
       ),
       body: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance.collection('cartasnegocio').doc(negocioId).snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           var negocio = snapshot.data!.data() as Map<String, dynamic>;
@@ -147,13 +147,13 @@ class GestionarCatProdPage extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      icon: Icon(Icons.edit),
+                      icon: const Icon(Icons.edit),
                       onPressed: () {
                         _editarCategoria(categoria, context);
                       },
                     ),
                     IconButton(
-                      icon: Icon(Icons.delete),
+                      icon: const Icon(Icons.delete),
                       onPressed: () {
                         _confirmarEliminacionCategoria(categoria['id'], categoria['nombre'], context);
                       },

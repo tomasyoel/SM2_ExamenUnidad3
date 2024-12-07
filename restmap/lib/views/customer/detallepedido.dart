@@ -13,7 +13,7 @@ class DetallePedidoPage extends StatefulWidget {
   final List<Map<String, dynamic>> productosSeleccionados;
   final double total;
 
-  DetallePedidoPage({
+  const DetallePedidoPage({super.key, 
     required this.negocioId,
     required this.productosSeleccionados,
     required this.total,
@@ -176,19 +176,19 @@ double _toRadianes(double grados) {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: Text('¿Quitar producto?'),
+      title: const Text('¿Quitar producto?'),
       content: Text('¿Estás seguro(a) de que deseas quitar "${producto['nombre']}" del carrito?'),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context), // Cerrar sin acción
-          child: Text('No'),
+          child: const Text('No'),
         ),
         TextButton(
           onPressed: () {
             Navigator.pop(context); // Cerrar el diálogo
             _eliminarProductoDelCarrito(producto);
           },
-          child: Text('Sí'),
+          child: const Text('Sí'),
         ),
       ],
     ),
@@ -220,15 +220,15 @@ void _eliminarProductoDelCarrito(Map<String, dynamic> producto) async {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text("Carrito vacío 🛒"),
-          content: Text("Ups, tu carrito está vacío. ¡Agrega productos para continuar! 😊"),
+          title: const Text("Carrito vacío 🛒"),
+          content: const Text("Ups, tu carrito está vacío. ¡Agrega productos para continuar! 😊"),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // Cerrar el mensaje
                 Navigator.pop(context); // Regresar a la carta del negocio
               },
-              child: Text("Aceptar"),
+              child: const Text("Aceptar"),
             ),
           ],
         ),
@@ -309,8 +309,8 @@ void _moveToLocation() {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text("Stock insuficiente"),
-            content: Text(
+            title: const Text("Stock insuficiente"),
+            content: const Text(
                 "Lo sentimos, uno o más productos en tu carrito ya no están disponibles o su stock ha cambiado. Por favor, vuelve a seleccionar."),
             actions: [
               TextButton(
@@ -318,7 +318,7 @@ void _moveToLocation() {
                   Navigator.pop(context);
                   Navigator.pop(context); // Regresa a la carta del negocio
                 },
-                child: Text("Aceptar"),
+                child: const Text("Aceptar"),
               ),
             ],
           ),
@@ -354,7 +354,7 @@ String _generarCodigoPedido() {
 
   // Mostrar snackbar de procesando
   ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
+    const SnackBar(
       content: Text('Procesando Pedido...'),
       duration: Duration(minutes: 1), // Duración larga para evitar que se cierre rápido
     ),
@@ -411,8 +411,8 @@ String _generarCodigoPedido() {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text("Stock insuficiente"),
-          content: Text(
+          title: const Text("Stock insuficiente"),
+          content: const Text(
               "Lo sentimos, uno o más productos en tu carrito ya no tienen stock suficiente. Por favor, vuelve a seleccionar."),
           actions: [
             TextButton(
@@ -420,7 +420,7 @@ String _generarCodigoPedido() {
                 Navigator.pop(context);
                 Navigator.pop(context); // Regresa a la carta del negocio
               },
-              child: Text("Aceptar"),
+              child: const Text("Aceptar"),
             ),
           ],
         ),
@@ -530,7 +530,7 @@ String _generarCodigoPedido() {
 
     // Mostrar mensaje de éxito
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Pedido guardado con éxito.')),
+      const SnackBar(content: Text('Pedido guardado con éxito.')),
     );
 
     // Regresar al menú principal o a la carta del negocio
@@ -547,7 +547,7 @@ String _generarCodigoPedido() {
 
     print('Error al guardar el pedido: $e');
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error al guardar el pedido. Intenta de nuevo.')),
+      const SnackBar(content: Text('Error al guardar el pedido. Intenta de nuevo.')),
     );
   }
 }
@@ -558,11 +558,11 @@ String _generarCodigoPedido() {
     final result = await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (BuildContext context) {
-        return FractionallySizedBox(
+        return const FractionallySizedBox(
           heightFactor: 0.8,
           child: UserLocationPage(), // Página para gestionar ubicaciones
         );
@@ -579,7 +579,7 @@ String _generarCodigoPedido() {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detalles del Pedido'),
+        title: const Text('Detalles del Pedido'),
         backgroundColor: Colors.orange,
       ),
       body: SingleChildScrollView(
@@ -587,10 +587,10 @@ String _generarCodigoPedido() {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Productos seleccionados', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text('Productos seleccionados', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             ListView.builder(
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               itemCount: widget.productosSeleccionados.length,
               itemBuilder: (context, index) {
                 var producto = widget.productosSeleccionados[index];
@@ -598,17 +598,17 @@ String _generarCodigoPedido() {
                   title: Text(producto['nombre']),
                   subtitle: Text('Cantidad: ${producto['cantidad']} - Precio: S/${producto['precio']}'),
                   trailing: IconButton(
-                    icon: Icon(Icons.delete, color: Colors.red),
+                    icon: const Icon(Icons.delete, color: Colors.red),
                     onPressed: () => _confirmarEliminarProducto(producto),
                   ),
                 );
               },
             ),
-            Divider(),
-            Text('Total: S/${widget.total.toStringAsFixed(2)}', style: TextStyle(fontSize: 18)),
+            const Divider(),
+            Text('Total: S/${widget.total.toStringAsFixed(2)}', style: const TextStyle(fontSize: 18)),
             const SizedBox(height: 16),
 
-            Text('Modalidad de Pedido', style: TextStyle(fontSize: 18)),
+            const Text('Modalidad de Pedido', style: TextStyle(fontSize: 18)),
             RadioListTile<String>(
               title: const Text('Delivery'),
               value: 'delivery',
@@ -632,7 +632,7 @@ String _generarCodigoPedido() {
             const SizedBox(height: 16),
 
             TextField(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Número de celular',
                 border: OutlineInputBorder(),
               ),
@@ -649,19 +649,19 @@ String _generarCodigoPedido() {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Dirección', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const Text('Dirección', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   Row(
                     children: [
                       Expanded(
                         child: Text(
                           _direccion,
-                          style: TextStyle(fontSize: 16),
+                          style: const TextStyle(fontSize: 16),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                         ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.location_on, color: Colors.blue),
+                        icon: const Icon(Icons.location_on, color: Colors.blue),
                         onPressed: _showLocationModal,
                       ),
                     ],
@@ -703,27 +703,27 @@ String _generarCodigoPedido() {
                         },
                         markers: {
                           Marker(
-                            markerId: MarkerId('ubicacion'),
+                            markerId: const MarkerId('ubicacion'),
                             position: LatLng(_ubicacion!.latitude, _ubicacion!.longitude),
                           ),
                         },
                       ),
                     ),
                   ),
-                  Text(
+                  const Text(
                 "Costo Delivery:",
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               _mensajeDelivery != null
-                  ? Text(_mensajeDelivery!, style: TextStyle(color: Colors.red))
+                  ? Text(_mensajeDelivery!, style: const TextStyle(color: Colors.red))
                   : Text("S/ ${_costoDelivery?.toStringAsFixed(2)}",
-                      style: TextStyle(fontSize: 16)),
+                      style: const TextStyle(fontSize: 16)),
                 ],
               ),
             const SizedBox(height: 16),
 
             TextField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Notas para el pedido',
                   border: OutlineInputBorder(),
                 ),
@@ -736,7 +736,7 @@ String _generarCodigoPedido() {
               ),
               const SizedBox(height: 16),
 
-              Text('Método de Pago', style: TextStyle(fontSize: 18)),
+              const Text('Método de Pago', style: TextStyle(fontSize: 18)),
               RadioListTile<String>(
                 title: const Text('Yape/Plin'),
                 value: 'yape_plin',
@@ -761,12 +761,12 @@ String _generarCodigoPedido() {
               Align(
               alignment: Alignment.centerRight,
               child: ElevatedButton(
-                onPressed: _isSubmitting ? _guardarPedido : null, // Deshabilitar si está enviando
-                child: Text('Guardar Pedido'),
+                onPressed: _isSubmitting ? _guardarPedido : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange,
-                  minimumSize: Size(150, 50),
-                ),
+                  minimumSize: const Size(150, 50),
+                ), // Deshabilitar si está enviando
+                child: const Text('Guardar Pedido'),
               ),
             ),
           ],

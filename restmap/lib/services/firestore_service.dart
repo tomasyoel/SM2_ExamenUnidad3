@@ -23,7 +23,7 @@ class FirestoreService {
       print("Perfil actualizado exitosamente");
     } catch (e) {
       print("Error al actualizar el perfil: $e");
-      throw e;
+      rethrow;
     }
   }
 

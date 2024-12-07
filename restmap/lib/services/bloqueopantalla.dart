@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class UpdateBlockScreen extends StatelessWidget {
-  const UpdateBlockScreen({Key? key}) : super(key: key);
+  const UpdateBlockScreen({super.key});
 
   Future<void> _launchWhatsApp() async {
     const phoneNumber = '+51900205498';
-    final whatsappUrl = "https://wa.me/$phoneNumber";
-    final whatsappUrlScheme = "whatsapp://send?phone=$phoneNumber";
+    const whatsappUrl = "https://wa.me/$phoneNumber";
+    const whatsappUrlScheme = "whatsapp://send?phone=$phoneNumber";
 
     try {
       bool launched = await launch(whatsappUrlScheme);
@@ -33,13 +33,13 @@ class UpdateBlockScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
+              const Icon(
                 Icons.warning_amber_rounded,
                 size: 100,
                 color: Colors.orange,
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 // 'Período de prueba finalizado',
                 'Lanzamos la Actualización',
                 style: TextStyle(
@@ -48,21 +48,21 @@ class UpdateBlockScreen extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 'Para seguir usando esta aplicación, debe actualizar a la última versión.',
                 style: TextStyle(fontSize: 16),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton.icon(
                 onPressed: _launchWhatsApp,
-                icon: Icon(Icons.chat),
-                label: Text('Contactar por WhatsApp'),
+                icon: const Icon(Icons.chat),
+                label: const Text('Contactar por WhatsApp'),
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white, backgroundColor: Colors.green,
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  textStyle: TextStyle(fontSize: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  textStyle: const TextStyle(fontSize: 16),
                 ),
               ),
             ],

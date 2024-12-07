@@ -9,13 +9,15 @@ import 'package:uuid/uuid.dart';
 import 'package:firebase_auth/firebase_auth.dart'; 
 
 class UserLocationPage extends StatefulWidget {
+  const UserLocationPage({super.key});
+
   @override
   _UserLocationPageState createState() => _UserLocationPageState();
 }
 
 class _UserLocationPageState extends State<UserLocationPage> {
   List<Address> _addresses = [];
-  LatLng _currentPosition = LatLng(0, 0);
+  LatLng _currentPosition = const LatLng(0, 0);
   Location location = Location();
   bool _isLoading = true;
   String? _userId;
@@ -71,7 +73,7 @@ class _UserLocationPageState extends State<UserLocationPage> {
 
                 
                 return Address(
-                  id: addressData['id'] ?? Uuid().v4(),
+                  id: addressData['id'] ?? const Uuid().v4(),
                   name: addressData['nombre'] ?? 'Sin nombre',
                   address: addressData['direccion'] ?? 'Sin dirección',
                   latitude: (addressData['latitud'] as num?)?.toDouble() ?? 0.0,
@@ -119,7 +121,7 @@ class _UserLocationPageState extends State<UserLocationPage> {
   void _addNewAddress() async {
   if (_userId == null) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('No se encontró el usuario autenticado')),
+      const SnackBar(content: Text('No se encontró el usuario autenticado')),
     );
     return;
   }
@@ -139,7 +141,7 @@ class _UserLocationPageState extends State<UserLocationPage> {
     _fetchAddresses(); 
   } else {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('No se agregó ninguna dirección')),
+      const SnackBar(content: Text('No se agregó ninguna dirección')),
     );
   }
 }
@@ -182,7 +184,7 @@ class _UserLocationPageState extends State<UserLocationPage> {
 
   
   ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text('Dirección eliminada')),
+    const SnackBar(content: Text('Dirección eliminada')),
   );
 
   
@@ -192,30 +194,30 @@ class _UserLocationPageState extends State<UserLocationPage> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: Container(
+      child: SizedBox(
         height: MediaQuery.of(context).size.height * 0.4, 
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
+            const Padding(
+              padding: EdgeInsets.all(16.0),
               child: Text(
                 '¿Dónde te encuentras?',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
             ListTile(
-              leading: Icon(IconlyBold.addUser),
-              title: Text('Nueva dirección'),
+              leading: const Icon(IconlyBold.addUser),
+              title: const Text('Nueva dirección'),
               onTap: () {
                 _addNewAddress(); 
               },
             ),
-            Divider(),
+            const Divider(),
             _isLoading
-                ? Center(child: CircularProgressIndicator())
+                ? const Center(child: CircularProgressIndicator())
                 : Expanded(
                     child: _addresses.isEmpty
-                        ? Center(
+                        ? const Center(
                             child: Text(
                               'Aún no tienes direcciones añadidas.',
                               style: TextStyle(
@@ -228,7 +230,7 @@ class _UserLocationPageState extends State<UserLocationPage> {
                               var address = _addresses[index];
                               return ListTile(
                                 title: Text(address.name),
-                                subtitle: Text('${address.address}'),
+                                subtitle: Text(address.address),
                                 trailing: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -246,7 +248,7 @@ class _UserLocationPageState extends State<UserLocationPage> {
                                       },
                                     ),
                                     IconButton(
-                                      icon: Icon(
+                                      icon: const Icon(
                                         IconlyBold.delete,
                                         color: Colors.red,
                                       ),

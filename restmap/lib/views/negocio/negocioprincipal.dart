@@ -4,14 +4,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:restmap/services/firebase_auth_service.dart';
 
 class NegocioPrincipalPage extends StatefulWidget {
-  const NegocioPrincipalPage({Key? key}) : super(key: key);
+  const NegocioPrincipalPage({super.key});
 
   @override
   _NegocioPrincipalPageState createState() => _NegocioPrincipalPageState();
 }
 
 class _NegocioPrincipalPageState extends State<NegocioPrincipalPage> {
-  String _selectedPage = 'home';
+  final String _selectedPage = 'home';
   final FirebaseAuthService _authService = FirebaseAuthService();
   Map<String, dynamic>? negocioData;
 

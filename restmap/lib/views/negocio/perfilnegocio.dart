@@ -10,7 +10,7 @@ import 'package:restmap/views/negocio/mapanegocio.dart';
 import 'package:restmap/services/firebase_auth_service.dart';
 
 class PerfilNegocioPage extends StatefulWidget {
-  const PerfilNegocioPage({Key? key}) : super(key: key);
+  const PerfilNegocioPage({super.key});
 
   @override
   _PerfilNegocioPageState createState() => _PerfilNegocioPageState();
@@ -216,7 +216,7 @@ Future<void> _navigateToMapaNegocio() async {
             ),
             markers: {
               Marker(
-                markerId: MarkerId('business-location'),
+                markerId: const MarkerId('business-location'),
                 position: _ubicacion!,
               ),
             },

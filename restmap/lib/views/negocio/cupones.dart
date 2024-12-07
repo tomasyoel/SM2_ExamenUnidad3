@@ -4,14 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:iconly/iconly.dart';
-import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
 
 class CuponesPage extends StatelessWidget {
   final CollectionReference cuponesNegocios =
       FirebaseFirestore.instance.collection('cuponesnegocios');
 
-  CuponesPage() {
+  CuponesPage({super.key}) {
     initializeDateFormatting();
   }
 
@@ -24,7 +23,7 @@ class CuponesPage extends StatelessWidget {
         title: const Text("Gestionar Cupones"),
         actions: [
           IconButton(
-            icon: Icon(IconlyBold.add_user), 
+            icon: const Icon(IconlyBold.add_user), 
             onPressed: () {
               _crearNuevoCupon(context);
             },
@@ -53,22 +52,22 @@ class CuponesPage extends StatelessWidget {
             itemBuilder: (context, index) {
               var cupon = cupones[index];
               return Card(
-                margin: EdgeInsets.all(10.0),
+                margin: const EdgeInsets.all(10.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: Column(
                   children: [
                     Container(
-                      padding: EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8.0),
                       color: Colors.red,
                       child: Row(
                         children: [
-                          Icon(IconlyLight.ticket, color: Colors.white),
-                          SizedBox(width: 8.0),
+                          const Icon(IconlyLight.ticket, color: Colors.white),
+                          const SizedBox(width: 8.0),
                           Text(
                             'Cupón: ${cupon['codigo']} - ${cupon['porcentaje']}%',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 16.0,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -91,21 +90,21 @@ class CuponesPage extends StatelessWidget {
                               color: Colors.brown.shade900,
                             ),
                           ),
-                          SizedBox(height: 10.0),
+                          const SizedBox(height: 10.0),
                           Text(
                             'Válido hasta: ${_formatDate(cupon['fecha_vencimiento'].toDate())}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 16.0,
                               color: Colors.black87,
                             ),
                           ),
-                          SizedBox(height: 10.0),
+                          const SizedBox(height: 10.0),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
                                 'Código: ${cupon['codigo']}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 16.0,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black,
@@ -147,13 +146,13 @@ class CuponesPage extends StatelessWidget {
     final TextEditingController codigoController = TextEditingController();
     final TextEditingController porcentajeController = TextEditingController();
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    DateTime fechaVencimiento = DateTime.now().add(Duration(days: 7));
+    DateTime fechaVencimiento = DateTime.now().add(const Duration(days: 7));
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Crear nuevo cupón'),
+          title: const Text('Crear nuevo cupón'),
           content: Form(
             key: formKey,
             child: Column(
@@ -161,7 +160,7 @@ class CuponesPage extends StatelessWidget {
               children: [
                 TextFormField(
                   controller: codigoController,
-                  decoration: InputDecoration(labelText: 'Código del Cupón'),
+                  decoration: const InputDecoration(labelText: 'Código del Cupón'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'El código es obligatorio';
@@ -171,7 +170,7 @@ class CuponesPage extends StatelessWidget {
                 ),
                 TextFormField(
                   controller: porcentajeController,
-                  decoration: InputDecoration(labelText: 'Porcentaje de Descuento'),
+                  decoration: const InputDecoration(labelText: 'Porcentaje de Descuento'),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -180,7 +179,7 @@ class CuponesPage extends StatelessWidget {
                     return null;
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
@@ -192,7 +191,7 @@ class CuponesPage extends StatelessWidget {
                       Navigator.of(context).pop();
                     }
                   },
-                  child: Text('Crear Cupón'),
+                  child: const Text('Crear Cupón'),
                 ),
               ],
             ),
@@ -212,7 +211,7 @@ class CuponesPage extends StatelessWidget {
 
   
     Map<String, dynamic> nuevoCupon = {
-      'id': Uuid().v4(),
+      'id': const Uuid().v4(),
       'codigo': codigo,
       'porcentaje': porcentaje,
       'estado': true,

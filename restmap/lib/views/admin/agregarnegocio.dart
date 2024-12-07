@@ -8,7 +8,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:restmap/views/admin/mapadmin.dart';
 
 class AgregarNegocioPage extends StatefulWidget {
-  const AgregarNegocioPage({Key? key}) : super(key: key);
+  const AgregarNegocioPage({super.key});
 
   @override
   _AgregarNegocioPageState createState() => _AgregarNegocioPageState();
@@ -106,7 +106,7 @@ class _AgregarNegocioPageState extends State<AgregarNegocioPage> {
     final LatLng? result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MapaAdminPage(),
+        builder: (context) => const MapaAdminPage(),
       ),
     );
 
@@ -199,7 +199,7 @@ class _AgregarNegocioPageState extends State<AgregarNegocioPage> {
                     ),
                     markers: {
                       Marker(
-                        markerId: MarkerId('business-location'),
+                        markerId: const MarkerId('business-location'),
                         position: _ubicacionSeleccionada!,
                       ),
                     },
@@ -213,7 +213,7 @@ class _AgregarNegocioPageState extends State<AgregarNegocioPage> {
                   radius: 50,
                   backgroundImage: _logoImage != null ? FileImage(_logoImage!) : null,
                   child: _logoImage == null
-                      ? Icon(Icons.camera_alt, size: 50, color: Colors.white70)
+                      ? const Icon(Icons.camera_alt, size: 50, color: Colors.white70)
                       : null,
                 ),
               ),

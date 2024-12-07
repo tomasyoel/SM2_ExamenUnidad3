@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 
 class PerfilAdminPage extends StatefulWidget {
-  const PerfilAdminPage({Key? key}) : super(key: key);
+  const PerfilAdminPage({super.key});
 
   @override
   _PerfilAdminPageState createState() => _PerfilAdminPageState();
@@ -107,10 +107,10 @@ class _PerfilAdminPageState extends State<PerfilAdminPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Perfil del Administrador'),
+        title: const Text('Perfil del Administrador'),
         actions: [
           IconButton(
-            icon: Icon(Icons.save),
+            icon: const Icon(Icons.save),
             onPressed: _updateUserData,
           ),
         ],
@@ -125,19 +125,19 @@ class _PerfilAdminPageState extends State<PerfilAdminPage> {
                 radius: 50,
                 backgroundImage: _photoUrl != null
                     ? NetworkImage(_photoUrl!)
-                    : AssetImage('assets/placeholder.png') as ImageProvider,
+                    : const AssetImage('assets/placeholder.png') as ImageProvider,
                 child: _photoUrl == null
-                    ? Icon(Icons.camera_alt, size: 50, color: Colors.white70)
+                    ? const Icon(Icons.camera_alt, size: 50, color: Colors.white70)
                     : null,
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             _buildTextField('Nombre', _nombreController),
             _buildTextField('Apellido', _apellidoController),
             _buildTextField('DNI', _dniController),
             _buildTextField('Número de Celular', _nroCelularController),
             _buildTextField('Dirección', _direccionController),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
                 if (user != null && user!.email != null) {
@@ -146,14 +146,14 @@ class _PerfilAdminPageState extends State<PerfilAdminPage> {
                   _showInfoDialog('Correo para restablecer contraseña enviado.');
                 }
               },
-              child: Text('Cambiar Contraseña'),
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white, backgroundColor: Colors.blue,
-                minimumSize: Size(double.infinity, 50),
+                minimumSize: const Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
               ),
+              child: const Text('Cambiar Contraseña'),
             ),
           ],
         ),
@@ -184,16 +184,16 @@ class _PerfilAdminPageState extends State<PerfilAdminPage> {
           child: Wrap(
             children: [
               ListTile(
-                leading: Icon(Icons.photo_library),
-                title: Text('Elegir desde galería'),
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Elegir desde galería'),
                 onTap: () {
                   Navigator.of(context).pop();
                   _pickImage();
                 },
               ),
               ListTile(
-                leading: Icon(Icons.photo_camera),
-                title: Text('Tomar una foto'),
+                leading: const Icon(Icons.photo_camera),
+                title: const Text('Tomar una foto'),
                 onTap: () {
                   Navigator.of(context).pop();
                   _takePicture();
@@ -210,11 +210,11 @@ class _PerfilAdminPageState extends State<PerfilAdminPage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Información'),
+        title: const Text('Información'),
         content: Text(message),
         actions: <Widget>[
           TextButton(
-            child: Text('Okay'),
+            child: const Text('Okay'),
             onPressed: () {
               Navigator.of(ctx).pop();
             },

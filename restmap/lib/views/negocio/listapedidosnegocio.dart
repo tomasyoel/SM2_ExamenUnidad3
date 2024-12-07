@@ -7,7 +7,7 @@ import 'dart:async';
 class ListaPedidosNegocioPage extends StatefulWidget {
   final String negocioId;
 
-  const ListaPedidosNegocioPage({Key? key, required this.negocioId}) : super(key: key);
+  const ListaPedidosNegocioPage({super.key, required this.negocioId});
 
   @override
   _ListaPedidosNegocioPageState createState() => _ListaPedidosNegocioPageState();
@@ -15,8 +15,8 @@ class ListaPedidosNegocioPage extends StatefulWidget {
 
 class _ListaPedidosNegocioPageState extends State<ListaPedidosNegocioPage> {
   late Stream<DocumentSnapshot> _negocioStream;
-  Map<String, Timer> _timers = {};
-  Map<String, int> _tiempoRestante = {};
+  final Map<String, Timer> _timers = {};
+  final Map<String, int> _tiempoRestante = {};
 
   @override
   void initState() {
@@ -29,7 +29,9 @@ class _ListaPedidosNegocioPageState extends State<ListaPedidosNegocioPage> {
 
   @override
   void dispose() {
-    _timers.values.forEach((timer) => timer.cancel());
+    for (var timer in _timers.values) {
+      timer.cancel();
+    }
     super.dispose();
   }
 
@@ -130,9 +132,9 @@ class _ListaPedidosNegocioPageState extends State<ListaPedidosNegocioPage> {
                 Text("Método de Pago: $metodoPago"),
                 Text("Notas: $notas"),
                 const Divider(),
-                Text(
+                const Text(
                   "Productos:",
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 ...productos.map((producto) {
                   return ListTile(
@@ -140,7 +142,7 @@ class _ListaPedidosNegocioPageState extends State<ListaPedidosNegocioPage> {
                     subtitle: Text("Cantidad: ${producto['cantidad']}"),
                     trailing: Text("S/ ${(producto['precio'] * producto['cantidad']).toStringAsFixed(2)}"),
                   );
-                }).toList(),
+                }),
               ],
             ),
           ),

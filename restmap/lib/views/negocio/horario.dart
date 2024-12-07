@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 class HorarioPage extends StatefulWidget {
   final String negocioId;
 
-  HorarioPage({required this.negocioId});
+  const HorarioPage({super.key, required this.negocioId});
 
   @override
   _HorarioPageState createState() => _HorarioPageState();
@@ -75,7 +75,7 @@ class _HorarioPageState extends State<HorarioPage> {
         .set({'horarios': horariosFormatted}, SetOptions(merge: true));
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Horario actualizado')),
+      const SnackBar(content: Text('Horario actualizado')),
     );
   }
 
@@ -134,10 +134,10 @@ class _HorarioPageState extends State<HorarioPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Horario de Atención'),
+        title: const Text('Horario de Atención'),
         actions: [
           IconButton(
-            icon: Icon(Icons.save),
+            icon: const Icon(Icons.save),
             onPressed: _saveHorario,
           ),
         ],
@@ -159,7 +159,7 @@ class _HorarioPageState extends State<HorarioPage> {
                               : 'Sin horario',
                         ),
                       ),
-                      Text(' - '),
+                      const Text(' - '),
                       Expanded(
                         child: Text(
                           horarios[dia]['fin'] != null && !cerrado
@@ -173,7 +173,7 @@ class _HorarioPageState extends State<HorarioPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.edit),
+                        icon: const Icon(Icons.edit),
                         onPressed: () async {
                           if (!cerrado) {
                             TimeOfDay? inicio = await _selectTime(context, horarios[dia]['inicio']);
@@ -185,7 +185,7 @@ class _HorarioPageState extends State<HorarioPage> {
                                 });
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('La hora de salida debe ser después de la hora de entrada')),
+                                  const SnackBar(content: Text('La hora de salida debe ser después de la hora de entrada')),
                                 );
                               }
                             }
@@ -214,8 +214,8 @@ class _HorarioPageState extends State<HorarioPage> {
               }).toList(),
             ),
           ),
-          Divider(),
-          Text(
+          const Divider(),
+          const Text(
             'Horario de Atención',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
@@ -225,9 +225,9 @@ class _HorarioPageState extends State<HorarioPage> {
                 final horario = horarios[dia];
                 final bool cerrado = horario['cerrado'] ?? false;
                 return ListTile(
-                  title: Text('$dia'),
+                  title: Text(dia),
                   subtitle: cerrado
-                      ? Text('Cerrado')
+                      ? const Text('Cerrado')
                       : Text(
                           'Apertura: ${horario['inicio'] != null ? _timeOfDayToString(horario['inicio']) : 'Sin apertura'}, '
                           'Cierre: ${horario['fin'] != null ? _timeOfDayToString(horario['fin']) : 'Sin cierre'}'),

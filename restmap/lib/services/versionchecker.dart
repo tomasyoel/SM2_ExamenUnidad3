@@ -83,8 +83,12 @@ class VersionCheckerService {
       List<int> minimum = minVersion.split('.').map((e) => int.parse(e.trim())).toList();
 
       // Normalizar longitudes
-      while (current.length < minimum.length) current.add(0);
-      while (minimum.length < current.length) minimum.add(0);
+      while (current.length < minimum.length) {
+        current.add(0);
+      }
+      while (minimum.length < current.length) {
+        minimum.add(0);
+      }
 
       for (int i = 0; i < current.length; i++) {
         if (current[i] > minimum[i]) return true;

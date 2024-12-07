@@ -1,301 +1,303 @@
-import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:file_picker/file_picker.dart';
+// import 'dart:io';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:flutter/material.dart';
+// import 'package:firebase_storage/firebase_storage.dart';
+// import 'package:file_picker/file_picker.dart';
 
-class GestionarTipoCocinaPage extends StatelessWidget {
-  final CollectionReference tiposCocina =
-      FirebaseFirestore.instance.collection('tipococina');
-  final CollectionReference negocios =
-      FirebaseFirestore.instance.collection('negocios');
+// class GestionarTipoCocinaPage extends StatelessWidget {
+//   final CollectionReference tiposCocina =
+//       FirebaseFirestore.instance.collection('tipococina');
+//   final CollectionReference negocios =
+//       FirebaseFirestore.instance.collection('negocios');
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Gestionar Tipos de Cocina"),
-      ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: tiposCocina.snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
+//   const GestionarTipoCocinaPage({super.key});
 
-          final tipos = snapshot.data!.docs;
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text("Gestionar Tipos de Cocina"),
+//       ),
+//       body: StreamBuilder<QuerySnapshot>(
+//         stream: tiposCocina.snapshots(),
+//         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+//           if (!snapshot.hasData) {
+//             return const Center(child: CircularProgressIndicator());
+//           }
 
-          if (tipos.isEmpty) {
-            return const Center(
-              child: Text(
-                "No hay tipos de cocina registrados.",
-                style: TextStyle(fontSize: 18, color: Colors.grey),
-              ),
-            );
-          }
+//           final tipos = snapshot.data!.docs;
 
-          return ListView.builder(
-            itemCount: tipos.length,
-            itemBuilder: (context, index) {
-              var tipoCocina = tipos[index];
-              var tipoData = tipoCocina.data() as Map<String, dynamic>?;
+//           if (tipos.isEmpty) {
+//             return const Center(
+//               child: Text(
+//                 "No hay tipos de cocina registrados.",
+//                 style: TextStyle(fontSize: 18, color: Colors.grey),
+//               ),
+//             );
+//           }
 
-              return ListTile(
-                leading: tipoData?['imagen'] != null
-                    ? Image.network(
-                        tipoData!['imagen'],
-                        width: 50,
-                        height: 50,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Icon(Icons.image_not_supported);
-                        },
-                      )
-                    : const Icon(Icons.image_not_supported),
-                title: Text(tipoCocina['nombre'] ?? 'Sin nombre'),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () =>
-                          _editTipoCocina(context, tipoCocina, tipoData),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () =>
-                          _showDeleteConfirmationDialog(context, tipoCocina.id, tipoData?['imagen']),
-                    ),
-                  ],
-                ),
-              );
-            },
-          );
-        },
-      ),
-    );
-  }
+//           return ListView.builder(
+//             itemCount: tipos.length,
+//             itemBuilder: (context, index) {
+//               var tipoCocina = tipos[index];
+//               var tipoData = tipoCocina.data() as Map<String, dynamic>?;
 
-  void _editTipoCocina(BuildContext context, DocumentSnapshot document, Map<String, dynamic>? tipoData) {
-    final TextEditingController nameController = TextEditingController();
-    File? _newImage;
-    String? _imageUrl = tipoData?['imagen'];
-    bool isSaving = false;
+//               return ListTile(
+//                 leading: tipoData?['imagen'] != null
+//                     ? Image.network(
+//                         tipoData!['imagen'],
+//                         width: 50,
+//                         height: 50,
+//                         errorBuilder: (context, error, stackTrace) {
+//                           return const Icon(Icons.image_not_supported);
+//                         },
+//                       )
+//                     : const Icon(Icons.image_not_supported),
+//                 title: Text(tipoCocina['nombre'] ?? 'Sin nombre'),
+//                 trailing: Row(
+//                   mainAxisSize: MainAxisSize.min,
+//                   children: <Widget>[
+//                     IconButton(
+//                       icon: const Icon(Icons.edit),
+//                       onPressed: () =>
+//                           _editTipoCocina(context, tipoCocina, tipoData),
+//                     ),
+//                     IconButton(
+//                       icon: const Icon(Icons.delete),
+//                       onPressed: () =>
+//                           _showDeleteConfirmationDialog(context, tipoCocina.id, tipoData?['imagen']),
+//                     ),
+//                   ],
+//                 ),
+//               );
+//             },
+//           );
+//         },
+//       ),
+//     );
+//   }
 
-    nameController.text = document['nombre'] ?? 'Sin nombre';
+//   void _editTipoCocina(BuildContext context, DocumentSnapshot document, Map<String, dynamic>? tipoData) {
+//     final TextEditingController nameController = TextEditingController();
+//     File? newImage;
+//     String? imageUrl = tipoData?['imagen'];
+//     bool isSaving = false;
 
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: const Text('Editar Tipo de Cocina'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: nameController,
-                    decoration: const InputDecoration(hintText: "Nombre"),
-                  ),
-                  const SizedBox(height: 20),
-                  GestureDetector(
-                    onTap: () async {
-                      FilePickerResult? result =
-                          await FilePicker.platform.pickFiles(type: FileType.image);
+//     nameController.text = document['nombre'] ?? 'Sin nombre';
 
-                      if (result != null) {
-                        setState(() {
-                          _newImage = File(result.files.single.path!);
-                        });
-                      }
-                    },
-                    child: CircleAvatar(
-                      radius: 50,
-                      backgroundImage: _newImage != null
-                          ? FileImage(_newImage!)
-                          : _imageUrl != null
-                              ? NetworkImage(_imageUrl!)
-                              : null as ImageProvider?,
-                      child: _newImage == null && _imageUrl == null
-                          ? Icon(Icons.camera_alt, size: 50)
-                          : null,
-                    ),
-                  ),
-                ],
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('Cancelar'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                ElevatedButton(
-                  child: isSaving
-                      ? const CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        )
-                      : const Text('Guardar'),
-                  onPressed: isSaving
-                      ? null
-                      : () async {
-                          setState(() {
-                            isSaving = true;
-                          });
+//     showDialog(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return StatefulBuilder(
+//           builder: (context, setState) {
+//             return AlertDialog(
+//               title: const Text('Editar Tipo de Cocina'),
+//               content: Column(
+//                 mainAxisSize: MainAxisSize.min,
+//                 children: [
+//                   TextField(
+//                     controller: nameController,
+//                     decoration: const InputDecoration(hintText: "Nombre"),
+//                   ),
+//                   const SizedBox(height: 20),
+//                   GestureDetector(
+//                     onTap: () async {
+//                       FilePickerResult? result =
+//                           await FilePicker.platform.pickFiles(type: FileType.image);
 
-                          try {
+//                       if (result != null) {
+//                         setState(() {
+//                           newImage = File(result.files.single.path!);
+//                         });
+//                       }
+//                     },
+//                     child: CircleAvatar(
+//                       radius: 50,
+//                       backgroundImage: newImage != null
+//                           ? FileImage(newImage!)
+//                           : imageUrl != null
+//                               ? NetworkImage(imageUrl!)
+//                               : null as ImageProvider?,
+//                       child: newImage == null && imageUrl == null
+//                           ? const Icon(Icons.camera_alt, size: 50)
+//                           : null,
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//               actions: <Widget>[
+//                 TextButton(
+//                   child: const Text('Cancelar'),
+//                   onPressed: () {
+//                     Navigator.of(context).pop();
+//                   },
+//                 ),
+//                 ElevatedButton(
+//                   onPressed: isSaving
+//                       ? null
+//                       : () async {
+//                           setState(() {
+//                             isSaving = true;
+//                           });
+
+//                           try {
                           
-                            if (_newImage != null) {
+//                             if (newImage != null) {
                           
-                              if (_imageUrl != null) {
-                                await FirebaseStorage.instance
-                                    .refFromURL(_imageUrl!)
-                                    .delete();
-                              }
+//                               if (imageUrl != null) {
+//                                 await FirebaseStorage.instance
+//                                     .refFromURL(imageUrl!)
+//                                     .delete();
+//                               }
                             
-                              final storageRef = FirebaseStorage.instance
-                                  .ref()
-                                  .child('tipococinaimagen/${document.id}_${DateTime.now().millisecondsSinceEpoch}.png');
-                              UploadTask uploadTask = storageRef.putFile(_newImage!);
-                              TaskSnapshot snapshot = await uploadTask;
-                              _imageUrl = await snapshot.ref.getDownloadURL();
-                            }
+//                               final storageRef = FirebaseStorage.instance
+//                                   .ref()
+//                                   .child('tipococinaimagen/${document.id}_${DateTime.now().millisecondsSinceEpoch}.png');
+//                               UploadTask uploadTask = storageRef.putFile(newImage!);
+//                               TaskSnapshot snapshot = await uploadTask;
+//                               imageUrl = await snapshot.ref.getDownloadURL();
+//                             }
 
                           
-                            await tiposCocina.doc(document.id).update({
-                              'nombre': nameController.text,
-                              'imagen': _imageUrl,
-                            });
+//                             await tiposCocina.doc(document.id).update({
+//                               'nombre': nameController.text,
+//                               'imagen': imageUrl,
+//                             });
 
                         
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Tipo de cocina actualizado correctamente.'),
-                              ),
-                            );
+//                             ScaffoldMessenger.of(context).showSnackBar(
+//                               const SnackBar(
+//                                 content: Text('Tipo de cocina actualizado correctamente.'),
+//                               ),
+//                             );
 
-                            Navigator.of(context).pop();
-                          } catch (e) {
+//                             Navigator.of(context).pop();
+//                           } catch (e) {
                       
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Error al actualizar: $e'),
-                              ),
-                            );
-                          } finally {
-                            setState(() {
-                              isSaving = false;
-                            });
-                          }
-                        },
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
+//                             ScaffoldMessenger.of(context).showSnackBar(
+//                               SnackBar(
+//                                 content: Text('Error al actualizar: $e'),
+//                               ),
+//                             );
+//                           } finally {
+//                             setState(() {
+//                               isSaving = false;
+//                             });
+//                           }
+//                         },
+//                   child: isSaving
+//                       ? const CircularProgressIndicator(
+//                           color: Colors.white,
+//                           strokeWidth: 2,
+//                         )
+//                       : const Text('Guardar'),
+//                 ),
+//               ],
+//             );
+//           },
+//         );
+//       },
+//     );
+//   }
 
   
-  void _showDeleteConfirmationDialog(BuildContext context, String documentId, String? imageUrl) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext dialogContext) {
-        return AlertDialog(
-          title: const Text('Confirmación'),
-          content: const Text('¿Estás seguro de que deseas eliminar este tipo de cocina?'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('No'),
-              onPressed: () {
-                Navigator.of(dialogContext).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('Sí'),
-              onPressed: () async {
+//   void _showDeleteConfirmationDialog(BuildContext context, String documentId, String? imageUrl) {
+//     showDialog(
+//       context: context,
+//       barrierDismissible: false,
+//       builder: (BuildContext dialogContext) {
+//         return AlertDialog(
+//           title: const Text('Confirmación'),
+//           content: const Text('¿Estás seguro de que deseas eliminar este tipo de cocina?'),
+//           actions: <Widget>[
+//             TextButton(
+//               child: const Text('No'),
+//               onPressed: () {
+//                 Navigator.of(dialogContext).pop();
+//               },
+//             ),
+//             TextButton(
+//               child: const Text('Sí'),
+//               onPressed: () async {
                 
-                await _checkAndDeleteTipoCocina(dialogContext, documentId, imageUrl);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+//                 await _checkAndDeleteTipoCocina(dialogContext, documentId, imageUrl);
+//               },
+//             ),
+//           ],
+//         );
+//       },
+//     );
+//   }
 
-  Future<void> _checkAndDeleteTipoCocina(
-      BuildContext context, String documentId, String? imageUrl) async {
-    try {
+//   Future<void> _checkAndDeleteTipoCocina(
+//       BuildContext context, String documentId, String? imageUrl) async {
+//     try {
       
-      QuerySnapshot negociosAsignados = await FirebaseFirestore.instance
-          .collection('negocios')
-          .where('tipo_cocina', isEqualTo: documentId)
-          .get();
+//       QuerySnapshot negociosAsignados = await FirebaseFirestore.instance
+//           .collection('negocios')
+//           .where('tipo_cocina', isEqualTo: documentId)
+//           .get();
 
-      if (negociosAsignados.docs.isNotEmpty) {
+//       if (negociosAsignados.docs.isNotEmpty) {
       
-        Navigator.of(context).pop();
+//         Navigator.of(context).pop();
         
       
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('No se puede eliminar, está asignado a un negocio.'),
-            duration: Duration(seconds: 2),
-          ),
-        );
-      } else {
+//         ScaffoldMessenger.of(context).showSnackBar(
+//           const SnackBar(
+//             content: Text('No se puede eliminar, está asignado a un negocio.'),
+//             duration: Duration(seconds: 2),
+//           ),
+//         );
+//       } else {
       
-        Navigator.of(context).pop();
+//         Navigator.of(context).pop();
 
       
-        await _deleteTipoCocina(context, documentId, imageUrl);
+//         await _deleteTipoCocina(context, documentId, imageUrl);
 
        
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Tipo de cocina eliminado exitosamente.'),
-            duration: Duration(seconds: 2),
-          ),
-        );
-      }
-    } catch (e) {
+//         ScaffoldMessenger.of(context).showSnackBar(
+//           const SnackBar(
+//             content: Text('Tipo de cocina eliminado exitosamente.'),
+//             duration: Duration(seconds: 2),
+//           ),
+//         );
+//       }
+//     } catch (e) {
       
-      Navigator.of(context).pop();
+//       Navigator.of(context).pop();
       
      
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error: ${e.toString()}'),
-          duration: const Duration(seconds: 2),
-        ),
-      );
-    }
-  }
+//       ScaffoldMessenger.of(context).showSnackBar(
+//         SnackBar(
+//           content: Text('Error: ${e.toString()}'),
+//           duration: const Duration(seconds: 2),
+//         ),
+//       );
+//     }
+//   }
 
 
-  Future<void> _deleteTipoCocina(
-      BuildContext context, String documentId, String? imageUrl) async {
-    try {
+//   Future<void> _deleteTipoCocina(
+//       BuildContext context, String documentId, String? imageUrl) async {
+//     try {
      
-      await FirebaseFirestore.instance
-          .collection('tipococina')
-          .doc(documentId)
-          .delete();
+//       await FirebaseFirestore.instance
+//           .collection('tipococina')
+//           .doc(documentId)
+//           .delete();
 
       
-      if (imageUrl != null && imageUrl.isNotEmpty) {
-        try {
-          await FirebaseStorage.instance.refFromURL(imageUrl).delete();
-        } catch (e) {
-          print('Error al eliminar la imagen: $e');
-        }
-      }
-    } catch (e) {
-      throw Exception('Error al eliminar el tipo de cocina: $e');
-    }
-  }
-}
+//       if (imageUrl != null && imageUrl.isNotEmpty) {
+//         try {
+//           await FirebaseStorage.instance.refFromURL(imageUrl).delete();
+//         } catch (e) {
+//           print('Error al eliminar la imagen: $e');
+//         }
+//       }
+//     } catch (e) {
+//       throw Exception('Error al eliminar el tipo de cocina: $e');
+//     }
+//   }
+// }

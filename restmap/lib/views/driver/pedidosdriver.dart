@@ -6,7 +6,7 @@ class PedidosDriverPage extends StatelessWidget {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final Function(String) onOrderSelected;
 
-  PedidosDriverPage({required this.onOrderSelected});
+  PedidosDriverPage({super.key, required this.onOrderSelected});
 
   Future<void> _solicitarPedido(String orderId) async {
     await _firestore.collection('pedidos').doc(orderId).update({
@@ -52,7 +52,7 @@ class PedidosDriverPage extends StatelessWidget {
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           var orders = snapshot.data!.docs.where((doc) {
             var data = doc.data() as Map<String, dynamic>;
@@ -71,7 +71,7 @@ class PedidosDriverPage extends StatelessWidget {
                   if (!clientSnapshot.hasData) {
                     return Card(
                       child: ListTile(
-                        title: Text('Cargando nombre del cliente...'),
+                        title: const Text('Cargando nombre del cliente...'),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -99,7 +99,7 @@ class PedidosDriverPage extends StatelessWidget {
                         ],
                       ),
                       trailing: ElevatedButton(
-                        child: Text('Solicitar'),
+                        child: const Text('Solicitar'),
                         onPressed: () => _solicitarPedido(orderId),
                       ),
                     ),

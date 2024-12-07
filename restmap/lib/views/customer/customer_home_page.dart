@@ -5,11 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
-import 'package:restmap/views/admin/principaladmin.dart';
 import 'package:restmap/views/customer/detallepedido.dart';
 // import 'package:restmap/views/admin/mapadmin.dart';
 import 'package:restmap/views/customer/negociolista.dart';
-import 'package:restmap/views/customer/perfilcliente.dart';
 import 'package:restmap/views/customer/perfilprincipal.dart';
 import 'package:restmap/views/customer/user_location_page.dart';
 import 'package:restmap/views/mapa/mapabase.dart';
@@ -20,7 +18,7 @@ import 'package:restmap/views/customer/listapedidos.dart';
 import 'carta.dart';
 
 class CustomerHomePage extends StatefulWidget {
-  const CustomerHomePage({Key? key}) : super(key: key);
+  const CustomerHomePage({super.key});
 
   @override
   _CustomerHomePageState createState() => _CustomerHomePageState();
@@ -50,7 +48,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
   }
 
   Future<void> _checkConnection() async {
-    _connectionSubscription = Stream.periodic(Duration(seconds: 5)).asyncMap(
+    _connectionSubscription = Stream.periodic(const Duration(seconds: 5)).asyncMap(
       (_) async {
         try {
           await FirebaseFirestore.instance.runTransaction((transaction) async {
@@ -84,12 +82,12 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
         content: Row(
           children: [
             Icon(icon, color: Colors.white),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             Text(message),
           ],
         ),
         backgroundColor: color,
-        duration: Duration(seconds: 3),
+        duration: const Duration(seconds: 3),
       ),
     );
   }
@@ -150,7 +148,7 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('El carrito está vacío.')),
+          const SnackBar(content: Text('El carrito está vacío.')),
         );
       }
     }
@@ -175,11 +173,11 @@ class _CustomerHomePageState extends State<CustomerHomePage> {
     final result = await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (BuildContext context) {
-        return FractionallySizedBox(
+        return const FractionallySizedBox(
           heightFactor: 0.8,
           child: UserLocationPage(),
         );
@@ -233,7 +231,7 @@ Future<void> _updateUserAddress() async {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MapaBasePage(),  
+        builder: (context) => const MapaBasePage(),  
       ),
     );
   } else if (_selectedIndex == 4) {
@@ -261,7 +259,7 @@ Future<void> _updateUserAddress() async {
   Navigator.push(
     context,
     MaterialPageRoute(
-      builder: (context) => UserLocationPage(),
+      builder: (context) => const UserLocationPage(),
     ),
   );
 }
@@ -309,8 +307,8 @@ Future<void> _updateUserAddress() async {
                       'assets/restaurantes.png',
                       height: 80,
                     ),
-                    SizedBox(height: 10),
-                    Text(
+                    const SizedBox(height: 10),
+                    const Text(
                       "Restaurantes",
                       style: TextStyle(
                         color: Colors.black,
@@ -318,7 +316,7 @@ Future<void> _updateUserAddress() async {
                         fontSize: 16,
                       ),
                     ),
-                    Text(
+                    const Text(
                       "La comida que te gusta",
                       style: TextStyle(
                         color: Colors.black54,
@@ -330,7 +328,7 @@ Future<void> _updateUserAddress() async {
               ),
             ),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 10),
           Expanded(
             child: GestureDetector(
               onTap: () {
@@ -349,8 +347,8 @@ Future<void> _updateUserAddress() async {
                       'assets/envios.png',
                       height: 80,
                     ),
-                    SizedBox(height: 10),
-                    Text(
+                    const SizedBox(height: 10),
+                    const Text(
                       "Envíos",
                       style: TextStyle(
                         color: Colors.black,
@@ -358,7 +356,7 @@ Future<void> _updateUserAddress() async {
                         fontSize: 16,
                       ),
                     ),
-                    Text(
+                    const Text(
                       "De puerta a puerta",
                       style: TextStyle(
                         color: Colors.black54,
@@ -387,14 +385,14 @@ Widget _buildPromotions() {
       var negocios = snapshot.data!.docs;
 
       if (negocios.isEmpty) {
-        return Center(child: Text('No hay promociones disponibles'));
+        return const Center(child: Text('No hay promociones disponibles'));
       }
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
             child: Text(
               'Promociones Exclusivas',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -402,7 +400,7 @@ Widget _buildPromotions() {
           ),
           ListView.builder(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             padding: const EdgeInsets.all(8.0),
             itemCount: negocios.length,
             itemBuilder: (context, index) {
@@ -419,7 +417,7 @@ Widget _buildPromotions() {
 
              
                   if (cartaSnapshot.data!.docs.isEmpty) {
-                    return SizedBox.shrink();  
+                    return const SizedBox.shrink();  
                   }
 
                   // var carta = cartaSnapshot.data!.docs.first;
@@ -429,7 +427,7 @@ Widget _buildPromotions() {
 
                   // Verificar si el array "carta" existe y tiene al menos un elemento
                   if (carta['carta'] == null || carta['carta'].isEmpty) {
-                    return SizedBox.shrink(); 
+                    return const SizedBox.shrink(); 
                   }
 
                   var productos = carta['carta'] as List;
@@ -463,14 +461,14 @@ Widget _buildPromotions() {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        margin: EdgeInsets.symmetric(vertical: 10),
+                        margin: const EdgeInsets.symmetric(vertical: 10),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             
                             productoPromocion['urlImagen'] != null
                                 ? ClipRRect(
-                                    borderRadius: BorderRadius.vertical(
+                                    borderRadius: const BorderRadius.vertical(
                                         top: Radius.circular(12)),
                                     child: Image.network(
                                       productoPromocion['urlImagen'],
@@ -479,7 +477,7 @@ Widget _buildPromotions() {
                                       fit: BoxFit.cover,
                                     ),
                                   )
-                                : SizedBox.shrink(),
+                                : const SizedBox.shrink(),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Row(
@@ -488,8 +486,8 @@ Widget _buildPromotions() {
                                   negocio['logo'] != null
                                       ? Image.network(negocio['logo'],
                                           width: 50, height: 50)
-                                      : Icon(Icons.store, size: 50),
-                                  SizedBox(width: 10),
+                                      : const Icon(Icons.store, size: 50),
+                                  const SizedBox(width: 10),
                                   
                                   Expanded(
                                     child: Column(
@@ -498,12 +496,12 @@ Widget _buildPromotions() {
                                       children: [
                                         Text(
                                           negocio['nombre'],
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 16),
                                         ),
-                                        SizedBox(height: 5),
-                                        Text(
+                                        const SizedBox(height: 5),
+                                        const Text(
                                           '15-30 min • Envío S/4.20',
                                           style: TextStyle(
                                               color: Colors.grey, fontSize: 12),
@@ -516,8 +514,6 @@ Widget _buildPromotions() {
                                     onPressed: () {
                                       // Acción para suscribirse
                                     },
-                                    child: Text('Suscribirse',
-                                        style: TextStyle(fontSize: 12)),
                                     style: ElevatedButton.styleFrom(
                                       shape: RoundedRectangleBorder(
                                         borderRadius:
@@ -525,6 +521,8 @@ Widget _buildPromotions() {
                                       ),
                                       backgroundColor: Colors.purple.shade100,
                                     ),
+                                    child: const Text('Suscribirse',
+                                        style: TextStyle(fontSize: 12)),
                                   ),
                                 ],
                               ),
@@ -535,7 +533,7 @@ Widget _buildPromotions() {
                     );
                   } else {
                     
-                    return SizedBox.shrink();
+                    return const SizedBox.shrink();
                   }
                 },
               );
@@ -565,7 +563,7 @@ Widget _buildPromotions() {
                   minChildSize: 0.3,
                   builder: (context, scrollController) {
                     // return UserLocationPage(userId: 'userId');
-                    return UserLocationPage();
+                    return const UserLocationPage();
                   },
                 );
               },
@@ -586,23 +584,23 @@ Widget _buildPromotions() {
                             ? '${_userAddress!.substring(0, 25)}...' 
                             : _userAddress!)
                         : '-----------',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                   ),
-                  Icon(Icons.keyboard_arrow_down),
+                  const Icon(Icons.keyboard_arrow_down),
                 ],
               ),
               Row(
                 children: [
                   IconButton(
-                    icon: Icon(IconlyLight.notification),
+                    icon: const Icon(IconlyLight.notification),
                     onPressed: () {
                       // Acción para notificaciones
                     },
                   ),
                   IconButton(
-                    icon: Icon(IconlyLight.buy),
+                    icon: const Icon(IconlyLight.buy),
                     onPressed: () {
                       // _navigateToCartPage();
                       _loadCarrito();
@@ -619,13 +617,13 @@ Widget _buildPromotions() {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: TextField(
                 decoration: InputDecoration(
                   hintText: 'Buscar Restaurante',
-                  prefixIcon: Icon(IconlyLight.search),
+                  prefixIcon: const Icon(IconlyLight.search),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -634,9 +632,9 @@ Widget _buildPromotions() {
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             _buildActionButtons(),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             _buildPromotions(),
           ],
         ),
@@ -657,7 +655,7 @@ Widget _buildPromotions() {
         unselectedItemColor: Colors.grey[700],
         type: BottomNavigationBarType.fixed,
         showUnselectedLabels: false,
-        selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
       ),
     );
   }

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class SignUpPage extends StatefulWidget {
   final String role;
 
-  const SignUpPage({Key? key, required this.role}) : super(key: key);
+  const SignUpPage({super.key, required this.role});
 
   @override
   _SignUpPageState createState() => _SignUpPageState();
@@ -41,11 +41,11 @@ class _SignUpPageState extends State<SignUpPage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Error de Registro'),
+        title: const Text('Error de Registro'),
         content: Text(message),
         actions: <Widget>[
           TextButton(
-            child: Text('Okay'),
+            child: const Text('Okay'),
             onPressed: () {
               Navigator.of(ctx).pop();
             },
@@ -59,11 +59,11 @@ class _SignUpPageState extends State<SignUpPage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Información'),
+        title: const Text('Información'),
         content: Text(message),
         actions: <Widget>[
           TextButton(
-            child: Text('Okay'),
+            child: const Text('Okay'),
             onPressed: () {
               Navigator.of(ctx).pop();
             },
@@ -95,7 +95,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     'assets/belv1.png',
                     height: 250,
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   TextField(
                     controller: _emailController,
                     decoration: InputDecoration(
@@ -105,7 +105,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   TextField(
                     controller: _passwordController,
                     decoration: InputDecoration(
@@ -116,25 +116,25 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     obscureText: true,
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _signUp,
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
                       backgroundColor: Colors.red,
-                      minimumSize: Size(double.infinity, 50),
+                      minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                     ),
-                    child: Text("Registrarse"),
+                    child: const Text("Registrarse"),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: Text("¿Ya tienes una cuenta? Inicia sesión"),
+                    child: const Text("¿Ya tienes una cuenta? Inicia sesión"),
                   ),
                 ],
               ),

@@ -6,7 +6,7 @@ import 'package:location/location.dart' as loc;
 class MapaNegocioPage extends StatefulWidget {
   final String negocioId;
 
-  MapaNegocioPage({required this.negocioId});
+  const MapaNegocioPage({super.key, required this.negocioId});
 
   @override
   _MapaNegocioPageState createState() => _MapaNegocioPageState();
@@ -15,7 +15,7 @@ class MapaNegocioPage extends StatefulWidget {
 class _MapaNegocioPageState extends State<MapaNegocioPage> {
   GoogleMapController? mapController;
   loc.Location location = loc.Location();
-  LatLng _currentPosition = LatLng(-12.0464, -77.0428);
+  LatLng _currentPosition = const LatLng(-12.0464, -77.0428);
   LatLng? _selectedPosition;
   bool _isLocationReady = false;
   bool _initialPositionSet = false;
@@ -108,7 +108,7 @@ class _MapaNegocioPageState extends State<MapaNegocioPage> {
   void _saveLocation() async {
   if (_selectedPosition == null) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Selecciona una ubicación en el mapa')),
+      const SnackBar(content: Text('Selecciona una ubicación en el mapa')),
     );
     return;
   }
@@ -141,8 +141,8 @@ class _MapaNegocioPageState extends State<MapaNegocioPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Seleccionar Ubicación'),
-        backgroundColor: Color(0xFF6BBE92),
+        title: const Text('Seleccionar Ubicación'),
+        backgroundColor: const Color(0xFF6BBE92),
       ),
       body: _isLocationReady
           ? Stack(
@@ -156,7 +156,7 @@ class _MapaNegocioPageState extends State<MapaNegocioPage> {
                   markers: _selectedPosition != null
                       ? {
                           Marker(
-                            markerId: MarkerId('selected-location'),
+                            markerId: const MarkerId('selected-location'),
                             position: _selectedPosition!,
                           ),
                         }
@@ -175,16 +175,16 @@ class _MapaNegocioPageState extends State<MapaNegocioPage> {
                   right: 16.0,
                   child: ElevatedButton(
                     onPressed: _saveLocation,
-                    child: Text('Guardar Ubicación'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF6BBE92),
-                      minimumSize: Size(double.infinity, 50),
+                      backgroundColor: const Color(0xFF6BBE92),
+                      minimumSize: const Size(double.infinity, 50),
                     ),
+                    child: const Text('Guardar Ubicación'),
                   ),
                 ),
               ],
             )
-          : Center(child: CircularProgressIndicator()),
+          : const Center(child: CircularProgressIndicator()),
     );
   }
 }

@@ -7,7 +7,7 @@ import 'dart:io';
 class GestionarCartaPage extends StatefulWidget {
   final String negocioId;
 
-  const GestionarCartaPage({Key? key, required this.negocioId}) : super(key: key);
+  const GestionarCartaPage({super.key, required this.negocioId});
 
   @override
   _GestionarCartaPageState createState() => _GestionarCartaPageState();
@@ -73,9 +73,9 @@ class _GestionarCartaPageState extends State<GestionarCartaPage> {
 
     Map<String, String> categoryNames = await _getCategoryNames();
     setState(() {
-      selectedProductsInCarta.forEach((product) {
+      for (var product in selectedProductsInCarta) {
         product['categoryName'] = categoryNames[product['catprod']] ?? 'Sin categoría';
-      });
+      }
     });
   }
 
@@ -298,7 +298,7 @@ Future<void> _agruparProductosPorCategoria() async {
                   String categoria = entry.key;
                   List<Map<String, dynamic>> productosDeCategoria = entry.value;
                   return _buildMenuSection(categoria, productosDeCategoria);
-                }).toList(),
+                }),
               if (productosPorCategoria.isEmpty)
                 const Center(
                     child: Text('No hay productos añadidos a la carta',

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class GestionarNegociosPage extends StatefulWidget {
-  const GestionarNegociosPage({Key? key}) : super(key: key);
+  const GestionarNegociosPage({super.key});
 
   @override
   _GestionarNegociosPageState createState() => _GestionarNegociosPageState();
@@ -81,7 +81,7 @@ class _GestionarNegociosPageState extends State<GestionarNegociosPage> {
             .doc(negocioData!['encargado'])
             .get();
         if (encargadoSnapshot.exists) {
-          var encargadoData = encargadoSnapshot.data() as Map<String, dynamic>?;
+          var encargadoData = encargadoSnapshot.data();
           encargadoInfo = (encargadoData != null && encargadoData.containsKey('nombre'))
               ? encargadoData['nombre']
               : encargadoData?['correo'] ?? 'Sin encargado';
@@ -96,7 +96,7 @@ class _GestionarNegociosPageState extends State<GestionarNegociosPage> {
             .doc(negocioData!['tipo_cocina'])
             .get();
         if (tipoCocinaSnapshot.exists) {
-          var tipoCocinaData = tipoCocinaSnapshot.data() as Map<String, dynamic>?;
+          var tipoCocinaData = tipoCocinaSnapshot.data();
           tipoCocinaNombre = tipoCocinaData?['nombre'] ?? "Sin tipo de cocina";
         }
       }

@@ -9,7 +9,7 @@ import 'dart:math' as math;
 
 
 class MapaBasePage extends StatefulWidget {
-  const MapaBasePage({Key? key}) : super(key: key);
+  const MapaBasePage({super.key});
 
   @override
   _MapaBasePageState createState() => _MapaBasePageState();
@@ -170,7 +170,7 @@ double _deg2rad(double deg) {
           .get();
 
       if (cartaRef.docs.isEmpty || 
-          !(cartaRef.docs.first.data() as Map<String, dynamic>).containsKey('carta')) {
+          !(cartaRef.docs.first.data()).containsKey('carta')) {
         return false;
       }
 
@@ -199,7 +199,7 @@ double _deg2rad(double deg) {
                 .get();
 
             if (cartaRef.docs.isNotEmpty && 
-                (cartaRef.docs.first.data() as Map<String, dynamic>).containsKey('carta')) {
+                (cartaRef.docs.first.data()).containsKey('carta')) {
               var carta = cartaRef.docs.first['carta'] as List<dynamic>;
               var productosFiltrados = carta.where((producto) =>
                   producto['nombre'].toString().toLowerCase()
@@ -422,10 +422,10 @@ Widget build(BuildContext context) {
                                 BoxShadow(color: Colors.black26, blurRadius: 4.0)
                               ],
                             ),
-                            child: Column(
+                            child: const Column(
                               children: [
                                 Icon(Icons.restaurant_menu, size: 40),
-                                const SizedBox(height: 4.0),
+                                SizedBox(height: 4.0),
                                 Text('Todos'),
                               ],
                             ),
@@ -469,7 +469,7 @@ Widget build(BuildContext context) {
                               ),
                             ),
                           );
-                        }).toList(),
+                        }),
                       ],
                     ),
                   );

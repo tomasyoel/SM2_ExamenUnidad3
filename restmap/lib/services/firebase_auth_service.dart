@@ -116,7 +116,7 @@ class FirebaseAuthService {
   }
 
   void showWelcomeMessage(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("¡Bienvenido!")));
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("¡Bienvenido!")));
   }
 
   Future<DocumentSnapshot> getUserById(String id) async {

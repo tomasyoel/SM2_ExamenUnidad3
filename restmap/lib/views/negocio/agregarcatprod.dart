@@ -5,7 +5,7 @@ import 'package:uuid/uuid.dart';
 class AgregarCatProdPage extends StatefulWidget {
   final String negocioId;
 
-  AgregarCatProdPage({required this.negocioId});
+  const AgregarCatProdPage({super.key, required this.negocioId});
 
   @override
   _AgregarCatProdPageState createState() => _AgregarCatProdPageState();
@@ -18,7 +18,7 @@ class _AgregarCatProdPageState extends State<AgregarCatProdPage> {
  
   Future<void> _agregarCategoria() async {
     if (_categoriaController.text.isNotEmpty) {
-      var uuid = Uuid();
+      var uuid = const Uuid();
       String categoriaId = _categoriaId ?? uuid.v4();
 
       final nuevaCategoria = {
@@ -49,7 +49,7 @@ class _AgregarCatProdPageState extends State<AgregarCatProdPage> {
       });
     } else {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Por favor, introduce un nombre de categoría.')));
+          .showSnackBar(const SnackBar(content: Text('Por favor, introduce un nombre de categoría.')));
     }
   }
 
@@ -65,7 +65,7 @@ class _AgregarCatProdPageState extends State<AgregarCatProdPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Agregar/Editar Categoría de Producto'),
+        title: const Text('Agregar/Editar Categoría de Producto'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -73,9 +73,9 @@ class _AgregarCatProdPageState extends State<AgregarCatProdPage> {
           children: [
             TextField(
               controller: _categoriaController,
-              decoration: InputDecoration(labelText: 'Nombre de la Categoría'),
+              decoration: const InputDecoration(labelText: 'Nombre de la Categoría'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _agregarCategoria,
               child: Text(_categoriaId != null ? 'Guardar Cambios' : 'Agregar Categoría'),

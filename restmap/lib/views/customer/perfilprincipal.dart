@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PerfilPrincipalPage extends StatelessWidget {
-  const PerfilPrincipalPage({Key? key}) : super(key: key);
+  const PerfilPrincipalPage({super.key});
 
   void _cerrarSesion(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
@@ -78,10 +78,10 @@ class PerfilPrincipalPage extends StatelessWidget {
                   color: Colors.purple[50],
                   child: Row(
                     children: [
-                      Expanded(
+                      const Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
+                          children: [
                             Text(
                               "Suscríbete a Plus",
                               style: TextStyle(

@@ -7,7 +7,7 @@ import 'package:restmap/views/negocio/agregarcatprod.dart';
 import 'package:restmap/views/negocio/gestionarcarta.dart';
 import 'package:restmap/views/admin/principaladmin.dart';
 import 'package:restmap/firebase_options.dart';
-import 'package:restmap/views/admin/gestionartipococina.dart';
+// import 'package:restmap/views/admin/gestionartipococina.dart';
 import 'package:restmap/views/negocio/cupones.dart';
 import 'package:restmap/views/customer/customer_home_page.dart';
 import 'package:restmap/views/customer/forgot_password_page.dart';
@@ -145,13 +145,13 @@ class MyApp extends StatelessWidget {
         '/customerDashboard': (context) => const CustomerHomePage(),
         '/adminDashboard': (context) => const PaginaPrincipalAdmin(),
         '/businessDashboard': (context) => const NegocioPrincipalPage(),
-        '/userLocation': (context) => UserLocationPage(),
-        '/productTypeList': (context) => GestionarTipoCocinaPage(),
+        '/userLocation': (context) => const UserLocationPage(),
+        // '/productTypeList': (context) => const GestionarTipoCocinaPage(),
         '/addProductType': (context) => const AgregarTipoCocinaPage(),
         '/forgotPassword': (context) => const ForgotPasswordPage(),
         '/gestionarCupones': (context) => CuponesPage(),
         '/perfilNegocio': (context) => const PerfilNegocioPage(),
-        '/informacionPersonal': (context) => CustomerProfilePage(),
+        '/informacionPersonal': (context) => const CustomerProfilePage(),
         // '/direcciones': (context) => DireccionesPage(),
         // '/favoritos': (context) => FavoritosPage(),
         '/cupones': (context) => CuponesPage(),
@@ -239,7 +239,7 @@ class FirebaseMessagingService {
     _firebaseMessaging.requestPermission();
 
     const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
-    final InitializationSettings initializationSettings = InitializationSettings(
+    const InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
     );
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
