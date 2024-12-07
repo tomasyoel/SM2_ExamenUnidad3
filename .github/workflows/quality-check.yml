@@ -21,11 +21,17 @@ jobs:
       with:
         flutter-version: '3.24.5'
 
+    - name: Navigate to Flutter project directory
+      run: cd restmap
+
     - name: Install dependencies
       run: flutter pub get
+      working-directory: restmap
 
     - name: Run Flutter Analyzer
       run: flutter analyze
+      working-directory: restmap
 
     - name: Run Flutter Tests
       run: flutter test
+      working-directory: restmap
