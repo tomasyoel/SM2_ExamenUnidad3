@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "941028966830",
+    "project_id": "restmap-bb3a1",
+    "storage_bucket": "restmap-bb3a1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:941028966830:android:36c96fa9c78afc7917883f",
+        "android_client_info": {
+          "package_name": "com.example.restmap"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "941028966830-7tean2orrmj2gof8g873am6j9g6r6dni.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIn5DdAJpwokXprfTlvblSzRX7ZVvNGFU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "941028966830-7tean2orrmj2gof8g873am6j9g6r6dni.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
