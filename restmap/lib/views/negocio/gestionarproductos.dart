@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -21,31 +23,33 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
     return List<Map<String, dynamic>>.from(negocioCarta['productos'] ?? []);
   }
 
-
   Future<List<Map<String, dynamic>>> _getCategorias() async {
     final categoriasDoc = await FirebaseFirestore.instance
         .collection('cartasnegocio')
         .doc(widget.negocioId)
         .get();
-    return List<Map<String, dynamic>>.from(categoriasDoc['categoriasprod'] ?? []);
+    return List<Map<String, dynamic>>.from(
+        categoriasDoc['categoriasprod'] ?? []);
   }
-
 
   Future<void> _deleteProducto(Map<String, dynamic> producto) async {
     if (producto['urlImagen'] != null && producto['urlImagen'].isNotEmpty) {
       try {
         final ref = FirebaseStorage.instance.refFromURL(producto['urlImagen']);
         await ref.delete();
-        print('Imagen eliminada exitosamente del Storage.');
+        //print('Imagen eliminada exitosamente del Storage.');
       } catch (e) {
-        print('Error al eliminar la imagen del Storage: $e');
+        //print('Error al eliminar la imagen del Storage: $e');
       }
     }
 
-    await FirebaseFirestore.instance.collection('cartasnegocio').doc(widget.negocioId).update({
+    await FirebaseFirestore.instance
+        .collection('cartasnegocio')
+        .doc(widget.negocioId)
+        .update({
       'productos': FieldValue.arrayRemove([producto])
     });
-    print('Producto eliminado exitosamente de Firestore.');
+    //print('Producto eliminado exitosamente de Firestore.');
   }
 
   Future<void> _editarProducto(Map<String, dynamic> producto) async {
@@ -60,7 +64,6 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
     String estadoSeleccionado = producto['estado'] ?? 'disponible';
     String? categoriaSeleccionada = producto['catprod'];
 
-
     List<Map<String, dynamic>> categorias = await _getCategorias();
 
     await showDialog(
@@ -73,7 +76,8 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
               children: [
                 TextField(
                   controller: nombreController,
-                  decoration: const InputDecoration(labelText: 'Nombre del Producto'),
+                  decoration:
+                      const InputDecoration(labelText: 'Nombre del Producto'),
                 ),
                 TextField(
                   controller: descripcionController,
@@ -86,11 +90,10 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
                 ),
                 TextField(
                   controller: stockController,
-                  decoration: const InputDecoration(labelText: 'Stock (0 - 1000)'),
+                  decoration:
+                      const InputDecoration(labelText: 'Stock (0 - 1000)'),
                   keyboardType: TextInputType.number,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly
-                  ],
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 ),
                 DropdownButtonFormField<String>(
                   value: categoriaSeleccionada,
@@ -115,7 +118,8 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
                 ),
                 DropdownButtonFormField<String>(
                   value: estadoSeleccionado,
-                  items: ['disponible', 'agotado', 'promocion'].map((String value) {
+                  items: ['disponible', 'agotado', 'promocion']
+                      .map((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: Text(value),
@@ -141,17 +145,18 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
             TextButton(
               child: const Text('Guardar'),
               onPressed: () async {
-            
                 int stock = int.tryParse(stockController.text) ?? 0;
                 if (stock < 0) {
                   stock = 0;
                 } else if (stock > 1000) {
-                  stock = 1000; 
+                  stock = 1000;
                 }
 
-                if (categoriaSeleccionada == null || categoriaSeleccionada!.isEmpty) {
+                if (categoriaSeleccionada == null ||
+                    categoriaSeleccionada!.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Por favor selecciona una categoría.')),
+                    const SnackBar(
+                        content: Text('Por favor selecciona una categoría.')),
                   );
                   return;
                 }
@@ -161,13 +166,12 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
                   'nombre': nombreController.text,
                   'descripcion': descripcionController.text,
                   'precio': double.parse(precioController.text),
-                  'stock': stock, 
+                  'stock': stock,
                   'estado': estadoSeleccionado,
                   'urlImagen': producto['urlImagen'],
                   'catprod': categoriaSeleccionada,
                 };
 
-               
                 await FirebaseFirestore.instance
                     .collection('cartasnegocio')
                     .doc(widget.negocioId)
@@ -176,7 +180,6 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
                   'carta': FieldValue.arrayRemove([producto])
                 });
 
-             
                 await FirebaseFirestore.instance
                     .collection('cartasnegocio')
                     .doc(widget.negocioId)
@@ -194,7 +197,8 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
                 }
 
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Producto actualizado exitosamente')),
+                  const SnackBar(
+                      content: Text('Producto actualizado exitosamente')),
                 );
 
                 Navigator.of(context).pop();
@@ -241,7 +245,8 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Confirmar Eliminación'),
-          content: const Text('¿Estás seguro de que deseas eliminar este producto?'),
+          content:
+              const Text('¿Estás seguro de que deseas eliminar este producto?'),
           actions: [
             TextButton(
               child: const Text('No'),
@@ -292,7 +297,8 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
                 var producto = productos[index];
                 return ListTile(
                   leading: producto['urlImagen'] != null
-                      ? Image.network(producto['urlImagen'], width: 50, height: 50)
+                      ? Image.network(producto['urlImagen'],
+                          width: 50, height: 50)
                       : const Icon(Icons.image_not_supported, size: 50),
                   title: Text(producto['nombre']),
                   subtitle: Column(
@@ -332,16 +338,10 @@ class _ProductManagementPageState extends State<ProductManagementPage> {
   }
 }
 
-
-
-
-
-
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:flutter/material.dart';
 // import 'package:firebase_storage/firebase_storage.dart';
 // import 'package:flutter/services.dart';
-
 
 // class ProductManagementPage extends StatefulWidget {
 //   final String negocioId; // Recibe el ID del negocio

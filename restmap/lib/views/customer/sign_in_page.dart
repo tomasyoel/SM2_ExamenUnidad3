@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:restmap/services/firebase_auth_service.dart';
 import 'package:restmap/services/firestore_service.dart';
 import 'package:restmap/views/customer/sign_up_page.dart';
@@ -30,7 +32,8 @@ class _SignInPageState extends State<SignInPage> {
     if (user != null) {
       if (!user.emailVerified) {
         await _authService.signOut();
-        _showErrorDialog('Debes verificar tu correo electrónico para ingresar.');
+        _showErrorDialog(
+            'Debes verificar tu correo electrónico para ingresar.');
         setState(() {
           _isLoading = false;
         });
@@ -45,10 +48,12 @@ class _SignInPageState extends State<SignInPage> {
         _showErrorDialog(
             'Tu cuenta de negocio aún no ha sido aprobada. Intenta nuevamente más tarde.');
       } else {
-       
         String? fcmToken = await _firebaseMessaging.getToken();
         if (fcmToken != null) {
-          await FirebaseFirestore.instance.collection('usuarios').doc(user.uid).update({
+          await FirebaseFirestore.instance
+              .collection('usuarios')
+              .doc(user.uid)
+              .update({
             'fcmToken': fcmToken,
           });
         }
@@ -172,7 +177,8 @@ class _SignInPageState extends State<SignInPage> {
                               ),
                             );
                           },
-                          child: const Text("¿No tienes una cuenta? Regístrate"),
+                          child:
+                              const Text("¿No tienes una cuenta? Regístrate"),
                         ),
                       ],
                     ),

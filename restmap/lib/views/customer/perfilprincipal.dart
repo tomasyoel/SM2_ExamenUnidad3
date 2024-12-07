@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,7 +17,10 @@ class PerfilPrincipalPage extends StatelessWidget {
     final user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
-      final doc = await FirebaseFirestore.instance.collection('usuarios').doc(user.uid).get();
+      final doc = await FirebaseFirestore.instance
+          .collection('usuarios')
+          .doc(user.uid)
+          .get();
       if (doc.exists) {
         return doc.data() ?? {};
       }
@@ -24,29 +29,30 @@ class PerfilPrincipalPage extends StatelessWidget {
   }
 
   Future<void> _abrirWhatsApp(BuildContext context) async {
-  const phoneNumber = '+51900205498'; // Número de WhatsApp de soporte
-  const message = 'Hola, tengo una pregunta sobre '; // Mensaje preconfigurado
+    const phoneNumber = '+51900205498'; // Número de WhatsApp de soporte
+    const message = 'Hola, tengo una pregunta sobre '; // Mensaje preconfigurado
 
-  final whatsappUrl = "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}";
-  final whatsappUrlScheme = "whatsapp://send?phone=$phoneNumber&text=${Uri.encodeComponent(message)}";
+    final whatsappUrl =
+        "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}";
+    final whatsappUrlScheme =
+        "whatsapp://send?phone=$phoneNumber&text=${Uri.encodeComponent(message)}";
 
-  try {
-    bool launched = await launch(whatsappUrlScheme);
-    if (!launched) {
-      await launch(whatsappUrl);
-    }
-  } on Exception catch (e) {
-    print("No se pudo lanzar WhatsApp: ${e.toString()}");
-    if (await canLaunch(whatsappUrl)) {
-      await launch(whatsappUrl);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No se pudo abrir WhatsApp')),
-      );
+    try {
+      bool launched = await launch(whatsappUrlScheme);
+      if (!launched) {
+        await launch(whatsappUrl);
+      }
+    } on Exception catch (e) {
+      //print("No se pudo lanzar WhatsApp: ${e.toString()}");
+      if (await canLaunch(whatsappUrl)) {
+        await launch(whatsappUrl);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No se pudo abrir WhatsApp')),
+        );
+      }
     }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +99,8 @@ class PerfilPrincipalPage extends StatelessWidget {
                             SizedBox(height: 4),
                             Text(
                               "Disfruta de descuentos y envíos gratis ilimitados.",
-                              style: TextStyle(fontSize: 14, color: Colors.brown),
+                              style:
+                                  TextStyle(fontSize: 14, color: Colors.brown),
                             ),
                           ],
                         ),
@@ -120,11 +127,11 @@ class PerfilPrincipalPage extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 40,
-                        backgroundImage: fotoUrl != null
-                            ? NetworkImage(fotoUrl)
-                            : null,
+                        backgroundImage:
+                            fotoUrl != null ? NetworkImage(fotoUrl) : null,
                         child: fotoUrl == null
-                            ? const Icon(Icons.image, size: 40, color: Colors.grey)
+                            ? const Icon(Icons.image,
+                                size: 40, color: Colors.grey)
                             : null,
                       ),
                       const SizedBox(width: 16),
@@ -133,12 +140,14 @@ class PerfilPrincipalPage extends StatelessWidget {
                         children: [
                           Text(
                             nombre,
-                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             correo,
-                            style: const TextStyle(fontSize: 14, color: Colors.grey),
+                            style: const TextStyle(
+                                fontSize: 14, color: Colors.grey),
                           ),
                         ],
                       ),
@@ -234,10 +243,6 @@ class PerfilPrincipalPage extends StatelessWidget {
     );
   }
 }
-
-
-
-
 
 // import 'package:flutter/material.dart';
 // import 'package:firebase_auth/firebase_auth.dart';

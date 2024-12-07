@@ -1,9 +1,10 @@
+// ignore_for_file: library_private_types_in_public_api, deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as loc;
 
 class MapaAdminPage extends StatefulWidget {
-
   const MapaAdminPage({super.key});
 
   @override
@@ -26,7 +27,8 @@ class _MapaAdminPageState extends State<MapaAdminPage> {
     location.onLocationChanged.listen((loc.LocationData currentLocation) {
       if (!_initialPositionSet) {
         setState(() {
-          _currentPosition = LatLng(currentLocation.latitude!, currentLocation.longitude!);
+          _currentPosition =
+              LatLng(currentLocation.latitude!, currentLocation.longitude!);
           _isLocationReady = true;
           _initialPositionSet = true;
           if (mapController != null) {
@@ -40,7 +42,8 @@ class _MapaAdminPageState extends State<MapaAdminPage> {
   void _initializeLocation() async {
     var userLocation = await location.getLocation();
     setState(() {
-      _currentPosition = LatLng(userLocation.latitude!, userLocation.longitude!);
+      _currentPosition =
+          LatLng(userLocation.latitude!, userLocation.longitude!);
       _isLocationReady = true;
       _initialPositionSet = true;
       if (mapController != null) {
@@ -51,7 +54,7 @@ class _MapaAdminPageState extends State<MapaAdminPage> {
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
-    mapController!.setMapStyle(''' 
+    mapController!.setMapStyle('''
     [
       {
         "featureType": "poi.business",

@@ -15,7 +15,6 @@ class _AgregarCatProdPageState extends State<AgregarCatProdPage> {
   final TextEditingController _categoriaController = TextEditingController();
   String? _categoriaId;
 
- 
   Future<void> _agregarCategoria() async {
     if (_categoriaController.text.isNotEmpty) {
       var uuid = const Uuid();
@@ -26,33 +25,39 @@ class _AgregarCatProdPageState extends State<AgregarCatProdPage> {
         'nombre': _categoriaController.text,
       };
 
- 
-      DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('cartasnegocio').doc(widget.negocioId).get();
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('cartasnegocio')
+          .doc(widget.negocioId)
+          .get();
 
       if (snapshot.exists) {
- 
-        await FirebaseFirestore.instance.collection('cartasnegocio').doc(widget.negocioId).update({
+        await FirebaseFirestore.instance
+            .collection('cartasnegocio')
+            .doc(widget.negocioId)
+            .update({
           'categoriasprod': FieldValue.arrayUnion([nuevaCategoria]),
         });
       } else {
-
-        await FirebaseFirestore.instance.collection('cartasnegocio').doc(widget.negocioId).set({
+        await FirebaseFirestore.instance
+            .collection('cartasnegocio')
+            .doc(widget.negocioId)
+            .set({
           'categoriasprod': [nuevaCategoria],
         });
       }
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Categoría ${_categoriaId != null ? 'actualizada' : 'agregada'} exitosamente')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+              'Categoría ${_categoriaId != null ? 'actualizada' : 'agregada'} exitosamente')));
       _categoriaController.clear();
       setState(() {
         _categoriaId = null;
       });
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Por favor, introduce un nombre de categoría.')));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Por favor, introduce un nombre de categoría.')));
     }
   }
-
 
   void _editarCategoria(String id, String nombre) {
     setState(() {
@@ -73,12 +78,15 @@ class _AgregarCatProdPageState extends State<AgregarCatProdPage> {
           children: [
             TextField(
               controller: _categoriaController,
-              decoration: const InputDecoration(labelText: 'Nombre de la Categoría'),
+              decoration:
+                  const InputDecoration(labelText: 'Nombre de la Categoría'),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _agregarCategoria,
-              child: Text(_categoriaId != null ? 'Guardar Cambios' : 'Agregar Categoría'),
+              child: Text(_categoriaId != null
+                  ? 'Guardar Cambios'
+                  : 'Agregar Categoría'),
             ),
           ],
         ),

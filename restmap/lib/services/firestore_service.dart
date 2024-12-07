@@ -1,4 +1,6 @@
 // import 'package:restmap/models/order.dart' as app_models;
+// ignore_for_file: unused_field
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -17,35 +19,35 @@ class FirestoreService {
   //   }
   // }
 
-    Future<void> updateUser(String id, Map<String, dynamic> userData) async {
+  Future<void> updateUser(String id, Map<String, dynamic> userData) async {
     try {
       await _db.collection('usuarios').doc(id).update(userData);
-      print("Perfil actualizado exitosamente");
+      //print("Perfil actualizado exitosamente");
     } catch (e) {
-      print("Error al actualizar el perfil: $e");
+      //print("Error al actualizar el perfil: $e");
       rethrow;
     }
   }
 
-    Future<DocumentSnapshot> getUserById(String id) async {
+  Future<DocumentSnapshot> getUserById(String id) async {
     return await _db.collection('usuarios').doc(id).get();
-    }
+  }
 
   Future<String?> obtenerVersionMinima() async {
     try {
-      final doc = await FirebaseFirestore.instance.collection('version').doc('n4gJAQPr09uWNTFKaMOP').get();
+      final doc = await FirebaseFirestore.instance
+          .collection('version')
+          .doc('n4gJAQPr09uWNTFKaMOP')
+          .get();
       if (doc.exists) {
         return doc['versionmin'];
       }
       return null;
     } catch (e) {
-      print('Error al obtener la versión mínima: $e');
+      //print('Error al obtener la versión mínima: $e');
       return null;
     }
   }
-
-
-
 
   // Future<void> updateProduct(String id, Map<String, dynamic> productData) async {
   //   await _db.collection('productos').doc(id).update(productData);
@@ -97,7 +99,6 @@ class FirestoreService {
   //     throw e;
   //   }
   // }
-
 
   // Future<void> updateOrder(String id, Map<String, dynamic> orderData) async {
   //   await _db.collection('pedidos').doc(id).update(orderData);
@@ -237,7 +238,6 @@ class FirestoreService {
 //   }
 // }
 
-
   // Future<void> addOrder(app_models.Order order) async {
   //   try {
   //     await _db.collection('pedidos').doc(order.id).set(order.toMap());
@@ -313,7 +313,6 @@ class FirestoreService {
 
   // void updateMiPagoYapePlin(mipago, Map<String, bool> map) {}
 
-
   // Stream<List<app_models.Order>> getOrders() {
   //   return _db
   //       .collection('pedidos')
@@ -347,7 +346,7 @@ class FirestoreService {
   // return userDoc.exists ? userDoc.data() as Map<String, dynamic>? : null;
   // }
 
-    // Método para obtener la información del usuario
+  // Método para obtener la información del usuario
   // Future<Map<String, dynamic>?> getUserInfoById(String userId) async {
   //   try {
   //     DocumentSnapshot userDoc = await _db.collection('usuarios').doc(userId).get();
@@ -371,5 +370,4 @@ class FirestoreService {
   //   Future<void> updateOrderDriverContact(String orderId, String driverPhone) {
   //   return _db.collection('pedidos').doc(orderId).update({'driverContact': driverPhone});
   // }
-
 }

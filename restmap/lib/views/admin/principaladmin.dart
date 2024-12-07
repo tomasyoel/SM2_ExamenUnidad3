@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:restmap/views/admin/gestionarnegocio.dart';
 import 'package:restmap/views/admin/perfiladmin.dart';
@@ -126,7 +128,7 @@ class _PaginaPrincipalAdminState extends State<PaginaPrincipalAdmin> {
       case 'gestion_negocios':
         return const GestionarNegociosPage();
       case 'agregar_negocio':
-        return const AgregarNegocioPage(); 
+        return const AgregarNegocioPage();
       case 'agregar_usuario_negocio':
         return const CreateUserNegocioPage();
       case 'gestionar_usuario_negocio':
@@ -138,7 +140,8 @@ class _PaginaPrincipalAdminState extends State<PaginaPrincipalAdmin> {
       case 'perfil':
         return const PerfilAdminPage();
       default:
-        return const Center(child: Text("Bienvenido al panel de administración"));
+        return const Center(
+            child: Text("Bienvenido al panel de administración"));
     }
   }
 }

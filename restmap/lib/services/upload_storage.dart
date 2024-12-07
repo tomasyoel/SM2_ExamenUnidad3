@@ -119,7 +119,6 @@ Future<String?> uploadProfileImage(File image) async {
 //   return null;
 // }
 
-
 String _getMimeType(String fileName) {
   final extension = fileName.split('.').last.toLowerCase();
   switch (extension) {

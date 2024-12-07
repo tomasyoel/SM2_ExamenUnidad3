@@ -23,7 +23,7 @@ class CuponesPage extends StatelessWidget {
         title: const Text("Gestionar Cupones"),
         actions: [
           IconButton(
-            icon: const Icon(IconlyBold.add_user), 
+            icon: const Icon(IconlyBold.add_user),
             onPressed: () {
               _crearNuevoCupon(context);
             },
@@ -135,12 +135,10 @@ class CuponesPage extends StatelessWidget {
     );
   }
 
-
   String _formatDate(DateTime date) {
     var formatter = DateFormat('d MMMM yyyy, hh:mm a', 'es_ES');
     return formatter.format(date);
   }
-
 
   void _crearNuevoCupon(BuildContext context) {
     final TextEditingController codigoController = TextEditingController();
@@ -160,7 +158,8 @@ class CuponesPage extends StatelessWidget {
               children: [
                 TextFormField(
                   controller: codigoController,
-                  decoration: const InputDecoration(labelText: 'Código del Cupón'),
+                  decoration:
+                      const InputDecoration(labelText: 'Código del Cupón'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'El código es obligatorio';
@@ -170,7 +169,8 @@ class CuponesPage extends StatelessWidget {
                 ),
                 TextFormField(
                   controller: porcentajeController,
-                  decoration: const InputDecoration(labelText: 'Porcentaje de Descuento'),
+                  decoration: const InputDecoration(
+                      labelText: 'Porcentaje de Descuento'),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -201,15 +201,14 @@ class CuponesPage extends StatelessWidget {
     );
   }
 
-
-  void _guardarCupon(String codigo, int porcentaje, DateTime fechaVencimiento) async {
+  void _guardarCupon(
+      String codigo, int porcentaje, DateTime fechaVencimiento) async {
     final User? currentUser = FirebaseAuth.instance.currentUser;
     final CollectionReference cuponesNegocios =
         FirebaseFirestore.instance.collection('cuponesnegocios');
 
     DocumentReference negocioRef = cuponesNegocios.doc(currentUser?.uid);
 
-  
     Map<String, dynamic> nuevoCupon = {
       'id': const Uuid().v4(),
       'codigo': codigo,
@@ -224,9 +223,6 @@ class CuponesPage extends StatelessWidget {
     }, SetOptions(merge: true));
   }
 }
-
-
-
 
 // import 'package:flutter/material.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';

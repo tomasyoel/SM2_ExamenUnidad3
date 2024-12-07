@@ -8,9 +8,11 @@ class FirebaseAuthService {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<User?> createUserWithEmailAndPassword(String email, String password, Map<String, dynamic> additionalInfo) async {
+  Future<User?> createUserWithEmailAndPassword(String email, String password,
+      Map<String, dynamic> additionalInfo) async {
     try {
-      UserCredential result = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+      UserCredential result = await _firebaseAuth
+          .createUserWithEmailAndPassword(email: email, password: password);
       User? user = result.user;
 
       if (user != null) {
@@ -22,18 +24,20 @@ class FirebaseAuthService {
 
       return user;
     } catch (e) {
-      print(e);
+      //print(e);
       return null;
     }
   }
 
-  Future<User?> signInWithEmailAndPassword(String email, String password) async {
+  Future<User?> signInWithEmailAndPassword(
+      String email, String password) async {
     try {
-      UserCredential result = await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+      UserCredential result = await _firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: password);
       User? user = result.user;
       return user;
     } catch (e) {
-      print(e);
+      //print(e);
       return null;
     }
   }
@@ -68,14 +72,15 @@ class FirebaseAuthService {
   //   }
   // }
 
-    Future<void> deleteUserByEmail(String email) async {
+  Future<void> deleteUserByEmail(String email) async {
     try {
       User? currentUser = _firebaseAuth.currentUser;
       if (currentUser == null) throw Exception("No hay usuario autenticado");
 
       // Sign in as the user to delete
       await _firebaseAuth.signOut();
-      await _firebaseAuth.signInWithEmailAndPassword(email: email, password: '123456');
+      await _firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: '123456');
 
       // Delete the user
       User? userToDelete = _firebaseAuth.currentUser;
@@ -84,13 +89,18 @@ class FirebaseAuthService {
       }
 
       // Delete the user's document from Firestore
-      QuerySnapshot userDocs = await _firestore.collection('usuarios').where('correo', isEqualTo: email).get();
+      QuerySnapshot userDocs = await _firestore
+          .collection('usuarios')
+          .where('correo', isEqualTo: email)
+          .get();
       for (QueryDocumentSnapshot doc in userDocs.docs) {
         await doc.reference.delete();
       }
 
       // Sign in again as the admin
-      await _firebaseAuth.signInWithEmailAndPassword(email: currentUser.email!, password: 'adminPassword'); // Replace with actual password
+      await _firebaseAuth.signInWithEmailAndPassword(
+          email: currentUser.email!,
+          password: 'adminPassword'); // Replace with actual password
     } catch (e) {
       debugPrint(e.toString());
       rethrow;
@@ -101,7 +111,7 @@ class FirebaseAuthService {
     try {
       await _firebaseAuth.sendPasswordResetEmail(email: email);
     } catch (e) {
-      print(e);
+      //print(e);
     }
   }
 
@@ -116,7 +126,8 @@ class FirebaseAuthService {
   }
 
   void showWelcomeMessage(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("¡Bienvenido!")));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text("¡Bienvenido!")));
   }
 
   Future<DocumentSnapshot> getUserById(String id) async {
@@ -124,7 +135,11 @@ class FirebaseAuthService {
   }
 
   Future<bool> checkAdminExists() async {
-    final querySnapshot = await _firestore.collection('usuarios').where('rol', isEqualTo: 'administrador').limit(1).get();
+    final querySnapshot = await _firestore
+        .collection('usuarios')
+        .where('rol', isEqualTo: 'administrador')
+        .limit(1)
+        .get();
     return querySnapshot.docs.isNotEmpty;
   }
 

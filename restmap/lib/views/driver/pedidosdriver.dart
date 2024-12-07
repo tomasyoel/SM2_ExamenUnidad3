@@ -16,7 +16,8 @@ class PedidosDriverPage extends StatelessWidget {
     onOrderSelected(orderId);
   }
 
-  bool _isEligibleForDelivery(Timestamp startTime, Timestamp endTime, String orderStatus) {
+  bool _isEligibleForDelivery(
+      Timestamp startTime, Timestamp endTime, String orderStatus) {
     final now = Timestamp.now();
     final timeLeft = endTime.toDate().difference(now.toDate()).inMinutes;
 
@@ -30,7 +31,8 @@ class PedidosDriverPage extends StatelessWidget {
   }
 
   Future<String> _getClientName(String clientId) async {
-    final clientSnapshot = await _firestore.collection('usuarios').doc(clientId).get();
+    final clientSnapshot =
+        await _firestore.collection('usuarios').doc(clientId).get();
     if (clientSnapshot.exists) {
       final clientData = clientSnapshot.data()!;
       return clientData['nombres'] ?? 'Cliente';
@@ -56,7 +58,8 @@ class PedidosDriverPage extends StatelessWidget {
           }
           var orders = snapshot.data!.docs.where((doc) {
             var data = doc.data() as Map<String, dynamic>;
-            return _isEligibleForDelivery(data['startTime'], data['endTime'], data['orderStatus']);
+            return _isEligibleForDelivery(
+                data['startTime'], data['endTime'], data['orderStatus']);
           }).toList();
 
           return ListView.builder(
@@ -93,9 +96,12 @@ class PedidosDriverPage extends StatelessWidget {
                           Text('Total: S/. ${orderData['totalPrice']}'),
                           Text('Método de pago: ${orderData['metodoPago']}'),
                           if (orderData['metodoPago'] == 'contraEntrega')
-                            Text('Submetodo de pago: ${orderData['subMetodoPago']}'),
-                          if (orderData['metodoPago'] == 'contraEntrega' && orderData['subMetodoPago'] == 'efectivo')
-                            Text('Monto a pagar: S/. ${orderData['montoAPagar']}'),
+                            Text(
+                                'Submetodo de pago: ${orderData['subMetodoPago']}'),
+                          if (orderData['metodoPago'] == 'contraEntrega' &&
+                              orderData['subMetodoPago'] == 'efectivo')
+                            Text(
+                                'Monto a pagar: S/. ${orderData['montoAPagar']}'),
                         ],
                       ),
                       trailing: ElevatedButton(

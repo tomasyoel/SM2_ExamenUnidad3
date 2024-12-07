@@ -64,7 +64,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '941028966830',
     projectId: 'restmap-bb3a1',
     storageBucket: 'restmap-bb3a1.appspot.com',
-    iosClientId: '941028966830-vippoq2jkli8m5m6pqanv3s7ok1s32ce.apps.googleusercontent.com',
+    iosClientId:
+        '941028966830-vippoq2jkli8m5m6pqanv3s7ok1s32ce.apps.googleusercontent.com',
     iosBundleId: 'com.example.restmap',
   );
 
@@ -74,7 +75,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '941028966830',
     projectId: 'restmap-bb3a1',
     storageBucket: 'restmap-bb3a1.appspot.com',
-    iosClientId: '941028966830-vippoq2jkli8m5m6pqanv3s7ok1s32ce.apps.googleusercontent.com',
+    iosClientId:
+        '941028966830-vippoq2jkli8m5m6pqanv3s7ok1s32ce.apps.googleusercontent.com',
     iosBundleId: 'com.example.restmap',
   );
 

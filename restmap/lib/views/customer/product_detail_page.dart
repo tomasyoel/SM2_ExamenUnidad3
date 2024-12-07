@@ -146,8 +146,6 @@
 //   Navigator.pop(context, updatedOrderProducts);
 // }
 
-
-
 //   @override
 //   Widget build(BuildContext context) {
 //     bool isOutOfStock = _currentStock <= 0;

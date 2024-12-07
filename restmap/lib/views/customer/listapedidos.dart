@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, deprecated_member_use, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,7 +29,10 @@ class _ListaPedidosPageState extends State<ListaPedidosPage> {
       throw Exception("Usuario no autenticado");
     }
 
-    final userDoc = await FirebaseFirestore.instance.collection('usuarios').doc(user.uid).get();
+    final userDoc = await FirebaseFirestore.instance
+        .collection('usuarios')
+        .doc(user.uid)
+        .get();
     final List<dynamic> pedidos = userDoc.data()?['pedidos'] ?? [];
 
     // Obtener los nombres de los negocios
@@ -54,7 +59,7 @@ class _ListaPedidosPageState extends State<ListaPedidosPage> {
         await launch(whatsappUrl);
       }
     } catch (e) {
-      print("No se pudo lanzar WhatsApp: $e");
+      //print("No se pudo lanzar WhatsApp: $e");
       if (await canLaunch(whatsappUrl)) {
         await launch(whatsappUrl);
       } else {
@@ -80,7 +85,8 @@ class _ListaPedidosPageState extends State<ListaPedidosPage> {
           }
 
           if (snapshot.hasError) {
-            return Center(child: Text("Error al cargar pedidos: ${snapshot.error}"));
+            return Center(
+                child: Text("Error al cargar pedidos: ${snapshot.error}"));
           }
 
           final pedidos = snapshot.data ?? [];
@@ -123,12 +129,14 @@ class _ListaPedidosPageState extends State<ListaPedidosPage> {
                       Text(
                         "Estado: ${pedido['estadoPedido'] ?? 'Desconocido'}",
                         style: TextStyle(
-                          color: _getEstadoColor(pedido['estadoPedido'] ?? 'pendiente'),
+                          color: _getEstadoColor(
+                              pedido['estadoPedido'] ?? 'pendiente'),
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       const SizedBox(height: 4),
-                      Text("Total: S/ ${pedido['total']?.toStringAsFixed(2) ?? '0.00'}"),
+                      Text(
+                          "Total: S/ ${pedido['total']?.toStringAsFixed(2) ?? '0.00'}"),
                       const SizedBox(height: 4),
                       Text("Fecha: $formatoFecha"),
                     ],
@@ -137,18 +145,23 @@ class _ListaPedidosPageState extends State<ListaPedidosPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       TextButton(
-                        onPressed: () => _mostrarDetallesPedido(context, pedido),
+                        onPressed: () =>
+                            _mostrarDetallesPedido(context, pedido),
                         child: const Text("Detalles"),
                       ),
                       IconButton(
-                        icon: Image.asset('assets/whatsapp.png', height: 24, width: 24),
+                        icon: Image.asset('assets/whatsapp.png',
+                            height: 24, width: 24),
                         onPressed: () async {
-                          final nroCelularNegocio = pedido['nroCelularNegocio'] ?? '';
+                          final nroCelularNegocio =
+                              pedido['nroCelularNegocio'] ?? '';
                           if (nroCelularNegocio.isNotEmpty) {
                             await _launchWhatsApp(nroCelularNegocio);
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('El negocio no tiene número de WhatsApp')),
+                              const SnackBar(
+                                  content: Text(
+                                      'El negocio no tiene número de WhatsApp')),
                             );
                           }
                         },
@@ -177,14 +190,16 @@ class _ListaPedidosPageState extends State<ListaPedidosPage> {
     }
   }
 
-  void _mostrarDetallesPedido(BuildContext context, Map<String, dynamic> pedido) {
+  void _mostrarDetallesPedido(
+      BuildContext context, Map<String, dynamic> pedido) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
       ),
       builder: (context) {
-        final productos = List<Map<String, dynamic>>.from(pedido['productos'] ?? []);
+        final productos =
+            List<Map<String, dynamic>>.from(pedido['productos'] ?? []);
         return Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -202,14 +217,18 @@ class _ListaPedidosPageState extends State<ListaPedidosPage> {
                     ),
                   ),
                   IconButton(
-                    icon: Image.asset('assets/whatsapp.png', height: 24, width: 24),
+                    icon: Image.asset('assets/whatsapp.png',
+                        height: 24, width: 24),
                     onPressed: () async {
-                      final nroCelularNegocio = pedido['nroCelularNegocio'] ?? '';
+                      final nroCelularNegocio =
+                          pedido['nroCelularNegocio'] ?? '';
                       if (nroCelularNegocio.isNotEmpty) {
                         await _launchWhatsApp(nroCelularNegocio);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('El negocio no tiene número de WhatsApp')),
+                          const SnackBar(
+                              content: Text(
+                                  'El negocio no tiene número de WhatsApp')),
                         );
                       }
                     },
@@ -255,7 +274,8 @@ class _ListaPedidosPageState extends State<ListaPedidosPage> {
               ...productos.map((producto) {
                 return ListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: Text(producto['nombre'], style: const TextStyle(fontSize: 16)),
+                  title: Text(producto['nombre'],
+                      style: const TextStyle(fontSize: 16)),
                   subtitle: Text(
                     "Cantidad: ${producto['cantidad']} - Total: S/ ${(producto['precio'] * producto['cantidad']).toStringAsFixed(2)}",
                     style: const TextStyle(fontSize: 14),
@@ -281,9 +301,6 @@ class _ListaPedidosPageState extends State<ListaPedidosPage> {
     );
   }
 }
-
-
-
 
 // import 'package:flutter/material.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';

@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -39,7 +41,8 @@ class _MapaDriverPageState extends State<MapaDriverPage> {
   }
 
   Future<void> _loadOrderData() async {
-    DocumentSnapshot orderSnapshot = await _firestore.collection('pedidos').doc(widget.orderId).get();
+    DocumentSnapshot orderSnapshot =
+        await _firestore.collection('pedidos').doc(widget.orderId).get();
     setState(() {
       _orderData = orderSnapshot;
       _updateMarkersAndPolyline();
@@ -58,7 +61,8 @@ class _MapaDriverPageState extends State<MapaDriverPage> {
   }
 
   Future<void> _getDriverLocation() async {
-    final position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
     setState(() {
       _driverLocation = LatLng(position.latitude, position.longitude);
       _mapController?.animateCamera(
@@ -75,7 +79,8 @@ class _MapaDriverPageState extends State<MapaDriverPage> {
   void _updateMarkersAndPolyline() {
     if (_orderData != null) {
       final orderData = _orderData!.data() as Map<String, dynamic>;
-      final customerLocation = LatLng(orderData['latitud'], orderData['longitud']);
+      final customerLocation =
+          LatLng(orderData['latitud'], orderData['longitud']);
 
       setState(() {
         _markers.clear();
@@ -122,10 +127,10 @@ class _MapaDriverPageState extends State<MapaDriverPage> {
           );
         });
       } else {
-        print('No routes found');
+        //print('No routes found');
       }
     } else {
-      print('Failed to fetch route');
+      //print('Failed to fetch route');
     }
   }
 
@@ -154,7 +159,8 @@ class _MapaDriverPageState extends State<MapaDriverPage> {
       int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
       lng += dlng;
 
-      polylineCoordinates.add(LatLng((lat / 1E5).toDouble(), (lng / 1E5).toDouble()));
+      polylineCoordinates
+          .add(LatLng((lat / 1E5).toDouble(), (lng / 1E5).toDouble()));
     }
 
     return polylineCoordinates;
@@ -234,11 +240,17 @@ class _MapaDriverPageState extends State<MapaDriverPage> {
                     ElevatedButton(
                       child: const Text('Entregado'),
                       onPressed: () {
-                        _firestore.collection('pedidos').doc(widget.orderId).update({
+                        _firestore
+                            .collection('pedidos')
+                            .doc(widget.orderId)
+                            .update({
                           'orderStatus': 'entregado',
-                          'driverLocation': GeoPoint(_driverLocation.latitude, _driverLocation.longitude),
-                          'driverName': FirebaseAuth.instance.currentUser!.displayName,
-                          'driverPhone': FirebaseAuth.instance.currentUser!.phoneNumber,
+                          'driverLocation': GeoPoint(_driverLocation.latitude,
+                              _driverLocation.longitude),
+                          'driverName':
+                              FirebaseAuth.instance.currentUser!.displayName,
+                          'driverPhone':
+                              FirebaseAuth.instance.currentUser!.phoneNumber,
                         });
                         Navigator.pop(context);
                       },

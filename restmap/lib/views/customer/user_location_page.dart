@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
@@ -6,7 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:restmap/models/user.dart';
 import 'package:restmap/views/customer/map_page.dart';
 import 'package:uuid/uuid.dart';
-import 'package:firebase_auth/firebase_auth.dart'; 
+import 'package:firebase_auth/firebase_auth.dart';
 
 class UserLocationPage extends StatefulWidget {
   const UserLocationPage({super.key});
@@ -27,13 +29,12 @@ class _UserLocationPageState extends State<UserLocationPage> {
     super.initState();
     _initializeLocation();
 
-    
     _userId = FirebaseAuth.instance.currentUser?.uid;
     if (_userId != null) {
-      print("El userId del usuario autenticado es: $_userId");
-      _fetchAddresses();  
+      //print("El userId del usuario autenticado es: $_userId");
+      _fetchAddresses();
     } else {
-      print("El ID del usuario es nulo, no se puede buscar direcciones.");
+      //print("El ID del usuario es nulo, no se puede buscar direcciones.");
       setState(() {
         _isLoading = false;
       });
@@ -44,7 +45,8 @@ class _UserLocationPageState extends State<UserLocationPage> {
     var userLocation = await location.getLocation();
     if (mounted) {
       setState(() {
-        _currentPosition = LatLng(userLocation.latitude!, userLocation.longitude!);
+        _currentPosition =
+            LatLng(userLocation.latitude!, userLocation.longitude!);
       });
     }
   }
@@ -53,37 +55,31 @@ class _UserLocationPageState extends State<UserLocationPage> {
     if (_userId == null) return;
 
     try {
-      
-      print("Buscando el usuario con ID: $_userId en la colección 'usuarios'");
+      //print("Buscando el usuario con ID: $_userId en la colección 'usuarios'");
       DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
           .collection('usuarios')
           .doc(_userId)
           .get();
 
       if (userSnapshot.exists) {
-        print("Usuario encontrado. Datos del usuario: ${userSnapshot.data()}");
+        //print("Usuario encontrado. Datos del usuario: ${userSnapshot.data()}");
         var data = userSnapshot.data() as Map<String, dynamic>?;
 
-        
         if (data != null && data.containsKey('direcciones')) {
-          print("Direcciones encontradas: ${data['direcciones']}");
-          List<Address> addresses = (data['direcciones'] as List)
-              .map((item) {
-                var addressData = item as Map<String, dynamic>;
+          //print("Direcciones encontradas: ${data['direcciones']}");
+          List<Address> addresses = (data['direcciones'] as List).map((item) {
+            var addressData = item as Map<String, dynamic>;
 
-                
-                return Address(
-                  id: addressData['id'] ?? const Uuid().v4(),
-                  name: addressData['nombre'] ?? 'Sin nombre',
-                  address: addressData['direccion'] ?? 'Sin dirección',
-                  latitude: (addressData['latitud'] as num?)?.toDouble() ?? 0.0,
-                  longitude: (addressData['longitud'] as num?)?.toDouble() ?? 0.0,
-                  isDefault: addressData['predeterminada'] ?? false,
-                );
-              })
-              .toList();
+            return Address(
+              id: addressData['id'] ?? const Uuid().v4(),
+              name: addressData['nombre'] ?? 'Sin nombre',
+              address: addressData['direccion'] ?? 'Sin dirección',
+              latitude: (addressData['latitud'] as num?)?.toDouble() ?? 0.0,
+              longitude: (addressData['longitud'] as num?)?.toDouble() ?? 0.0,
+              isDefault: addressData['predeterminada'] ?? false,
+            );
+          }).toList();
 
-          
           if (mounted) {
             setState(() {
               _addresses = addresses;
@@ -91,7 +87,6 @@ class _UserLocationPageState extends State<UserLocationPage> {
             });
           }
         } else {
-          
           // print("No hay direcciones guardadas en el usuario.");
           if (mounted) {
             setState(() {
@@ -119,83 +114,74 @@ class _UserLocationPageState extends State<UserLocationPage> {
   }
 
   void _addNewAddress() async {
-  if (_userId == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('No se encontró el usuario autenticado')),
+    if (_userId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No se encontró el usuario autenticado')),
+      );
+      return;
+    }
+
+    //print("El userId antes de pasar a MapPage es: $_userId");
+
+    bool? addressAdded = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MapPage(userId: _userId!),
+      ),
     );
-    return;
+
+    if (addressAdded == true) {
+      _fetchAddresses();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No se agregó ninguna dirección')),
+      );
+    }
   }
-
-  print("El userId antes de pasar a MapPage es: $_userId");
-
-  
-  bool? addressAdded = await Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => MapPage(userId: _userId!), 
-    ),
-  );
-
-  
-  if (addressAdded == true) {
-    _fetchAddresses(); 
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('No se agregó ninguna dirección')),
-    );
-  }
-}
 
   void _setDefaultAddress(String id) async {
-  for (var address in _addresses) {
-    address.isDefault = (address.id == id);
+    for (var address in _addresses) {
+      address.isDefault = (address.id == id);
+    }
+
+    DocumentReference userRef =
+        FirebaseFirestore.instance.collection('usuarios').doc(_userId);
+
+    await userRef.update({
+      'direcciones': _addresses.map((addr) => addr.toMap()).toList(),
+    });
+
+    if (mounted) {
+      Navigator.pop(context, true);
+    }
   }
-
-  DocumentReference userRef = FirebaseFirestore.instance
-      .collection('usuarios')
-      .doc(_userId);
-
-  await userRef.update({
-    'direcciones': _addresses.map((addr) => addr.toMap()).toList(),
-  });
-
-  
-  if (mounted) {
-    Navigator.pop(context, true); 
-  }
-}
-
 
   void _deleteAddress(String id) async {
-  if (_userId == null) return;
+    if (_userId == null) return;
 
-  
-  _addresses.removeWhere((address) => address.id == id);
+    _addresses.removeWhere((address) => address.id == id);
 
-  
-  DocumentReference userRef = FirebaseFirestore.instance.collection('usuarios').doc(_userId);
-  
-  await userRef.update({
-    'direcciones': _addresses.map((addr) => addr.toMap()).toList(),
-  });
+    DocumentReference userRef =
+        FirebaseFirestore.instance.collection('usuarios').doc(_userId);
 
-  
-  setState(() {});
+    await userRef.update({
+      'direcciones': _addresses.map((addr) => addr.toMap()).toList(),
+    });
 
-  
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text('Dirección eliminada')),
-  );
+    setState(() {});
 
-  
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Dirección eliminada')),
+    );
+
     Navigator.pop(context, true);
-}
+  }
 
   @override
   Widget build(BuildContext context) {
     return Material(
       child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.4, 
+        height: MediaQuery.of(context).size.height * 0.4,
         child: Column(
           children: [
             const Padding(
@@ -209,7 +195,7 @@ class _UserLocationPageState extends State<UserLocationPage> {
               leading: const Icon(IconlyBold.addUser),
               title: const Text('Nueva dirección'),
               onTap: () {
-                _addNewAddress(); 
+                _addNewAddress();
               },
             ),
             const Divider(),

@@ -141,15 +141,15 @@
 //                           });
 
 //                           try {
-                          
+
 //                             if (newImage != null) {
-                          
+
 //                               if (imageUrl != null) {
 //                                 await FirebaseStorage.instance
 //                                     .refFromURL(imageUrl!)
 //                                     .delete();
 //                               }
-                            
+
 //                               final storageRef = FirebaseStorage.instance
 //                                   .ref()
 //                                   .child('tipococinaimagen/${document.id}_${DateTime.now().millisecondsSinceEpoch}.png');
@@ -158,13 +158,11 @@
 //                               imageUrl = await snapshot.ref.getDownloadURL();
 //                             }
 
-                          
 //                             await tiposCocina.doc(document.id).update({
 //                               'nombre': nameController.text,
 //                               'imagen': imageUrl,
 //                             });
 
-                        
 //                             ScaffoldMessenger.of(context).showSnackBar(
 //                               const SnackBar(
 //                                 content: Text('Tipo de cocina actualizado correctamente.'),
@@ -173,7 +171,7 @@
 
 //                             Navigator.of(context).pop();
 //                           } catch (e) {
-                      
+
 //                             ScaffoldMessenger.of(context).showSnackBar(
 //                               SnackBar(
 //                                 content: Text('Error al actualizar: $e'),
@@ -200,7 +198,6 @@
 //     );
 //   }
 
-  
 //   void _showDeleteConfirmationDialog(BuildContext context, String documentId, String? imageUrl) {
 //     showDialog(
 //       context: context,
@@ -219,7 +216,7 @@
 //             TextButton(
 //               child: const Text('Sí'),
 //               onPressed: () async {
-                
+
 //                 await _checkAndDeleteTipoCocina(dialogContext, documentId, imageUrl);
 //               },
 //             ),
@@ -232,17 +229,16 @@
 //   Future<void> _checkAndDeleteTipoCocina(
 //       BuildContext context, String documentId, String? imageUrl) async {
 //     try {
-      
+
 //       QuerySnapshot negociosAsignados = await FirebaseFirestore.instance
 //           .collection('negocios')
 //           .where('tipo_cocina', isEqualTo: documentId)
 //           .get();
 
 //       if (negociosAsignados.docs.isNotEmpty) {
-      
+
 //         Navigator.of(context).pop();
-        
-      
+
 //         ScaffoldMessenger.of(context).showSnackBar(
 //           const SnackBar(
 //             content: Text('No se puede eliminar, está asignado a un negocio.'),
@@ -250,13 +246,11 @@
 //           ),
 //         );
 //       } else {
-      
+
 //         Navigator.of(context).pop();
 
-      
 //         await _deleteTipoCocina(context, documentId, imageUrl);
 
-       
 //         ScaffoldMessenger.of(context).showSnackBar(
 //           const SnackBar(
 //             content: Text('Tipo de cocina eliminado exitosamente.'),
@@ -265,10 +259,9 @@
 //         );
 //       }
 //     } catch (e) {
-      
+
 //       Navigator.of(context).pop();
-      
-     
+
 //       ScaffoldMessenger.of(context).showSnackBar(
 //         SnackBar(
 //           content: Text('Error: ${e.toString()}'),
@@ -278,17 +271,15 @@
 //     }
 //   }
 
-
 //   Future<void> _deleteTipoCocina(
 //       BuildContext context, String documentId, String? imageUrl) async {
 //     try {
-     
+
 //       await FirebaseFirestore.instance
 //           .collection('tipococina')
 //           .doc(documentId)
 //           .delete();
 
-      
 //       if (imageUrl != null && imageUrl.isNotEmpty) {
 //         try {
 //           await FirebaseStorage.instance.refFromURL(imageUrl).delete();

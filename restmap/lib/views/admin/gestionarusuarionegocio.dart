@@ -4,7 +4,8 @@ import 'package:restmap/services/firebase_auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class ManageNegocioPage extends StatelessWidget {
-  final CollectionReference usuarios = FirebaseFirestore.instance.collection('usuarios');
+  final CollectionReference usuarios =
+      FirebaseFirestore.instance.collection('usuarios');
   final FirebaseAuthService authService = FirebaseAuthService();
 
   ManageNegocioPage({super.key});
@@ -44,7 +45,6 @@ class ManageNegocioPage extends StatelessWidget {
               var data = negocios[index].data()! as Map<String, dynamic>;
               final bool isCurrentUser = currentUser?.uid == negocios[index].id;
 
-             
               String nombre = data['nombre'] ?? data['correo'] ?? 'Sin nombre';
 
               return ListTile(
@@ -64,7 +64,8 @@ class ManageNegocioPage extends StatelessWidget {
                       icon: const Icon(Icons.delete),
                       onPressed: isCurrentUser
                           ? null
-                          : () => _deleteNegocio(context, negocios[index].id, data['correo']),
+                          : () => _deleteNegocio(
+                              context, negocios[index].id, data['correo']),
                       color: isCurrentUser ? Colors.grey : Colors.red,
                     ),
                   ],
@@ -112,7 +113,8 @@ class ManageNegocioPage extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Confirmar Eliminación'),
-          content: const Text('¿Está seguro de que desea eliminar este negocio?'),
+          content:
+              const Text('¿Está seguro de que desea eliminar este negocio?'),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancelar'),

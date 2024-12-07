@@ -6,13 +6,15 @@ class GestionarCatProdPage extends StatelessWidget {
 
   const GestionarCatProdPage({super.key, required this.negocioId});
 
-  Future<void> _confirmarEliminacionCategoria(String categoriaId, String categoriaNombre, BuildContext context) async {
+  Future<void> _confirmarEliminacionCategoria(
+      String categoriaId, String categoriaNombre, BuildContext context) async {
     bool confirmacion = await showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Confirmar Eliminación'),
-          content: Text('¿Estás seguro de que deseas eliminar la categoría "$categoriaNombre"? Esta acción no se puede deshacer.'),
+          content: Text(
+              '¿Estás seguro de que deseas eliminar la categoría "$categoriaNombre"? Esta acción no se puede deshacer.'),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancelar'),
@@ -36,39 +38,45 @@ class GestionarCatProdPage extends StatelessWidget {
     }
   }
 
-  Future<void> _eliminarCategoria(String categoriaId, BuildContext context) async {
+  Future<void> _eliminarCategoria(
+      String categoriaId, BuildContext context) async {
     QuerySnapshot productos = await FirebaseFirestore.instance
         .collection('cartasnegocio')
         .where('negocioId', isEqualTo: negocioId)
         .where('productos', arrayContainsAny: [
-          {'categoriaId': categoriaId}
-        ])
-        .get();
+      {'categoriaId': categoriaId}
+    ]).get();
 
     if (productos.docs.isNotEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('No se puede eliminar la categoría porque está en uso por algún producto.')));
+          content: Text(
+              'No se puede eliminar la categoría porque está en uso por algún producto.')));
     } else {
-
-      DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('cartasnegocio').doc(negocioId).get();
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('cartasnegocio')
+          .doc(negocioId)
+          .get();
       var negocio = snapshot.data() as Map<String, dynamic>;
       List categorias = negocio['categoriasprod'] ?? [];
 
-  
       categorias.removeWhere((cat) => cat['id'] == categoriaId);
 
-      await FirebaseFirestore.instance.collection('cartasnegocio').doc(negocioId).update({
+      await FirebaseFirestore.instance
+          .collection('cartasnegocio')
+          .doc(negocioId)
+          .update({
         'categoriasprod': categorias,
       });
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Categoría eliminada exitosamente.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Categoría eliminada exitosamente.')));
     }
   }
 
-  Future<void> _editarCategoria(Map<String, dynamic> categoria, BuildContext context) async {
-    TextEditingController categoriaController = TextEditingController(text: categoria['nombre']);
-
+  Future<void> _editarCategoria(
+      Map<String, dynamic> categoria, BuildContext context) async {
+    TextEditingController categoriaController =
+        TextEditingController(text: categoria['nombre']);
 
     await showDialog(
       context: context,
@@ -77,7 +85,8 @@ class GestionarCatProdPage extends StatelessWidget {
           title: const Text('Editar Categoría'),
           content: TextField(
             controller: categoriaController,
-            decoration: const InputDecoration(labelText: 'Nuevo nombre de la categoría'),
+            decoration: const InputDecoration(
+                labelText: 'Nuevo nombre de la categoría'),
           ),
           actions: <Widget>[
             TextButton(
@@ -92,25 +101,29 @@ class GestionarCatProdPage extends StatelessWidget {
                 String nuevoNombre = categoriaController.text;
 
                 if (nuevoNombre.isNotEmpty) {
-                
-                  DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('cartasnegocio').doc(negocioId).get();
+                  DocumentSnapshot snapshot = await FirebaseFirestore.instance
+                      .collection('cartasnegocio')
+                      .doc(negocioId)
+                      .get();
                   var negocio = snapshot.data() as Map<String, dynamic>;
                   List categorias = negocio['categoriasprod'] ?? [];
 
-         
-                  int categoriaIndex = categorias.indexWhere((cat) => cat['id'] == categoria['id']);
+                  int categoriaIndex = categorias
+                      .indexWhere((cat) => cat['id'] == categoria['id']);
                   if (categoriaIndex != -1) {
                     categorias[categoriaIndex]['nombre'] = nuevoNombre;
                   }
 
-         
-                  await FirebaseFirestore.instance.collection('cartasnegocio').doc(negocioId).update({
+                  await FirebaseFirestore.instance
+                      .collection('cartasnegocio')
+                      .doc(negocioId)
+                      .update({
                     'categoriasprod': categorias,
                   });
 
                   Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Categoría actualizada exitosamente.')));
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text('Categoría actualizada exitosamente.')));
                 }
               },
             ),
@@ -127,7 +140,10 @@ class GestionarCatProdPage extends StatelessWidget {
         title: const Text('Gestionar Categorías de Producto'),
       ),
       body: StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance.collection('cartasnegocio').doc(negocioId).snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('cartasnegocio')
+            .doc(negocioId)
+            .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
@@ -155,7 +171,8 @@ class GestionarCatProdPage extends StatelessWidget {
                     IconButton(
                       icon: const Icon(Icons.delete),
                       onPressed: () {
-                        _confirmarEliminacionCategoria(categoria['id'], categoria['nombre'], context);
+                        _confirmarEliminacionCategoria(
+                            categoria['id'], categoria['nombre'], context);
                       },
                     ),
                   ],

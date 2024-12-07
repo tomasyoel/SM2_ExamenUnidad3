@@ -41,7 +41,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 //   }
 // }
 
-
 class Address {
   String id;
   String name;
@@ -81,7 +80,6 @@ class Address {
   }
 }
 
-
 class User {
   String id;
   String name;
@@ -111,8 +109,7 @@ class User {
 
   factory User.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    
-   
+
     List<dynamic> addressList = data['direcciones'] ?? [];
     List<Address> addresses = addressList.map((addr) {
       return Address.fromMap(addr, addr['codigo']);
@@ -150,17 +147,17 @@ class User {
 }
 
 Future<List<Address>> getUserAddresses(String userId) async {
-  DocumentSnapshot userDoc = await FirebaseFirestore.instance
-      .collection('usuarios')
-      .doc(userId)
-      .get();
+  DocumentSnapshot userDoc =
+      await FirebaseFirestore.instance.collection('usuarios').doc(userId).get();
 
   if (userDoc.exists) {
     Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
     List<dynamic> addressList = userData['direcciones'] ?? [];
 
-    return addressList.map((addr) => Address.fromMap(addr, addr['codigo'])).toList();
+    return addressList
+        .map((addr) => Address.fromMap(addr, addr['codigo']))
+        .toList();
   }
-  
+
   return [];
 }

@@ -38,7 +38,8 @@ class _GestionarCartaPageState extends State<GestionarCartaPage> {
 
     if (cartaSnapshot.exists) {
       setState(() {
-        productos = List<Map<String, dynamic>>.from(cartaSnapshot['productos'] ?? []);
+        productos =
+            List<Map<String, dynamic>>.from(cartaSnapshot['productos'] ?? []);
         _agruparProductosPorCategoria();
       });
     }
@@ -66,55 +67,56 @@ class _GestionarCartaPageState extends State<GestionarCartaPage> {
 
     if (cartaSnapshot.exists) {
       setState(() {
-        selectedProductsInCarta = List<Map<String, dynamic>>.from(cartaSnapshot['carta'] ?? []);
+        selectedProductsInCarta =
+            List<Map<String, dynamic>>.from(cartaSnapshot['carta'] ?? []);
       });
     }
-
 
     Map<String, String> categoryNames = await _getCategoryNames();
     setState(() {
       for (var product in selectedProductsInCarta) {
-        product['categoryName'] = categoryNames[product['catprod']] ?? 'Sin categoría';
+        product['categoryName'] =
+            categoryNames[product['catprod']] ?? 'Sin categoría';
       }
     });
   }
 
-Future<void> _agruparProductosPorCategoria() async {
+  Future<void> _agruparProductosPorCategoria() async {
+    final cartaSnapshot = await FirebaseFirestore.instance
+        .collection('cartasnegocio')
+        .doc(widget.negocioId)
+        .get();
 
-  final cartaSnapshot = await FirebaseFirestore.instance
-      .collection('cartasnegocio')
-      .doc(widget.negocioId)
-      .get();
+    List categorias = cartaSnapshot['categoriasprod'] ?? [];
 
-  List categorias = cartaSnapshot['categoriasprod'] ?? [];
+    Map<String, String> categoryIdToNameMap = {};
 
-  Map<String, String> categoryIdToNameMap = {};
-  
-
-  for (var cat in categorias) {
-    categoryIdToNameMap[cat['id']] = cat['nombre'];
-  }
-
-
-  Map<String, List<Map<String, dynamic>>> agrupados = {};
-  for (var producto in productos) {
-    String categoriaId = producto['catprod'] ?? 'Sin Categoría';
-    String categoriaNombre = categoryIdToNameMap[categoriaId] ?? 'Sin Categoría';
-
-    if (!agrupados.containsKey(categoriaNombre)) {
-      agrupados[categoriaNombre] = [];
+    for (var cat in categorias) {
+      categoryIdToNameMap[cat['id']] = cat['nombre'];
     }
-    agrupados[categoriaNombre]!.add(producto);
+
+    Map<String, List<Map<String, dynamic>>> agrupados = {};
+    for (var producto in productos) {
+      String categoriaId = producto['catprod'] ?? 'Sin Categoría';
+      String categoriaNombre =
+          categoryIdToNameMap[categoriaId] ?? 'Sin Categoría';
+
+      if (!agrupados.containsKey(categoriaNombre)) {
+        agrupados[categoriaNombre] = [];
+      }
+      agrupados[categoriaNombre]!.add(producto);
+    }
+
+    setState(() {
+      productosPorCategoria = agrupados;
+    });
   }
-
-  setState(() {
-    productosPorCategoria = agrupados;
-  });
-}
-
 
   Future<void> _saveCarta() async {
-    await FirebaseFirestore.instance.collection('cartasnegocio').doc(widget.negocioId).update({
+    await FirebaseFirestore.instance
+        .collection('cartasnegocio')
+        .doc(widget.negocioId)
+        .update({
       'carta': selectedProductsInCarta,
     });
   }
@@ -177,16 +179,19 @@ Future<void> _agruparProductosPorCategoria() async {
               const SizedBox(height: 5),
               Text(
                 'Precio: S/.${product['precio']?.toString() ?? '0'}',
-                style: TextStyle(fontSize: 16, color: _colorTexto.withOpacity(0.7)),
+                style: TextStyle(
+                    fontSize: 16, color: _colorTexto.withOpacity(0.7)),
               ),
               if (product['stock'] != null && product['stock'] > 0)
                 Text(
                   'Stock: ${product['stock']}',
-                  style: TextStyle(fontSize: 16, color: _colorTexto.withOpacity(0.7)),
+                  style: TextStyle(
+                      fontSize: 16, color: _colorTexto.withOpacity(0.7)),
                 ),
               Text(
                 'Estado: ${product['estado'] ?? 'Sin estado'}',
-                style: TextStyle(fontSize: 16, color: _colorTexto.withOpacity(0.7)),
+                style: TextStyle(
+                    fontSize: 16, color: _colorTexto.withOpacity(0.7)),
               ),
             ],
           ),
@@ -244,7 +249,8 @@ Future<void> _agruparProductosPorCategoria() async {
                 const SizedBox(height: 10),
                 Text(
                   'Precio: S/.${product['precio']?.toString() ?? '0'}',
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 5),
                 if (product['stock'] != null && product['stock'] > 0)
@@ -311,26 +317,27 @@ Future<void> _agruparProductosPorCategoria() async {
   }
 
   void _addProductToCarta(String? productName) {
+    final product = productos.firstWhere(
+        (element) => element['nombre'] == productName,
+        orElse: () => {});
+    final existsInCarta =
+        selectedProductsInCarta.any((p) => p['nombre'] == productName);
 
-  final product = productos.firstWhere((element) => element['nombre'] == productName, orElse: () => {});
-  final existsInCarta = selectedProductsInCarta.any((p) => p['nombre'] == productName);
-
-  if (product.isNotEmpty && !existsInCarta) {
-    setState(() {
-      selectedProductsInCarta.add(product);
-      _saveCarta();
-    });
-  } else if (existsInCarta) {
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('El producto ya existe en la carta.')),
-    );
+    if (product.isNotEmpty && !existsInCarta) {
+      setState(() {
+        selectedProductsInCarta.add(product);
+        _saveCarta();
+      });
+    } else if (existsInCarta) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('El producto ya existe en la carta.')),
+      );
+    }
   }
-}
-
 
   void _pickBackgroundImage() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.image);
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(type: FileType.image);
     if (result != null) {
       setState(() {
         _imagenFondo = File(result.files.single.path!);
@@ -415,7 +422,8 @@ Future<void> _agruparProductosPorCategoria() async {
             ),
             DropdownButton<String>(
               value: selectedProduct,
-              hint: const Text('Selecciona un producto', style: TextStyle(color: Colors.white)),
+              hint: const Text('Selecciona un producto',
+                  style: TextStyle(color: Colors.white)),
               dropdownColor: Colors.black,
               onChanged: (String? value) {
                 setState(() {
@@ -426,7 +434,8 @@ Future<void> _agruparProductosPorCategoria() async {
               items: productos.map<DropdownMenuItem<String>>((product) {
                 return DropdownMenuItem<String>(
                   value: product['nombre'],
-                  child: Text(product['nombre'], style: const TextStyle(color: Colors.orange)),
+                  child: Text(product['nombre'],
+                      style: const TextStyle(color: Colors.orange)),
                 );
               }).toList(),
             ),
@@ -458,10 +467,6 @@ Future<void> _agruparProductosPorCategoria() async {
     );
   }
 }
-
-
-
-
 
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:flutter/material.dart';
@@ -873,17 +878,6 @@ Future<void> _agruparProductosPorCategoria() async {
 //   }
 // }
 
-
-
-
-
-
-
-
-
-
-
-
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -1109,8 +1103,6 @@ Future<void> _agruparProductosPorCategoria() async {
 //     },
 //   );
 // }
-
-
 
 //   void _editProduct(Map<String, dynamic> product) {
 //     showDialog(

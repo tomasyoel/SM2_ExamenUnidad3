@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -27,18 +29,20 @@ class _AgregarNegocioPageState extends State<AgregarNegocioPage> {
   bool _isAdding = false;
 
   Future<void> _addNegocio() async {
-  if (_nombreController.text.isEmpty ||
-      _direccionController.text.isEmpty ||
-      _ubicacionSeleccionada == null ||
-      _logoImage == null ||
-      _tipoCocinaSeleccionado == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Por favor, completa todos los campos y sube el logo.')),
-    );
-    return;
-  }
+    if (_nombreController.text.isEmpty ||
+        _direccionController.text.isEmpty ||
+        _ubicacionSeleccionada == null ||
+        _logoImage == null ||
+        _tipoCocinaSeleccionado == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content:
+                Text('Por favor, completa todos los campos y sube el logo.')),
+      );
+      return;
+    }
 
-  setState(() {
+    setState(() {
       _isAdding = true;
     });
 
@@ -46,61 +50,64 @@ class _AgregarNegocioPageState extends State<AgregarNegocioPage> {
       const SnackBar(content: Text('Agregando negocio...')),
     );
 
-  try {
-    _logoUrl = await _uploadLogo();
+    try {
+      _logoUrl = await _uploadLogo();
 
-    final Map<String, dynamic> negocioData = {
-      'nombre': _nombreController.text,
-      'propietario': _propietarioController.text,
-      'logo': _logoUrl,
-      'direccion': _direccionController.text,
-      'ubicacion': GeoPoint(_ubicacionSeleccionada!.latitude, _ubicacionSeleccionada!.longitude),
-      'tipo_cocina': _tipoCocinaSeleccionado,
-      'calificacionnegocio': [],
-      'recomendaciones': [],
-      'nroCelular': _nroCelularController.text.isNotEmpty ? _nroCelularController.text : '',
-    };
+      final Map<String, dynamic> negocioData = {
+        'nombre': _nombreController.text,
+        'propietario': _propietarioController.text,
+        'logo': _logoUrl,
+        'direccion': _direccionController.text,
+        'ubicacion': GeoPoint(_ubicacionSeleccionada!.latitude,
+            _ubicacionSeleccionada!.longitude),
+        'tipo_cocina': _tipoCocinaSeleccionado,
+        'calificacionnegocio': [],
+        'recomendaciones': [],
+        'nroCelular': _nroCelularController.text.isNotEmpty
+            ? _nroCelularController.text
+            : '',
+      };
 
+      if (_encargadoSeleccionado != null) {
+        negocioData['encargado'] = _encargadoSeleccionado;
+      }
 
-    if (_encargadoSeleccionado != null) {
-      negocioData['encargado'] = _encargadoSeleccionado;
-    }
+      final negocioDoc = await FirebaseFirestore.instance
+          .collection('negocios')
+          .add(negocioData);
 
+      await FirebaseFirestore.instance
+          .collection('cartasnegocio')
+          .doc(negocioDoc.id)
+          .set({
+        'negocioId': negocioDoc.id,
+        // 'carta': [],
+      });
 
-    final negocioDoc = await FirebaseFirestore.instance.collection('negocios').add(negocioData);
+      _nombreController.clear();
+      _propietarioController.clear();
+      _direccionController.clear();
+      _nroCelularController.clear();
+      _ubicacionSeleccionada = null;
+      _encargadoSeleccionado = null;
+      _tipoCocinaSeleccionado = null;
+      _logoImage = null;
+      // setState(() {});
 
-
-    await FirebaseFirestore.instance.collection('cartasnegocio').doc(negocioDoc.id).set({
-      'negocioId': negocioDoc.id,
-      // 'carta': [],
-    });
-
-
-    _nombreController.clear();
-    _propietarioController.clear();
-    _direccionController.clear();
-    _nroCelularController.clear();
-    _ubicacionSeleccionada = null;
-    _encargadoSeleccionado = null;
-    _tipoCocinaSeleccionado = null;
-    _logoImage = null;
-    // setState(() {});
-
-    setState(() {
+      setState(() {
         _isAdding = false;
       });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Negocio agregado exitosamente y carta creada.')),
-    );
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error al agregar el negocio: $e')),
-    );
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Negocio agregado exitosamente y carta creada.')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al agregar el negocio: $e')),
+      );
+    }
   }
-}
-
-
 
   Future<void> _seleccionarUbicacion() async {
     final LatLng? result = await Navigator.push(
@@ -119,17 +126,18 @@ class _AgregarNegocioPageState extends State<AgregarNegocioPage> {
 
   Future<void> _pickImage() async {
     try {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.image);
+      FilePickerResult? result =
+          await FilePicker.platform.pickFiles(type: FileType.image);
 
       if (result != null) {
         setState(() {
           _logoImage = File(result.files.single.path!);
         });
       } else {
-        print('No se seleccionó ninguna imagen.');
+        //print('No se seleccionó ninguna imagen.');
       }
     } catch (e) {
-      print('Error al seleccionar la imagen: $e');
+      //print('Error al seleccionar la imagen: $e');
     }
   }
 
@@ -137,14 +145,13 @@ class _AgregarNegocioPageState extends State<AgregarNegocioPage> {
     if (_logoImage == null) return null;
 
     try {
-      final storageRef = FirebaseStorage.instance
-          .ref()
-          .child('logonegocios/${_nombreController.text}_${DateTime.now().millisecondsSinceEpoch}.png');
+      final storageRef = FirebaseStorage.instance.ref().child(
+          'logonegocios/${_nombreController.text}_${DateTime.now().millisecondsSinceEpoch}.png');
       UploadTask uploadTask = storageRef.putFile(_logoImage!);
       TaskSnapshot snapshot = await uploadTask;
       return await snapshot.ref.getDownloadURL();
     } catch (e) {
-      print('Error al subir el logo: $e');
+      //print('Error al subir el logo: $e');
       return null;
     }
   }
@@ -162,15 +169,18 @@ class _AgregarNegocioPageState extends State<AgregarNegocioPage> {
             children: [
               TextField(
                 controller: _nombreController,
-                decoration: const InputDecoration(labelText: 'Nombre del Negocio'),
+                decoration:
+                    const InputDecoration(labelText: 'Nombre del Negocio'),
               ),
               TextField(
                 controller: _propietarioController,
-                decoration: const InputDecoration(labelText: 'Nombre del Propietario'),
+                decoration:
+                    const InputDecoration(labelText: 'Nombre del Propietario'),
               ),
               TextField(
                 controller: _nroCelularController,
-                decoration: const InputDecoration(labelText: 'Número de Celular'),
+                decoration:
+                    const InputDecoration(labelText: 'Número de Celular'),
                 keyboardType: TextInputType.phone,
               ),
               const SizedBox(height: 20),
@@ -188,7 +198,6 @@ class _AgregarNegocioPageState extends State<AgregarNegocioPage> {
                 ),
               ),
               const SizedBox(height: 20),
-
               if (_ubicacionSeleccionada != null)
                 SizedBox(
                   height: 200,
@@ -206,82 +215,81 @@ class _AgregarNegocioPageState extends State<AgregarNegocioPage> {
                   ),
                 ),
               const SizedBox(height: 20),
-
               GestureDetector(
                 onTap: _pickImage,
                 child: CircleAvatar(
                   radius: 50,
-                  backgroundImage: _logoImage != null ? FileImage(_logoImage!) : null,
+                  backgroundImage:
+                      _logoImage != null ? FileImage(_logoImage!) : null,
                   child: _logoImage == null
-                      ? const Icon(Icons.camera_alt, size: 50, color: Colors.white70)
+                      ? const Icon(Icons.camera_alt,
+                          size: 50, color: Colors.white70)
                       : null,
                 ),
               ),
               const SizedBox(height: 20),
-
-            FutureBuilder<QuerySnapshot>(
-            future: FirebaseFirestore.instance.collection('negocios').get(),
-            builder: (context, negocioSnapshot) {
-              if (!negocioSnapshot.hasData) {
-                return const CircularProgressIndicator();
-              }
-
-              final negocios = negocioSnapshot.data!.docs;
-
-          
-              final Set<dynamic> usuariosAsignados = negocios
-                  .where((doc) => (doc.data() as Map<String, dynamic>).containsKey('encargado'))
-                  .map<dynamic>((doc) => doc['encargado'])
-                  .toSet();
-
-              return FutureBuilder<QuerySnapshot>(
-                future: FirebaseFirestore.instance
-                    .collection('usuarios')
-                    .where('rol', isEqualTo: 'negocio')
-                    .get(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
+              FutureBuilder<QuerySnapshot>(
+                future: FirebaseFirestore.instance.collection('negocios').get(),
+                builder: (context, negocioSnapshot) {
+                  if (!negocioSnapshot.hasData) {
                     return const CircularProgressIndicator();
                   }
 
-                  final usuariosNegocio = snapshot.data!.docs;
+                  final negocios = negocioSnapshot.data!.docs;
 
-                  
-                  final encargadosDisponibles = usuariosNegocio.where((usuario) {
-                    return !usuariosAsignados.contains(usuario.id);
-                  }).toList();
+                  final Set<dynamic> usuariosAsignados = negocios
+                      .where((doc) => (doc.data() as Map<String, dynamic>)
+                          .containsKey('encargado'))
+                      .map<dynamic>((doc) => doc['encargado'])
+                      .toSet();
 
-                  return DropdownButton<String>(
-                    hint: const Text('Seleccionar Encargado'),
-                    value: _encargadoSeleccionado,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _encargadoSeleccionado = newValue;
-                      });
-                    },
-                    items: encargadosDisponibles.map((encargado) {
-                      var data = encargado.data() as Map<String, dynamic>?;
+                  return FutureBuilder<QuerySnapshot>(
+                    future: FirebaseFirestore.instance
+                        .collection('usuarios')
+                        .where('rol', isEqualTo: 'negocio')
+                        .get(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const CircularProgressIndicator();
+                      }
 
-                      String nombre = (data != null && data.containsKey('nombre'))
-                          ? data['nombre']
-                          : data?['correo'] ?? 'Sin nombre';
+                      final usuariosNegocio = snapshot.data!.docs;
 
-                      return DropdownMenuItem<String>(
-                        value: encargado.id,
-                        child: Text(nombre),
+                      final encargadosDisponibles =
+                          usuariosNegocio.where((usuario) {
+                        return !usuariosAsignados.contains(usuario.id);
+                      }).toList();
+
+                      return DropdownButton<String>(
+                        hint: const Text('Seleccionar Encargado'),
+                        value: _encargadoSeleccionado,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _encargadoSeleccionado = newValue;
+                          });
+                        },
+                        items: encargadosDisponibles.map((encargado) {
+                          var data = encargado.data() as Map<String, dynamic>?;
+
+                          String nombre =
+                              (data != null && data.containsKey('nombre'))
+                                  ? data['nombre']
+                                  : data?['correo'] ?? 'Sin nombre';
+
+                          return DropdownMenuItem<String>(
+                            value: encargado.id,
+                            child: Text(nombre),
+                          );
+                        }).toList(),
                       );
-                    }).toList(),
+                    },
                   );
                 },
-              );
-            },
-          ),
-
-
+              ),
               const SizedBox(height: 20),
-           
               FutureBuilder<QuerySnapshot>(
-                future: FirebaseFirestore.instance.collection('tipococina').get(),
+                future:
+                    FirebaseFirestore.instance.collection('tipococina').get(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return const CircularProgressIndicator();
@@ -321,92 +329,91 @@ class _AgregarNegocioPageState extends State<AgregarNegocioPage> {
   }
 }
 
+// Future<void> _addNegocio() async {
+//   if (_nombreController.text.isEmpty ||
+//       _direccionController.text.isEmpty ||
+//       _ubicacionSeleccionada == null ||
+//       _encargadoSeleccionado == null ||
+//       _logoImage == null ||
+//       _tipoCocinaSeleccionado == null) {
+//     ScaffoldMessenger.of(context).showSnackBar(
+//       const SnackBar(content: Text('Por favor, completa todos los campos y sube el logo.')),
+//     );
+//     return;
+//   }
 
-  // Future<void> _addNegocio() async {
-  //   if (_nombreController.text.isEmpty ||
-  //       _direccionController.text.isEmpty ||
-  //       _ubicacionSeleccionada == null ||
-  //       _encargadoSeleccionado == null ||
-  //       _logoImage == null ||
-  //       _tipoCocinaSeleccionado == null) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(content: Text('Por favor, completa todos los campos y sube el logo.')),
-  //     );
-  //     return;
-  //   }
+//   try {
+//     // Sube la imagen del logo al storage
+//     _logoUrl = await _uploadLogo();
 
-  //   try {
-  //     // Sube la imagen del logo al storage
-  //     _logoUrl = await _uploadLogo();
+//     // Guarda el negocio en Firestore
+//     final negocioDoc = await FirebaseFirestore.instance.collection('negocios').add({
+//       'nombre': _nombreController.text,
+//       'propietario': _propietarioController.text,
+//       'logo': _logoUrl,
+//       'direccion': _direccionController.text,
+//       'ubicacion': GeoPoint(_ubicacionSeleccionada!.latitude, _ubicacionSeleccionada!.longitude),
+//       'encargado': _encargadoSeleccionado,
+//       'tipo_cocina': _tipoCocinaSeleccionado, // Tipo de cocina seleccionado
+//     });
 
-  //     // Guarda el negocio en Firestore
-  //     final negocioDoc = await FirebaseFirestore.instance.collection('negocios').add({
-  //       'nombre': _nombreController.text,
-  //       'propietario': _propietarioController.text,
-  //       'logo': _logoUrl,
-  //       'direccion': _direccionController.text,
-  //       'ubicacion': GeoPoint(_ubicacionSeleccionada!.latitude, _ubicacionSeleccionada!.longitude),
-  //       'encargado': _encargadoSeleccionado,
-  //       'tipo_cocina': _tipoCocinaSeleccionado, // Tipo de cocina seleccionado
-  //     });
+//     // Crear una plantilla vacía de carta vinculada al negocio
+//     await FirebaseFirestore.instance.collection('cartasnegocio').doc(negocioDoc.id).set({
+//       'negocioId': negocioDoc.id,
+//       // 'carta': [], // Inicializamos la carta vacía
+//     });
 
-  //     // Crear una plantilla vacía de carta vinculada al negocio
-  //     await FirebaseFirestore.instance.collection('cartasnegocio').doc(negocioDoc.id).set({
-  //       'negocioId': negocioDoc.id,
-  //       // 'carta': [], // Inicializamos la carta vacía
-  //     });
+//     // Limpia los controladores y variables
+//     _nombreController.clear();
+//     _propietarioController.clear();
+//     _direccionController.clear();
+//     _ubicacionSeleccionada = null;
+//     _encargadoSeleccionado = null;
+//     _tipoCocinaSeleccionado = null;
+//     _logoImage = null;
+//     setState(() {});
 
-  //     // Limpia los controladores y variables
-  //     _nombreController.clear();
-  //     _propietarioController.clear();
-  //     _direccionController.clear();
-  //     _ubicacionSeleccionada = null;
-  //     _encargadoSeleccionado = null;
-  //     _tipoCocinaSeleccionado = null;
-  //     _logoImage = null;
-  //     setState(() {});
+//     ScaffoldMessenger.of(context).showSnackBar(
+//       const SnackBar(content: Text('Negocio agregado exitosamente y carta creada.')),
+//     );
+//   } catch (e) {
+//     ScaffoldMessenger.of(context).showSnackBar(
+//       SnackBar(content: Text('Error al agregar el negocio: $e')),
+//     );
+//   }
+// }
 
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(content: Text('Negocio agregado exitosamente y carta creada.')),
-  //     );
-  //   } catch (e) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text('Error al agregar el negocio: $e')),
-  //     );
-  //   }
-  // }
+// FutureBuilder<QuerySnapshot>(
+//   future: FirebaseFirestore.instance
+//       .collection('usuarios')
+//       .where('rol', isEqualTo: 'negocio')
+//       .get(),
+//   builder: (context, snapshot) {
+//     if (!snapshot.hasData) {
+//       return const CircularProgressIndicator();
+//     }
 
-              // FutureBuilder<QuerySnapshot>(
-              //   future: FirebaseFirestore.instance
-              //       .collection('usuarios')
-              //       .where('rol', isEqualTo: 'negocio')
-              //       .get(),
-              //   builder: (context, snapshot) {
-              //     if (!snapshot.hasData) {
-              //       return const CircularProgressIndicator();
-              //     }
+//     final encargados = snapshot.data!.docs;
 
-              //     final encargados = snapshot.data!.docs;
+//     return DropdownButton<String>(
+//       hint: const Text('Seleccionar Encargado'),
+//       value: _encargadoSeleccionado,
+//       onChanged: (String? newValue) {
+//         setState(() {
+//           _encargadoSeleccionado = newValue;
+//         });
+//       },
+//       items: encargados.map((encargado) {
+//         var data = encargado.data() as Map<String, dynamic>?;
+//         String nombre = (data != null && data.containsKey('nombre'))
+//             ? data['nombre']
+//             : data?['correo'] ?? 'Sin nombre';
 
-              //     return DropdownButton<String>(
-              //       hint: const Text('Seleccionar Encargado'),
-              //       value: _encargadoSeleccionado,
-              //       onChanged: (String? newValue) {
-              //         setState(() {
-              //           _encargadoSeleccionado = newValue;
-              //         });
-              //       },
-              //       items: encargados.map((encargado) {
-              //         var data = encargado.data() as Map<String, dynamic>?;
-              //         String nombre = (data != null && data.containsKey('nombre'))
-              //             ? data['nombre']
-              //             : data?['correo'] ?? 'Sin nombre';
-
-              //         return DropdownMenuItem<String>(
-              //           value: encargado.id,
-              //           child: Text(nombre),
-              //         );
-              //       }).toList(),
-              //     );
-              //   },
-              // ),
+//         return DropdownMenuItem<String>(
+//           value: encargado.id,
+//           child: Text(nombre),
+//         );
+//       }).toList(),
+//     );
+//   },
+// ),

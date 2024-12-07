@@ -33,13 +33,15 @@ final ValueNotifier<bool> shouldShowBlockScreen = ValueNotifier(false);
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (Firebase.apps.isEmpty) {
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
   }
 
   // Inicializa el listener de versiones
   VersionCheckerService().startVersionListener(() {
     shouldShowBlockScreen.value = true;
-    FirebaseAuth.instance.signOut(); // Cierra sesión automáticamente si es necesario
+    FirebaseAuth.instance
+        .signOut(); // Cierra sesión automáticamente si es necesario
   });
 
   await FirebaseAppCheck.instance.activate(
@@ -107,9 +109,12 @@ class MyApp extends StatelessWidget {
                           .doc(user.uid)
                           .get(),
                       builder: (context, userSnapshot) {
-                        if (userSnapshot.connectionState == ConnectionState.done) {
-                          if (userSnapshot.hasData && userSnapshot.data != null) {
-                            final userData = userSnapshot.data!.data() as Map<String, dynamic>;
+                        if (userSnapshot.connectionState ==
+                            ConnectionState.done) {
+                          if (userSnapshot.hasData &&
+                              userSnapshot.data != null) {
+                            final userData = userSnapshot.data!.data()
+                                as Map<String, dynamic>;
                             final role = userData['rol'] ?? 'cliente';
                             switch (role) {
                               case 'administrador':
@@ -157,7 +162,8 @@ class MyApp extends StatelessWidget {
         '/cupones': (context) => CuponesPage(),
         // '/soporteEnLinea': (context) => SoporteEnLineaPage(),
         '/gestionCarta': (context) {
-          final negocioId = ModalRoute.of(context)?.settings.arguments as String?;
+          final negocioId =
+              ModalRoute.of(context)?.settings.arguments as String?;
           if (negocioId != null) {
             return GestionarCartaPage(negocioId: negocioId);
           } else {
@@ -167,7 +173,8 @@ class MyApp extends StatelessWidget {
           }
         },
         '/agregarProducto': (context) {
-          final negocioId = ModalRoute.of(context)?.settings.arguments as String?;
+          final negocioId =
+              ModalRoute.of(context)?.settings.arguments as String?;
           if (negocioId != null) {
             return AgregarProductoPage(negocioId: negocioId);
           } else {
@@ -177,7 +184,8 @@ class MyApp extends StatelessWidget {
           }
         },
         '/gestionarProductos': (context) {
-          final negocioId = ModalRoute.of(context)?.settings.arguments as String?;
+          final negocioId =
+              ModalRoute.of(context)?.settings.arguments as String?;
           if (negocioId != null) {
             return ProductManagementPage(negocioId: negocioId);
           } else {
@@ -187,7 +195,8 @@ class MyApp extends StatelessWidget {
           }
         },
         '/agregarCatProd': (context) {
-          final negocioId = ModalRoute.of(context)?.settings.arguments as String?;
+          final negocioId =
+              ModalRoute.of(context)?.settings.arguments as String?;
           if (negocioId != null) {
             return AgregarCatProdPage(negocioId: negocioId);
           } else {
@@ -197,7 +206,8 @@ class MyApp extends StatelessWidget {
           }
         },
         '/gestionarCatProd': (context) {
-          final negocioId = ModalRoute.of(context)?.settings.arguments as String?;
+          final negocioId =
+              ModalRoute.of(context)?.settings.arguments as String?;
           if (negocioId != null) {
             return GestionarCatProdPage(negocioId: negocioId);
           } else {
@@ -207,7 +217,8 @@ class MyApp extends StatelessWidget {
           }
         },
         '/gestionarHorarios': (context) {
-          final negocioId = ModalRoute.of(context)?.settings.arguments as String?;
+          final negocioId =
+              ModalRoute.of(context)?.settings.arguments as String?;
           if (negocioId != null) {
             return HorarioPage(negocioId: negocioId);
           } else {
@@ -217,7 +228,8 @@ class MyApp extends StatelessWidget {
           }
         },
         '/listaPedidosNegocio': (context) {
-          final negocioId = ModalRoute.of(context)?.settings.arguments as String?;
+          final negocioId =
+              ModalRoute.of(context)?.settings.arguments as String?;
           if (negocioId != null) {
             return ListaPedidosNegocioPage(negocioId: negocioId);
           } else {
@@ -233,13 +245,16 @@ class MyApp extends StatelessWidget {
 
 class FirebaseMessagingService {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   void initialize() {
     _firebaseMessaging.requestPermission();
 
-    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const InitializationSettings initializationSettings = InitializationSettings(
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
       android: initializationSettingsAndroid,
     );
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
@@ -268,8 +283,10 @@ class FirebaseMessagingService {
     });
   }
 
-  Future<void> sendPushNotification(String token, String title, String body) async {
+  Future<void> sendPushNotification(
+      String token, String title, String body) async {
     try {
+      // ignore: deprecated_member_use
       await _firebaseMessaging.sendMessage(
         to: token,
         data: {
@@ -278,18 +295,10 @@ class FirebaseMessagingService {
         },
       );
     } catch (e) {
-      print('Error sending push notification: $e');
+      //print('Error sending push notification: $e');
     }
   }
 }
-
-
-
-
-
-
-
-
 
 // import 'package:flutter/material.dart';
 // import 'package:restmap/views/admin/agregartipococina.dart';
@@ -416,7 +425,7 @@ class FirebaseMessagingService {
 //         '/forgotPassword': (context) => const ForgotPasswordPage(),
 //         '/gestionarCupones': (context) => CuponesPage(),
 //         // '/apiRecomendaciones': (context) => ApirecomendacionesPage(),
-//         '/perfilNegocio': (context) => const PerfilNegocioPage(), 
+//         '/perfilNegocio': (context) => const PerfilNegocioPage(),
 //         '/gestionCarta': (context) {
 //           final negocioId = ModalRoute.of(context)?.settings.arguments as String?;
 //           if (negocioId != null) {
@@ -533,32 +542,6 @@ class FirebaseMessagingService {
 //     }
 //   }
 // }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // import 'package:flutter/material.dart';
 // import 'package:restmap/views/admin/agregartipococina.dart';

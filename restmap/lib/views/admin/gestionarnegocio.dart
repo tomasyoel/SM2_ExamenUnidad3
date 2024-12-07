@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
+
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,130 +13,133 @@ class GestionarNegociosPage extends StatefulWidget {
 
 class _GestionarNegociosPageState extends State<GestionarNegociosPage> {
   @override
-    Widget build(BuildContext context) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text("Gestionar Negocios"),
-        ),
-        body: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection('negocios').snapshots(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Gestionar Negocios"),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('negocios').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-            final negocios = snapshot.data!.docs;
+          final negocios = snapshot.data!.docs;
 
-            if (negocios.isEmpty) {
-              return const Center(child: Text("No hay negocios registrados."));
-            }
+          if (negocios.isEmpty) {
+            return const Center(child: Text("No hay negocios registrados."));
+          }
 
-            return ListView.builder(
-              itemCount: negocios.length,
-              itemBuilder: (context, index) {
-                var negocio = negocios[index];
-                var negocioData = negocio.data() as Map<String, dynamic>?;
+          return ListView.builder(
+            itemCount: negocios.length,
+            itemBuilder: (context, index) {
+              var negocio = negocios[index];
+              var negocioData = negocio.data() as Map<String, dynamic>?;
 
-              
-                var logo = (negocioData != null && negocioData['logo'] != null)
-                    ? negocioData['logo']
-                    : null;
+              var logo = (negocioData != null && negocioData['logo'] != null)
+                  ? negocioData['logo']
+                  : null;
 
-                return ListTile(
-                  leading: logo != null
-                      ? Image.network(logo, width: 50, height: 50)
-                      : const Icon(Icons.store),
-                  title: Text(negocioData?['nombre'] ?? 'Sin nombre'),
-                  subtitle: Text('Propietario: ${negocioData?['propietario'] ?? 'Sin propietario'}'),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.visibility),
-                        onPressed: () => _viewNegocio(context, negocioData),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.edit),
-                        onPressed: () => _editNegocio(context, negocio.id, negocioData),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => _confirmDeleteNegocio(context, negocio.id),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            );
-          },
-        ),
-      );
-    }
-
-  
-    void _viewNegocio(BuildContext context, Map<String, dynamic>? negocioData) async {
-      
-      String encargadoInfo = "Sin encargado";
-      if (negocioData?['encargado'] != null) {
-        var encargadoSnapshot = await FirebaseFirestore.instance
-            .collection('usuarios')
-            .doc(negocioData!['encargado'])
-            .get();
-        if (encargadoSnapshot.exists) {
-          var encargadoData = encargadoSnapshot.data();
-          encargadoInfo = (encargadoData != null && encargadoData.containsKey('nombre'))
-              ? encargadoData['nombre']
-              : encargadoData?['correo'] ?? 'Sin encargado';
-        }
-      }
-
-    
-      String tipoCocinaNombre = "Sin tipo de cocina";
-      if (negocioData?['tipo_cocina'] != null) {
-        var tipoCocinaSnapshot = await FirebaseFirestore.instance
-            .collection('tipococina')
-            .doc(negocioData!['tipo_cocina'])
-            .get();
-        if (tipoCocinaSnapshot.exists) {
-          var tipoCocinaData = tipoCocinaSnapshot.data();
-          tipoCocinaNombre = tipoCocinaData?['nombre'] ?? "Sin tipo de cocina";
-        }
-      }
-
-      
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('Información del Negocio'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                negocioData?['logo'] != null
-                    ? Image.network(negocioData!['logo'], height: 100)
-                    : const Icon(Icons.store, size: 100),
-                const SizedBox(height: 20),
-                Text('Nombre: ${negocioData?['nombre'] ?? 'Sin nombre'}'),
-                Text('Propietario: ${negocioData?['propietario'] ?? 'Sin propietario'}'),
-                Text('Encargado: $encargadoInfo'),
-                Text('Tipo de Cocina: $tipoCocinaNombre'),
-              ],
-            ),
-            actions: [
-              TextButton(
-                child: const Text('Cerrar'),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ],
+              return ListTile(
+                leading: logo != null
+                    ? Image.network(logo, width: 50, height: 50)
+                    : const Icon(Icons.store),
+                title: Text(negocioData?['nombre'] ?? 'Sin nombre'),
+                subtitle: Text(
+                    'Propietario: ${negocioData?['propietario'] ?? 'Sin propietario'}'),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.visibility),
+                      onPressed: () => _viewNegocio(context, negocioData),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () =>
+                          _editNegocio(context, negocio.id, negocioData),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () =>
+                          _confirmDeleteNegocio(context, negocio.id),
+                    ),
+                  ],
+                ),
+              );
+            },
           );
         },
-      );
+      ),
+    );
+  }
+
+  void _viewNegocio(
+      BuildContext context, Map<String, dynamic>? negocioData) async {
+    String encargadoInfo = "Sin encargado";
+    if (negocioData?['encargado'] != null) {
+      var encargadoSnapshot = await FirebaseFirestore.instance
+          .collection('usuarios')
+          .doc(negocioData!['encargado'])
+          .get();
+      if (encargadoSnapshot.exists) {
+        var encargadoData = encargadoSnapshot.data();
+        encargadoInfo =
+            (encargadoData != null && encargadoData.containsKey('nombre'))
+                ? encargadoData['nombre']
+                : encargadoData?['correo'] ?? 'Sin encargado';
+      }
     }
 
+    String tipoCocinaNombre = "Sin tipo de cocina";
+    if (negocioData?['tipo_cocina'] != null) {
+      var tipoCocinaSnapshot = await FirebaseFirestore.instance
+          .collection('tipococina')
+          .doc(negocioData!['tipo_cocina'])
+          .get();
+      if (tipoCocinaSnapshot.exists) {
+        var tipoCocinaData = tipoCocinaSnapshot.data();
+        tipoCocinaNombre = tipoCocinaData?['nombre'] ?? "Sin tipo de cocina";
+      }
+    }
 
-    void _editNegocio(BuildContext context, String negocioId, Map<String, dynamic>? negocioData) {
-    final TextEditingController nombreController = TextEditingController(text: negocioData?['nombre']);
-    final TextEditingController propietarioController = TextEditingController(text: negocioData?['propietario']);
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Información del Negocio'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              negocioData?['logo'] != null
+                  ? Image.network(negocioData!['logo'], height: 100)
+                  : const Icon(Icons.store, size: 100),
+              const SizedBox(height: 20),
+              Text('Nombre: ${negocioData?['nombre'] ?? 'Sin nombre'}'),
+              Text(
+                  'Propietario: ${negocioData?['propietario'] ?? 'Sin propietario'}'),
+              Text('Encargado: $encargadoInfo'),
+              Text('Tipo de Cocina: $tipoCocinaNombre'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: const Text('Cerrar'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _editNegocio(BuildContext context, String negocioId,
+      Map<String, dynamic>? negocioData) {
+    final TextEditingController nombreController =
+        TextEditingController(text: negocioData?['nombre']);
+    final TextEditingController propietarioController =
+        TextEditingController(text: negocioData?['propietario']);
     String? encargadoSeleccionado = negocioData?['encargado'];
     String? tipoCocinaSeleccionado = negocioData?['tipo_cocina'];
 
@@ -150,14 +155,15 @@ class _GestionarNegociosPageState extends State<GestionarNegociosPage> {
                   children: [
                     TextField(
                       controller: nombreController,
-                      decoration: const InputDecoration(labelText: 'Nombre del Negocio'),
+                      decoration: const InputDecoration(
+                          labelText: 'Nombre del Negocio'),
                     ),
                     TextField(
                       controller: propietarioController,
-                      decoration: const InputDecoration(labelText: 'Nombre del Propietario'),
+                      decoration: const InputDecoration(
+                          labelText: 'Nombre del Propietario'),
                     ),
                     const SizedBox(height: 20),
-                  
                     FutureBuilder<QuerySnapshot>(
                       future: FirebaseFirestore.instance
                           .collection('usuarios')
@@ -182,8 +188,10 @@ class _GestionarNegociosPageState extends State<GestionarNegociosPage> {
                                   });
                                 },
                                 items: encargados.map((encargado) {
-                                  var data = encargado.data() as Map<String, dynamic>?;
-                                  String nombre = (data != null && data.containsKey('nombre'))
+                                  var data =
+                                      encargado.data() as Map<String, dynamic>?;
+                                  String nombre = (data != null &&
+                                          data.containsKey('nombre'))
                                       ? data['nombre']
                                       : data?['correo'] ?? 'Sin nombre';
 
@@ -198,19 +206,19 @@ class _GestionarNegociosPageState extends State<GestionarNegociosPage> {
                               IconButton(
                                 icon: const Icon(Icons.clear),
                                 onPressed: () async {
-                                  
                                   await FirebaseFirestore.instance
                                       .collection('negocios')
                                       .doc(negocioId)
-                                      .update({'encargado': FieldValue.delete()});
+                                      .update(
+                                          {'encargado': FieldValue.delete()});
 
                                   setState(() {
                                     encargadoSeleccionado = null;
                                   });
 
-                                
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('Encargado eliminado')),
+                                    const SnackBar(
+                                        content: Text('Encargado eliminado')),
                                   );
                                 },
                               ),
@@ -219,9 +227,10 @@ class _GestionarNegociosPageState extends State<GestionarNegociosPage> {
                       },
                     ),
                     const SizedBox(height: 20),
-                
                     FutureBuilder<QuerySnapshot>(
-                      future: FirebaseFirestore.instance.collection('tipococina').get(),
+                      future: FirebaseFirestore.instance
+                          .collection('tipococina')
+                          .get(),
                       builder: (context, snapshot) {
                         if (!snapshot.hasData) {
                           return const CircularProgressIndicator();
@@ -258,7 +267,6 @@ class _GestionarNegociosPageState extends State<GestionarNegociosPage> {
                 ElevatedButton(
                   child: const Text('Guardar'),
                   onPressed: () async {
-                
                     Map<String, dynamic> updateData = {
                       'nombre': nombreController.text,
                       'propietario': propietarioController.text,
@@ -269,10 +277,14 @@ class _GestionarNegociosPageState extends State<GestionarNegociosPage> {
                       updateData['encargado'] = encargadoSeleccionado;
                     }
 
-                    await FirebaseFirestore.instance.collection('negocios').doc(negocioId).update(updateData);
+                    await FirebaseFirestore.instance
+                        .collection('negocios')
+                        .doc(negocioId)
+                        .update(updateData);
 
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Datos actualizados correctamente')),
+                      const SnackBar(
+                          content: Text('Datos actualizados correctamente')),
                     );
                     Navigator.of(context).pop();
                   },
@@ -285,14 +297,14 @@ class _GestionarNegociosPageState extends State<GestionarNegociosPage> {
     );
   }
 
-
-    void _confirmDeleteNegocio(BuildContext context, String negocioId) async {
+  void _confirmDeleteNegocio(BuildContext context, String negocioId) async {
     bool confirm = await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: const Text('Confirmar Eliminación'),
-          content: const Text('¿Está seguro de que desea eliminar este negocio?'),
+          content:
+              const Text('¿Está seguro de que desea eliminar este negocio?'),
           actions: [
             TextButton(
               child: const Text('Cancelar'),
@@ -309,42 +321,50 @@ class _GestionarNegociosPageState extends State<GestionarNegociosPage> {
 
     if (confirm) {
       try {
-        
-        DocumentSnapshot negocioSnapshot =
-            await FirebaseFirestore.instance.collection('negocios').doc(negocioId).get();
+        DocumentSnapshot negocioSnapshot = await FirebaseFirestore.instance
+            .collection('negocios')
+            .doc(negocioId)
+            .get();
         var negocioData = negocioSnapshot.data() as Map<String, dynamic>?;
 
-      
         if (negocioData != null && negocioData['logo'] != null) {
           String logoUrl = negocioData['logo'];
-          
+
           Reference storageRef = FirebaseStorage.instance.refFromURL(logoUrl);
           await storageRef.delete();
         }
-        
-        
-        await FirebaseFirestore.instance.collection('negocios').doc(negocioId).delete();
 
-        
+        await FirebaseFirestore.instance
+            .collection('negocios')
+            .doc(negocioId)
+            .delete();
+
         var cartasSnapshot = await FirebaseFirestore.instance
             .collection('cartasnegocio')
             .where('negocioId', isEqualTo: negocioId)
             .get();
         for (var carta in cartasSnapshot.docs) {
-          await FirebaseFirestore.instance.collection('cartasnegocio').doc(carta.id).delete();
+          await FirebaseFirestore.instance
+              .collection('cartasnegocio')
+              .doc(carta.id)
+              .delete();
         }
 
-      
         var cuponesSnapshot = await FirebaseFirestore.instance
             .collection('cuponesnegocios')
             .where('negocioId', isEqualTo: negocioId)
             .get();
         for (var cupon in cuponesSnapshot.docs) {
-          await FirebaseFirestore.instance.collection('cuponesnegocios').doc(cupon.id).delete();
+          await FirebaseFirestore.instance
+              .collection('cuponesnegocios')
+              .doc(cupon.id)
+              .delete();
         }
 
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Negocio y registros relacionados eliminados exitosamente.')),
+          const SnackBar(
+              content: Text(
+                  'Negocio y registros relacionados eliminados exitosamente.')),
         );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(

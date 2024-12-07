@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, unused_field, deprecated_member_use, use_build_context_synchronously
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_google_places/flutter_google_places.dart';
@@ -17,10 +19,10 @@ class MapPage extends StatefulWidget {
   _MapPageState createState() => _MapPageState();
 }
 
-  class _MapPageState extends State<MapPage> {
+class _MapPageState extends State<MapPage> {
   GoogleMapController? mapController;
   loc.Location location = loc.Location();
-  LatLng _currentPosition = const LatLng(-12.0464, -77.0428); 
+  LatLng _currentPosition = const LatLng(-12.0464, -77.0428);
   LatLng? _selectedPosition;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
@@ -32,7 +34,7 @@ class MapPage extends StatefulWidget {
   void initState() {
     super.initState();
     _initializeLocation();
-    
+
     location.onLocationChanged.listen((loc.LocationData currentLocation) {
       if (!_initialPositionSet) {
         setState(() {
@@ -140,60 +142,60 @@ class MapPage extends StatefulWidget {
   }
 
   void _saveAddress() async {
-  if (_selectedPosition == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Selecciona una ubicación en el mapa')),
-    );
-    return;
-  }
-
-  print('Guardando dirección para el usuario: ${widget.userId}');
-
-  Map<String, dynamic> newAddress = {
-    'nombre': _nameController.text,
-    'direccion': _addressController.text,
-    'latitud': _selectedPosition!.latitude,
-    'longitud': _selectedPosition!.longitude,
-    'predeterminada': false,
-  };
-
-  DocumentReference userRef =
-      FirebaseFirestore.instance.collection('usuarios').doc(widget.userId);
-
-  DocumentSnapshot userSnapshot = await userRef.get();
-  print('Datos del usuario encontrados: ${userSnapshot.exists}'); 
-
-  if (userSnapshot.exists) {
-    List<dynamic> existingAddresses =
-        (userSnapshot.data() as Map<String, dynamic>)['direcciones'] ?? [];
-
-    existingAddresses.add(newAddress);
-
-    await userRef.update({
-      'direcciones': existingAddresses,
-    }).then((_) {
-      print('Dirección guardada correctamente para el usuario: ${widget.userId}');
-      Navigator.pop(context, true);
-    }).catchError((error) {
-      print('Error al guardar la dirección: $error');
+    if (_selectedPosition == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al guardar la dirección: $error')),
+        const SnackBar(content: Text('Selecciona una ubicación en el mapa')),
       );
-    });
-  } else {
-    await userRef.set({
-      'direcciones': [newAddress],
-    }, SetOptions(merge: true)).then((_) {
-      print('Dirección guardada correctamente para el usuario: ${widget.userId}');
-      Navigator.pop(context, true);
-    }).catchError((error) {
-      print('Error al guardar la dirección: $error');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al guardar la dirección: $error')),
-      );
-    });
+      return;
+    }
+
+    //print('Guardando dirección para el usuario: ${widget.userId}');
+
+    Map<String, dynamic> newAddress = {
+      'nombre': _nameController.text,
+      'direccion': _addressController.text,
+      'latitud': _selectedPosition!.latitude,
+      'longitud': _selectedPosition!.longitude,
+      'predeterminada': false,
+    };
+
+    DocumentReference userRef =
+        FirebaseFirestore.instance.collection('usuarios').doc(widget.userId);
+
+    DocumentSnapshot userSnapshot = await userRef.get();
+    //print('Datos del usuario encontrados: ${userSnapshot.exists}');
+
+    if (userSnapshot.exists) {
+      List<dynamic> existingAddresses =
+          (userSnapshot.data() as Map<String, dynamic>)['direcciones'] ?? [];
+
+      existingAddresses.add(newAddress);
+
+      await userRef.update({
+        'direcciones': existingAddresses,
+      }).then((_) {
+        //print('Dirección guardada correctamente para el usuario: ${widget.userId}');
+        Navigator.pop(context, true);
+      }).catchError((error) {
+        //print('Error al guardar la dirección: $error');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al guardar la dirección: $error')),
+        );
+      });
+    } else {
+      await userRef.set({
+        'direcciones': [newAddress],
+      }, SetOptions(merge: true)).then((_) {
+        //print('Dirección guardada correctamente para el usuario: ${widget.userId}');
+        Navigator.pop(context, true);
+      }).catchError((error) {
+        //print('Error al guardar la dirección: $error');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al guardar la dirección: $error')),
+        );
+      });
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
+
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -37,41 +39,41 @@ class _PerfilNegocioPageState extends State<PerfilNegocioPage> {
   }
 
   Future<void> _loadNegocioData() async {
-  User? currentUser = _authService.getCurrentUser();
+    User? currentUser = _authService.getCurrentUser();
 
-  if (currentUser != null) {
-    try {
-      QuerySnapshot negocioSnapshot = await FirebaseFirestore.instance
-          .collection('negocios')
-          .where('encargado', isEqualTo: currentUser.uid)
-          .limit(1)
-          .get();
+    if (currentUser != null) {
+      try {
+        QuerySnapshot negocioSnapshot = await FirebaseFirestore.instance
+            .collection('negocios')
+            .where('encargado', isEqualTo: currentUser.uid)
+            .limit(1)
+            .get();
 
-      if (negocioSnapshot.docs.isNotEmpty) {
-        setState(() {
-          negocioData = negocioSnapshot.docs.first.data() as Map<String, dynamic>;
-          negocioData!['id'] = negocioSnapshot.docs.first.id;
-          _nombreController.text = negocioData!['nombre'] ?? '';
-          _propietarioController.text = negocioData!['propietario'] ?? '';
-          _nroCelularController.text = negocioData!['nroCelular'] ?? '';
-          _direccionController.text = negocioData!['direccion'] ?? '';
-          _encargado = negocioData!['encargado'];
-          _tipoCocina = negocioData!['tipo_cocina'];
-          _logoUrl = negocioData!['logo'];
+        if (negocioSnapshot.docs.isNotEmpty) {
+          setState(() {
+            negocioData =
+                negocioSnapshot.docs.first.data() as Map<String, dynamic>;
+            negocioData!['id'] = negocioSnapshot.docs.first.id;
+            _nombreController.text = negocioData!['nombre'] ?? '';
+            _propietarioController.text = negocioData!['propietario'] ?? '';
+            _nroCelularController.text = negocioData!['nroCelular'] ?? '';
+            _direccionController.text = negocioData!['direccion'] ?? '';
+            _encargado = negocioData!['encargado'];
+            _tipoCocina = negocioData!['tipo_cocina'];
+            _logoUrl = negocioData!['logo'];
 
-   
-          if (negocioData!['ubicacion'] != null && negocioData!['ubicacion'] is GeoPoint) {
-            GeoPoint geoPoint = negocioData!['ubicacion'];
-            _ubicacion = LatLng(geoPoint.latitude, geoPoint.longitude); 
-          }
-        });
+            if (negocioData!['ubicacion'] != null &&
+                negocioData!['ubicacion'] is GeoPoint) {
+              GeoPoint geoPoint = negocioData!['ubicacion'];
+              _ubicacion = LatLng(geoPoint.latitude, geoPoint.longitude);
+            }
+          });
+        }
+      } catch (e) {
+        //print("Error al cargar la información del negocio: $e");
       }
-    } catch (e) {
-      print("Error al cargar la información del negocio: $e");
     }
   }
-}
-
 
   Future<void> _updateNegocio() async {
     if (negocioData == null) return;
@@ -83,7 +85,6 @@ class _PerfilNegocioPageState extends State<PerfilNegocioPage> {
         newLogoUrl = await _uploadLogo();
       }
 
-  
       await FirebaseFirestore.instance
           .collection('negocios')
           .doc(negocioData!['id'])
@@ -93,17 +94,17 @@ class _PerfilNegocioPageState extends State<PerfilNegocioPage> {
         'nroCelular': _nroCelularController.text,
         'direccion': _direccionController.text,
         'logo': newLogoUrl,
-
         'ubicacion': _ubicacion != null
             ? GeoPoint(_ubicacion!.latitude, _ubicacion!.longitude)
             : null,
       });
 
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Perfil actualizado correctamente')),
       );
     } catch (e) {
-      print("Error al actualizar el negocio: $e");
+      //print("Error al actualizar el negocio: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Error al actualizar el negocio')),
       );
@@ -114,21 +115,21 @@ class _PerfilNegocioPageState extends State<PerfilNegocioPage> {
     if (_logoImage == null) return null;
 
     try {
-      final storageRef = FirebaseStorage.instance
-          .ref()
-          .child('logonegocios/${_nombreController.text}_${DateTime.now().millisecondsSinceEpoch}.png');
+      final storageRef = FirebaseStorage.instance.ref().child(
+          'logonegocios/${_nombreController.text}_${DateTime.now().millisecondsSinceEpoch}.png');
       UploadTask uploadTask = storageRef.putFile(_logoImage!);
       TaskSnapshot snapshot = await uploadTask;
       return await snapshot.ref.getDownloadURL();
     } catch (e) {
-      print('Error al subir el logo: $e');
+      //print('Error al subir el logo: $e');
       return null;
     }
   }
 
   Future<void> _pickImage() async {
     try {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.image);
+      FilePickerResult? result =
+          await FilePicker.platform.pickFiles(type: FileType.image);
 
       if (result != null) {
         setState(() {
@@ -136,27 +137,24 @@ class _PerfilNegocioPageState extends State<PerfilNegocioPage> {
         });
       }
     } catch (e) {
-      print('Error al seleccionar la imagen: $e');
+      //print('Error al seleccionar la imagen: $e');
     }
   }
 
+  Future<void> _navigateToMapaNegocio() async {
+    final LatLng? result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MapaNegocioPage(negocioId: negocioData!['id']),
+      ),
+    );
 
-Future<void> _navigateToMapaNegocio() async {
-  final LatLng? result = await Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => MapaNegocioPage(negocioId: negocioData!['id']),
-    ),
-  );
-
-  if (result != null) {
-    setState(() {
-      _ubicacion = result;
-    });
+    if (result != null) {
+      setState(() {
+        _ubicacion = result;
+      });
+    }
   }
-}
-
- 
 
   @override
   Widget build(BuildContext context) {
@@ -187,10 +185,12 @@ Future<void> _navigateToMapaNegocio() async {
                 backgroundImage: _logoImage != null
                     ? FileImage(_logoImage!)
                     : (_logoUrl != null
-                        ? NetworkImage(_logoUrl!)
-                        : const AssetImage('assets/placeholder.png')) as ImageProvider,
+                            ? NetworkImage(_logoUrl!)
+                            : const AssetImage('assets/placeholder.png'))
+                        as ImageProvider,
                 child: _logoImage == null
-                    ? const Icon(Icons.camera_alt, size: 50, color: Colors.white70)
+                    ? const Icon(Icons.camera_alt,
+                        size: 50, color: Colors.white70)
                     : null,
               ),
             ),
@@ -204,37 +204,36 @@ Future<void> _navigateToMapaNegocio() async {
             _buildReadOnlyField('Tipo de Cocina', _tipoCocina),
             const SizedBox(height: 20),
             _ubicacion != null
-  ? Column(
-      children: [
-        SizedBox(
-          height: 150,
-          child: GoogleMap(
-            key: UniqueKey(),
-            initialCameraPosition: CameraPosition(
-              target: _ubicacion!,
-              zoom: 15.0,
-            ),
-            markers: {
-              Marker(
-                markerId: const MarkerId('business-location'),
-                position: _ubicacion!,
-              ),
-            },
-            myLocationButtonEnabled: false,
-            zoomControlsEnabled: false,
-          ),
-        ),
-        ElevatedButton(
-          onPressed: _navigateToMapaNegocio,
-          child: const Text('Editar Ubicación'),
-        ),
-      ],
-    )
-  : ElevatedButton(
-      onPressed: _navigateToMapaNegocio,
-      child: const Text('Seleccionar Ubicación'),
-    ),
-
+                ? Column(
+                    children: [
+                      SizedBox(
+                        height: 150,
+                        child: GoogleMap(
+                          key: UniqueKey(),
+                          initialCameraPosition: CameraPosition(
+                            target: _ubicacion!,
+                            zoom: 15.0,
+                          ),
+                          markers: {
+                            Marker(
+                              markerId: const MarkerId('business-location'),
+                              position: _ubicacion!,
+                            ),
+                          },
+                          myLocationButtonEnabled: false,
+                          zoomControlsEnabled: false,
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: _navigateToMapaNegocio,
+                        child: const Text('Editar Ubicación'),
+                      ),
+                    ],
+                  )
+                : ElevatedButton(
+                    onPressed: _navigateToMapaNegocio,
+                    child: const Text('Seleccionar Ubicación'),
+                  ),
           ],
         ),
       ),
@@ -273,10 +272,6 @@ Future<void> _navigateToMapaNegocio() async {
   }
 }
 
-
-
-
-
 // import 'dart:io';
 // import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:flutter/material.dart';
@@ -306,7 +301,7 @@ Future<void> _navigateToMapaNegocio() async {
 //   Map<String, dynamic>? negocioData;
 
 //   @override
-//   void initState() {  
+//   void initState() {
 //     super.initState();
 //     _loadNegocioData();
 //   }

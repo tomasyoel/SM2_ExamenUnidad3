@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
+
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +23,8 @@ class _AgregarTipoCocinaPageState extends State<AgregarTipoCocinaPage> {
     if (_nameController.text.isEmpty || _imageFile == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Por favor, ingrese un nombre y seleccione una imagen.'),
+          content:
+              Text('Por favor, ingrese un nombre y seleccione una imagen.'),
         ),
       );
       return;
@@ -32,10 +35,8 @@ class _AgregarTipoCocinaPageState extends State<AgregarTipoCocinaPage> {
     });
 
     try {
-      
       _imageUrl = await _uploadImage();
 
-      
       CollectionReference tiposCocina =
           FirebaseFirestore.instance.collection('tipococina');
 
@@ -48,7 +49,6 @@ class _AgregarTipoCocinaPageState extends State<AgregarTipoCocinaPage> {
         const SnackBar(content: Text('Tipo de cocina agregado exitosamente')),
       );
 
-      
       _nameController.clear();
       _imageFile = null;
       setState(() {
@@ -68,31 +68,31 @@ class _AgregarTipoCocinaPageState extends State<AgregarTipoCocinaPage> {
     if (_imageFile == null) return null;
 
     try {
-      final storageRef = FirebaseStorage.instance
-          .ref()
-          .child('tipococinaimagen/${_nameController.text}_${DateTime.now().millisecondsSinceEpoch}.png');
+      final storageRef = FirebaseStorage.instance.ref().child(
+          'tipococinaimagen/${_nameController.text}_${DateTime.now().millisecondsSinceEpoch}.png');
       UploadTask uploadTask = storageRef.putFile(_imageFile!);
       TaskSnapshot snapshot = await uploadTask;
       return await snapshot.ref.getDownloadURL();
     } catch (e) {
-      print('Error al subir la imagen: $e');
+      //print('Error al subir la imagen: $e');
       return null;
     }
   }
 
   Future<void> _pickImage() async {
     try {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.image);
+      FilePickerResult? result =
+          await FilePicker.platform.pickFiles(type: FileType.image);
 
       if (result != null) {
         setState(() {
           _imageFile = File(result.files.single.path!);
         });
       } else {
-        print('No se seleccionó ninguna imagen.');
+        //print('No se seleccionó ninguna imagen.');
       }
     } catch (e) {
-      print('Error al seleccionar la imagen: $e');
+      //print('Error al seleccionar la imagen: $e');
     }
   }
 
@@ -108,17 +108,19 @@ class _AgregarTipoCocinaPageState extends State<AgregarTipoCocinaPage> {
           children: <Widget>[
             TextField(
               controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Nombre del Tipo de Cocina'),
+              decoration:
+                  const InputDecoration(labelText: 'Nombre del Tipo de Cocina'),
             ),
             const SizedBox(height: 20),
-            
             GestureDetector(
               onTap: _pickImage,
               child: CircleAvatar(
                 radius: 50,
-                backgroundImage: _imageFile != null ? FileImage(_imageFile!) : null,
+                backgroundImage:
+                    _imageFile != null ? FileImage(_imageFile!) : null,
                 child: _imageFile == null
-                    ? const Icon(Icons.camera_alt, size: 50, color: Colors.white70)
+                    ? const Icon(Icons.camera_alt,
+                        size: 50, color: Colors.white70)
                     : null,
               ),
             ),

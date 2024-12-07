@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -23,7 +25,13 @@ class _HorarioPageState extends State<HorarioPage> {
   };
 
   final List<String> orderedDays = [
-    'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'
+    'Lunes',
+    'Martes',
+    'Miércoles',
+    'Jueves',
+    'Viernes',
+    'Sábado',
+    'Domingo'
   ];
 
   @override
@@ -39,16 +47,24 @@ class _HorarioPageState extends State<HorarioPage> {
         .get();
 
     if (negocioDoc.exists) {
-      Map<String, dynamic>? negocioData = negocioDoc.data() as Map<String, dynamic>?;
+      Map<String, dynamic>? negocioData =
+          negocioDoc.data() as Map<String, dynamic>?;
 
-      if (negocioData != null && negocioData.containsKey('horarios') && negocioData['horarios'] != null) {
-        Map<String, dynamic> loadedHorarios = Map<String, dynamic>.from(negocioData['horarios']);
+      if (negocioData != null &&
+          negocioData.containsKey('horarios') &&
+          negocioData['horarios'] != null) {
+        Map<String, dynamic> loadedHorarios =
+            Map<String, dynamic>.from(negocioData['horarios']);
 
         setState(() {
           loadedHorarios.forEach((dia, horario) {
             horarios[dia] = {
-              'inicio': horario['inicio'] != null ? _stringToTimeOfDay(horario['inicio'].toString().trim()) : null,
-              'fin': horario['fin'] != null ? _stringToTimeOfDay(horario['fin'].toString().trim()) : null,
+              'inicio': horario['inicio'] != null
+                  ? _stringToTimeOfDay(horario['inicio'].toString().trim())
+                  : null,
+              'fin': horario['fin'] != null
+                  ? _stringToTimeOfDay(horario['fin'].toString().trim())
+                  : null,
               'cerrado': horario['cerrado'] ?? false,
             };
           });
@@ -63,8 +79,11 @@ class _HorarioPageState extends State<HorarioPage> {
     Map<String, dynamic> horariosFormatted = {};
     horarios.forEach((dia, horario) {
       horariosFormatted[dia] = {
-        'inicio': horario['inicio'] != null ? _timeOfDayToString(horario['inicio']) : null,
-        'fin': horario['fin'] != null ? _timeOfDayToString(horario['fin']) : null,
+        'inicio': horario['inicio'] != null
+            ? _timeOfDayToString(horario['inicio'])
+            : null,
+        'fin':
+            horario['fin'] != null ? _timeOfDayToString(horario['fin']) : null,
         'cerrado': horario['cerrado'] ?? false,
       };
     });
@@ -79,7 +98,8 @@ class _HorarioPageState extends State<HorarioPage> {
     );
   }
 
-  Future<TimeOfDay?> _selectTime(BuildContext context, TimeOfDay? initialTime) async {
+  Future<TimeOfDay?> _selectTime(
+      BuildContext context, TimeOfDay? initialTime) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: initialTime ?? TimeOfDay.now(),
@@ -110,10 +130,14 @@ class _HorarioPageState extends State<HorarioPage> {
         final minute = int.tryParse(minutePart[0]);
         if (hour != null && minute != null) {
           int finalHour = hour;
-          if (minutePart.length > 1 && minutePart[1].toLowerCase() == 'pm' && hour != 12) {
+          if (minutePart.length > 1 &&
+              minutePart[1].toLowerCase() == 'pm' &&
+              hour != 12) {
             finalHour += 12;
           }
-          if (minutePart.length > 1 && minutePart[1].toLowerCase() == 'am' && hour == 12) {
+          if (minutePart.length > 1 &&
+              minutePart[1].toLowerCase() == 'am' &&
+              hour == 12) {
             finalHour = 0;
           }
           return TimeOfDay(hour: finalHour % 24, minute: minute % 60);
@@ -176,16 +200,24 @@ class _HorarioPageState extends State<HorarioPage> {
                         icon: const Icon(Icons.edit),
                         onPressed: () async {
                           if (!cerrado) {
-                            TimeOfDay? inicio = await _selectTime(context, horarios[dia]['inicio']);
-                            TimeOfDay? fin = await _selectTime(context, horarios[dia]['fin']);
+                            TimeOfDay? inicio = await _selectTime(
+                                context, horarios[dia]['inicio']);
+                            TimeOfDay? fin = await _selectTime(
+                                context, horarios[dia]['fin']);
                             if (inicio != null && fin != null) {
                               if (_validateTime(inicio, fin)) {
                                 setState(() {
-                                  horarios[dia] = {'inicio': inicio, 'fin': fin, 'cerrado': false};
+                                  horarios[dia] = {
+                                    'inicio': inicio,
+                                    'fin': fin,
+                                    'cerrado': false
+                                  };
                                 });
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('La hora de salida debe ser después de la hora de entrada')),
+                                  const SnackBar(
+                                      content: Text(
+                                          'La hora de salida debe ser después de la hora de entrada')),
                                 );
                               }
                             }
@@ -194,7 +226,9 @@ class _HorarioPageState extends State<HorarioPage> {
                       ),
                       IconButton(
                         icon: Image.asset(
-                          cerrado ? 'assets/cerrado.png' : 'assets/cerradodesmarc.png',
+                          cerrado
+                              ? 'assets/cerrado.png'
+                              : 'assets/cerradodesmarc.png',
                           width: 24,
                           height: 24,
                         ),

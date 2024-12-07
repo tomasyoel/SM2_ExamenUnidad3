@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -26,7 +28,6 @@ class _NegocioPrincipalPageState extends State<NegocioPrincipalPage> {
 
     if (currentUser != null) {
       try {
-      
         QuerySnapshot negocioSnapshot = await FirebaseFirestore.instance
             .collection('negocios')
             .where('encargado', isEqualTo: currentUser.uid)
@@ -36,32 +37,29 @@ class _NegocioPrincipalPageState extends State<NegocioPrincipalPage> {
         if (negocioSnapshot.docs.isNotEmpty) {
           DocumentSnapshot negocioDoc = negocioSnapshot.docs.first;
 
-
           String negocioId = negocioDoc.id;
 
-      
           setState(() {
             negocioData = negocioDoc.data() as Map<String, dynamic>?;
             negocioData!['id'] = negocioId;
           });
 
-
-          print('Negocio ID: $negocioId');
+          //print('Negocio ID: $negocioId');
         } else {
-          print("No se encontró ningún negocio para este usuario.");
+          //print("No se encontró ningún negocio para este usuario.");
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Error: No se pudo obtener el ID del negocio.')),
+            const SnackBar(
+                content: Text('Error: No se pudo obtener el ID del negocio.')),
           );
         }
       } catch (e) {
-        print("Error al cargar la información del negocio: $e");
+        //print("Error al cargar la información del negocio: $e");
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error al cargar el negocio: $e')),
         );
       }
     }
   }
-
 
   void _navigateToAgregarProducto() {
     if (negocioData != null && negocioData!['id'] != null) {
@@ -72,11 +70,11 @@ class _NegocioPrincipalPageState extends State<NegocioPrincipalPage> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error: No se pudo obtener el ID del negocio.')),
+        const SnackBar(
+            content: Text('Error: No se pudo obtener el ID del negocio.')),
       );
     }
   }
-
 
   void _navigateToGestionarProductos() {
     if (negocioData != null && negocioData!['id'] != null) {
@@ -87,11 +85,11 @@ class _NegocioPrincipalPageState extends State<NegocioPrincipalPage> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error: No se pudo obtener el ID del negocio.')),
+        const SnackBar(
+            content: Text('Error: No se pudo obtener el ID del negocio.')),
       );
     }
   }
-
 
   void _navigateToGestionarCarta() {
     if (negocioData != null && negocioData!['id'] != null) {
@@ -102,11 +100,11 @@ class _NegocioPrincipalPageState extends State<NegocioPrincipalPage> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error: No se pudo obtener el ID del negocio.')),
+        const SnackBar(
+            content: Text('Error: No se pudo obtener el ID del negocio.')),
       );
     }
   }
-
 
   void _navigateToGestionarHorarios() {
     if (negocioData != null && negocioData!['id'] != null) {
@@ -117,11 +115,11 @@ class _NegocioPrincipalPageState extends State<NegocioPrincipalPage> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error: No se pudo obtener el ID del negocio.')),
+        const SnackBar(
+            content: Text('Error: No se pudo obtener el ID del negocio.')),
       );
     }
   }
-
 
   void _navigateToAgregarCatProd() {
     if (negocioData != null && negocioData!['id'] != null) {
@@ -132,11 +130,11 @@ class _NegocioPrincipalPageState extends State<NegocioPrincipalPage> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error: No se pudo obtener el ID del negocio.')),
+        const SnackBar(
+            content: Text('Error: No se pudo obtener el ID del negocio.')),
       );
     }
   }
-
 
   void _navigateToGestionarCatProd() {
     if (negocioData != null && negocioData!['id'] != null) {
@@ -147,11 +145,11 @@ class _NegocioPrincipalPageState extends State<NegocioPrincipalPage> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error: No se pudo obtener el ID del negocio.')),
+        const SnackBar(
+            content: Text('Error: No se pudo obtener el ID del negocio.')),
       );
     }
   }
-
 
   void _navigateToGestionarCupones() {
     if (negocioData != null && negocioData!['id'] != null) {
@@ -162,27 +160,26 @@ class _NegocioPrincipalPageState extends State<NegocioPrincipalPage> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error: No se pudo obtener el ID del negocio.')),
+        const SnackBar(
+            content: Text('Error: No se pudo obtener el ID del negocio.')),
       );
     }
   }
 
   void _navigateToPedidos() {
-  if (negocioData != null && negocioData!['id'] != null) {
-    Navigator.pushNamed(
-      context,
-      '/listaPedidosNegocio',
-      arguments: negocioData!['id'],
-    );
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Error: No se pudo obtener el ID del negocio.')),
-    );
+    if (negocioData != null && negocioData!['id'] != null) {
+      Navigator.pushNamed(
+        context,
+        '/listaPedidosNegocio',
+        arguments: negocioData!['id'],
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Error: No se pudo obtener el ID del negocio.')),
+      );
+    }
   }
-}
-
-
-
 
   void _navigateTo(String route) {
     Navigator.pop(context);
@@ -213,7 +210,6 @@ class _NegocioPrincipalPageState extends State<NegocioPrincipalPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-          
                   negocioData != null && negocioData!['logo'] != null
                       ? Image.network(
                           negocioData!['logo'],
@@ -223,7 +219,6 @@ class _NegocioPrincipalPageState extends State<NegocioPrincipalPage> {
                         )
                       : const Icon(Icons.image_not_supported, size: 100),
                   const SizedBox(height: 10),
-           
                   Text(
                     negocioData != null
                         ? negocioData!['nombre'] ?? 'Sin nombre'
@@ -299,14 +294,11 @@ class _NegocioPrincipalPageState extends State<NegocioPrincipalPage> {
         return const Center(child: Text("Página de Gestión de Cupones"));
       case 'home':
       default:
-        return const Center(child: Text("Bienvenido a la página principal del Negocio"));
+        return const Center(
+            child: Text("Bienvenido a la página principal del Negocio"));
     }
   }
 }
-
-
-
-
 
 // import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:flutter/material.dart';

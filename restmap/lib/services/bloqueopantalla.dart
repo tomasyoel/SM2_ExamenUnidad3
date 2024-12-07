@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, unused_catch_clause
+
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -15,11 +17,11 @@ class UpdateBlockScreen extends StatelessWidget {
         await launch(whatsappUrl);
       }
     } on Exception catch (e) {
-      print("No se pudo lanzar WhatsApp: ${e.toString()}");
+      //print("No se pudo lanzar WhatsApp: ${e.toString()}");
       if (await canLaunch(whatsappUrl)) {
         await launch(whatsappUrl);
       } else {
-        print("No se pudo abrir WhatsApp ni en el navegador.");
+        //print("No se pudo abrir WhatsApp ni en el navegador.");
       }
     }
   }
@@ -60,8 +62,10 @@ class UpdateBlockScreen extends StatelessWidget {
                 icon: const Icon(Icons.chat),
                 label: const Text('Contactar por WhatsApp'),
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white, backgroundColor: Colors.green,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.green,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   textStyle: const TextStyle(fontSize: 16),
                 ),
               ),
@@ -72,4 +76,3 @@ class UpdateBlockScreen extends StatelessWidget {
     );
   }
 }
-

@@ -10,7 +10,8 @@ class ListaPedidosNegocioPage extends StatefulWidget {
   const ListaPedidosNegocioPage({super.key, required this.negocioId});
 
   @override
-  _ListaPedidosNegocioPageState createState() => _ListaPedidosNegocioPageState();
+  _ListaPedidosNegocioPageState createState() =>
+      _ListaPedidosNegocioPageState();
 }
 
 class _ListaPedidosNegocioPageState extends State<ListaPedidosNegocioPage> {
@@ -54,13 +55,16 @@ class _ListaPedidosNegocioPageState extends State<ListaPedidosNegocioPage> {
     }
   }
 
-  Future<void> _actualizarPedido(String codigoPedido, Map<String, dynamic> updatedFields) async {
-    DocumentReference negocioRef = FirebaseFirestore.instance.collection('negocios').doc(widget.negocioId);
+  Future<void> _actualizarPedido(
+      String codigoPedido, Map<String, dynamic> updatedFields) async {
+    DocumentReference negocioRef =
+        FirebaseFirestore.instance.collection('negocios').doc(widget.negocioId);
 
     await negocioRef.get().then((doc) {
       if (doc.exists) {
         List<dynamic> pedidos = doc['pedidos'] ?? [];
-        int index = pedidos.indexWhere((p) => p['codigoPedido'] == codigoPedido);
+        int index =
+            pedidos.indexWhere((p) => p['codigoPedido'] == codigoPedido);
         if (index != -1) {
           pedidos[index].addAll(updatedFields);
           negocioRef.update({'pedidos': pedidos});
@@ -70,7 +74,8 @@ class _ListaPedidosNegocioPageState extends State<ListaPedidosNegocioPage> {
   }
 
   Future<void> _mostrarDetallesPedido(Map<String, dynamic> pedido) async {
-    final productos = List<Map<String, dynamic>>.from(pedido['productos'] ?? []);
+    final productos =
+        List<Map<String, dynamic>>.from(pedido['productos'] ?? []);
     final ubicacion = pedido['ubicacion'] as GeoPoint?;
     final direccion = pedido['direccion'] ?? 'No disponible';
     final modalidad = pedido['modalidad'] ?? 'No especificada';
@@ -93,12 +98,16 @@ class _ListaPedidosNegocioPageState extends State<ListaPedidosNegocioPage> {
               children: [
                 Text(
                   "Detalles del Pedido: ${pedido['codigoPedido']}",
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 18),
                 ),
                 const Divider(),
-                Text("Fecha: ${DateFormat('dd/MM/yyyy hh:mm a').format((pedido['fecha'] as Timestamp).toDate().toUtc().add(const Duration(hours: -5)))}"),
-                Text("Total: S/ ${pedido['total']?.toStringAsFixed(2) ?? '0.00'}"),
-                Text("Estado de Pago: ${pedido['estadoPago'] ?? 'No definido'}"),
+                Text(
+                    "Fecha: ${DateFormat('dd/MM/yyyy hh:mm a').format((pedido['fecha'] as Timestamp).toDate().toUtc().add(const Duration(hours: -5)))}"),
+                Text(
+                    "Total: S/ ${pedido['total']?.toStringAsFixed(2) ?? '0.00'}"),
+                Text(
+                    "Estado de Pago: ${pedido['estadoPago'] ?? 'No definido'}"),
                 const SizedBox(height: 8),
                 Text(
                   "Dirección: $direccion",
@@ -121,7 +130,8 @@ class _ListaPedidosNegocioPageState extends State<ListaPedidosNegocioPage> {
                       markers: {
                         Marker(
                           markerId: const MarkerId('ubicacion'),
-                          position: LatLng(ubicacion.latitude, ubicacion.longitude),
+                          position:
+                              LatLng(ubicacion.latitude, ubicacion.longitude),
                         ),
                       },
                     ),
@@ -140,7 +150,8 @@ class _ListaPedidosNegocioPageState extends State<ListaPedidosNegocioPage> {
                   return ListTile(
                     title: Text(producto['nombre']),
                     subtitle: Text("Cantidad: ${producto['cantidad']}"),
-                    trailing: Text("S/ ${(producto['precio'] * producto['cantidad']).toStringAsFixed(2)}"),
+                    trailing: Text(
+                        "S/ ${(producto['precio'] * producto['cantidad']).toStringAsFixed(2)}"),
                   );
                 }),
               ],
@@ -151,33 +162,34 @@ class _ListaPedidosNegocioPageState extends State<ListaPedidosNegocioPage> {
     );
   }
 
-  Future<void> _iniciarTemporizador(Map<String, dynamic> pedido, int minutos) async {
-  String codigoPedido = pedido['codigoPedido'];
-  int tiempoPreparacion = minutos * 60; // Convertir minutos a segundos
-  int tiempoInicio = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-  int tiempoFin = tiempoInicio + tiempoPreparacion;
+  Future<void> _iniciarTemporizador(
+      Map<String, dynamic> pedido, int minutos) async {
+    String codigoPedido = pedido['codigoPedido'];
+    int tiempoPreparacion = minutos * 60; // Convertir minutos a segundos
+    int tiempoInicio = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    int tiempoFin = tiempoInicio + tiempoPreparacion;
 
-  await _actualizarPedido(codigoPedido, {
-    'estadoPedido': 'preparacion',
-    'tiempoFin': tiempoFin,
-  });
+    await _actualizarPedido(codigoPedido, {
+      'estadoPedido': 'preparacion',
+      'tiempoFin': tiempoFin,
+    });
 
-  _timers[codigoPedido] = Timer.periodic(const Duration(seconds: 1), (timer) async {
-    int tiempoActual = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-    int segundosRestantes = tiempoFin - tiempoActual;
+    _timers[codigoPedido] =
+        Timer.periodic(const Duration(seconds: 1), (timer) async {
+      int tiempoActual = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+      int segundosRestantes = tiempoFin - tiempoActual;
 
-    if (segundosRestantes <= 0) {
-      timer.cancel();
-      await _actualizarPedido(codigoPedido, {'estadoPedido': 'listo'});
-      setState(() {});
-    } else {
-      setState(() {
-        _tiempoRestante[codigoPedido] = segundosRestantes;
-      });
-    }
-  });
-}
-
+      if (segundosRestantes <= 0) {
+        timer.cancel();
+        await _actualizarPedido(codigoPedido, {'estadoPedido': 'listo'});
+        setState(() {});
+      } else {
+        setState(() {
+          _tiempoRestante[codigoPedido] = segundosRestantes;
+        });
+      }
+    });
+  }
 
   String _formatTiempo(int segundos) {
     int minutos = segundos ~/ 60;
@@ -241,10 +253,14 @@ class _ListaPedidosNegocioPageState extends State<ListaPedidosNegocioPage> {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Fecha: ${DateFormat('dd/MM/yyyy hh:mm a').format((pedido['fecha'] as Timestamp).toDate().toUtc().add(const Duration(hours: -5)))}"),
-                      Text("Total: S/ ${pedido['total']?.toStringAsFixed(2) ?? '0.00'}"),
-                      if (pedido['estadoPedido'] == 'preparacion' && segundosRestantes != null)
-                        Text("Tiempo restante: ${_formatTiempo(segundosRestantes)}"),
+                      Text(
+                          "Fecha: ${DateFormat('dd/MM/yyyy hh:mm a').format((pedido['fecha'] as Timestamp).toDate().toUtc().add(const Duration(hours: -5)))}"),
+                      Text(
+                          "Total: S/ ${pedido['total']?.toStringAsFixed(2) ?? '0.00'}"),
+                      if (pedido['estadoPedido'] == 'preparacion' &&
+                          segundosRestantes != null)
+                        Text(
+                            "Tiempo restante: ${_formatTiempo(segundosRestantes)}"),
                     ],
                   ),
                   trailing: pedido['estadoPedido'] == 'pendiente'
@@ -252,20 +268,25 @@ class _ListaPedidosNegocioPageState extends State<ListaPedidosNegocioPage> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
-                              icon: const Icon(Icons.check, color: Colors.green),
-                              onPressed: () => _iniciarTemporizador(pedido, 10), // Predeterminado 10 min
+                              icon:
+                                  const Icon(Icons.check, color: Colors.green),
+                              onPressed: () => _iniciarTemporizador(
+                                  pedido, 10), // Predeterminado 10 min
                             ),
                             IconButton(
                               icon: const Icon(Icons.cancel, color: Colors.red),
-                              onPressed: () => _actualizarPedido(codigoPedido, {'estadoPedido': 'rechazado'}),
+                              onPressed: () => _actualizarPedido(
+                                  codigoPedido, {'estadoPedido': 'rechazado'}),
                             ),
                           ],
                         )
                       : pedido['estadoPedido'] == 'preparacion'
                           ? const Icon(Icons.access_time, color: Colors.orange)
-                          : pedido['estadoPedido'] == 'listo' && pedido['modalidad'] == 'delivery'
+                          : pedido['estadoPedido'] == 'listo' &&
+                                  pedido['modalidad'] == 'delivery'
                               ? IconButton(
-                                  icon: const Icon(Icons.motorcycle, color: Colors.purple),
+                                  icon: const Icon(Icons.motorcycle,
+                                      color: Colors.purple),
                                   onPressed: () => _actualizarPedido(
                                     codigoPedido,
                                     {
@@ -284,10 +305,6 @@ class _ListaPedidosNegocioPageState extends State<ListaPedidosNegocioPage> {
     );
   }
 }
-
-
-
-
 
 // import 'package:flutter/material.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
@@ -620,10 +637,6 @@ class _ListaPedidosNegocioPageState extends State<ListaPedidosNegocioPage> {
 //   }
 // }
 
-
-
-
-
 // import 'package:flutter/material.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
@@ -852,10 +865,6 @@ class _ListaPedidosNegocioPageState extends State<ListaPedidosNegocioPage> {
 //     return '${minutos.toString().padLeft(2, '0')}:${segundosRestantes.toString().padLeft(2, '0')}';
 //   }
 // }
-  
-
-
-
 
 // import 'package:flutter/material.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
@@ -1031,8 +1040,8 @@ class _ListaPedidosNegocioPageState extends State<ListaPedidosNegocioPage> {
 //   }
 
 //   Future<void> _actualizarEstadoPedido(
-//     DocumentSnapshot pedido, 
-//     String nuevoEstado, 
+//     DocumentSnapshot pedido,
+//     String nuevoEstado,
 //     String? nuevoPedPago
 //   ) async {
 //     final User? user = FirebaseAuth.instance.currentUser;
@@ -1084,7 +1093,7 @@ class _ListaPedidosNegocioPageState extends State<ListaPedidosNegocioPage> {
 //     // Restaurar stock para cada producto
 //     for (var producto in productos) {
 //       batch.update(cartaRef, {
-//         'productos.${producto['id']}.stock': 
+//         'productos.${producto['id']}.stock':
 //           FieldValue.increment(producto['cantidad'])
 //       });
 //     }

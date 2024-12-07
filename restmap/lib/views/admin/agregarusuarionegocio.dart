@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:restmap/services/firebase_auth_service.dart';
@@ -25,7 +27,9 @@ class _CreateUserNegocioPageState extends State<CreateUserNegocioPage> {
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Todos los campos deben estar completos para crear el usuario.')),
+          const SnackBar(
+              content: Text(
+                  'Todos los campos deben estar completos para crear el usuario.')),
         );
       }
       return;
@@ -41,7 +45,6 @@ class _CreateUserNegocioPageState extends State<CreateUserNegocioPage> {
       if (user != null) {
         await user.sendEmailVerification();
 
-        
         await _authService.signInWithEmailAndPassword(
           currentUser!.email!,
           "adminPassword",
@@ -49,7 +52,8 @@ class _CreateUserNegocioPageState extends State<CreateUserNegocioPage> {
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Usuario de negocio creado exitosamente.')),
+            const SnackBar(
+                content: Text('Usuario de negocio creado exitosamente.')),
           );
 
           Navigator.pushReplacementNamed(context, '/adminHome');
@@ -81,7 +85,8 @@ class _CreateUserNegocioPageState extends State<CreateUserNegocioPage> {
           children: <Widget>[
             TextField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Correo del Usuario Negocio'),
+              decoration: const InputDecoration(
+                  labelText: 'Correo del Usuario Negocio'),
             ),
             const SizedBox(height: 20),
             TextField(

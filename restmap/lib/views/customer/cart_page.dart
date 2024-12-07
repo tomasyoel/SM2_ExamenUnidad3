@@ -111,7 +111,6 @@
 //   }
 // }
 
-
 //   void _calculateTotalPrice() {
 //     _totalPrice = 0.0;
 //     _realTotalPrice = 0.0;
@@ -566,8 +565,8 @@
 //                                 children: [
 //                                   IconButton(
 //                                     onPressed: () => _decrementQuantity(widget.orderProducts.indexOf(orderProduct)),
-//                                     icon: orderProduct['quantity'] > 1 
-//                                         ? Icon(Icons.remove) 
+//                                     icon: orderProduct['quantity'] > 1
+//                                         ? Icon(Icons.remove)
 //                                         : Icon(Icons.delete, color: Colors.red),
 //                                   ),
 //                                   Text('${orderProduct['quantity']}'),

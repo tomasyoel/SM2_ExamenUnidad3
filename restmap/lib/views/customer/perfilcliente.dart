@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
+
 import 'package:restmap/services/firestore_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -75,9 +77,8 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
               CircleAvatar(
                 radius: 50,
                 backgroundColor: Colors.grey[200],
-                backgroundImage: _photoUrl != null
-                    ? NetworkImage(_photoUrl!)
-                    : null,
+                backgroundImage:
+                    _photoUrl != null ? NetworkImage(_photoUrl!) : null,
                 child: _photoUrl == null
                     ? const Icon(
                         Icons.person,
@@ -90,7 +91,8 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
               _buildTextField('Nombre', _nombreController),
               _buildTextField('Apellido', _apellidoController),
               _buildTextField('Número de Celular', _nroCelularController),
-              _buildTextField('Edad', _edadController, keyboardType: TextInputType.number),
+              _buildTextField('Edad', _edadController,
+                  keyboardType: TextInputType.number),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _updateUserData,
@@ -120,9 +122,6 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
     );
   }
 }
-
-
-
 
 // import 'dart:io';
 
@@ -166,7 +165,6 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
 //       DocumentSnapshot userDoc = await _firestoreService.getUserById(user!.uid);
 //       var userData = userDoc.data() as Map<String, dynamic>;
 
-    
 //       QuerySnapshot addressSnapshot = await FirebaseFirestore.instance
 //           .collection('usuarios')
 //           .doc(user!.uid)
@@ -221,7 +219,7 @@ class _CustomerProfilePageState extends State<CustomerProfilePage> {
 //         });
 //         await _uploadImage();
 //       } else {
-       
+
 //         print('No image selected.');
 //       }
 //     } catch (e) {

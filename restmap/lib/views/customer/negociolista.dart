@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'carta.dart';
@@ -20,7 +22,10 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
     if (searchQuery.isEmpty) return true;
 
     // Verifica si el nombre del negocio coincide
-    if (negocio['nombre'].toString().toLowerCase().contains(searchQuery.toLowerCase())) {
+    if (negocio['nombre']
+        .toString()
+        .toLowerCase()
+        .contains(searchQuery.toLowerCase())) {
       return true;
     }
 
@@ -36,8 +41,10 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
       var productos = cartaRef.docs.first['carta'] as List<dynamic>;
       if (productos.isEmpty) return false;
 
-      return productos.any((producto) =>
-          producto['nombre'].toString().toLowerCase().contains(searchQuery.toLowerCase()));
+      return productos.any((producto) => producto['nombre']
+          .toString()
+          .toLowerCase()
+          .contains(searchQuery.toLowerCase()));
     } catch (e) {
       return false;
     }
@@ -54,7 +61,8 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
           children: [
             // Campo de búsqueda
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
               child: TextField(
                 onChanged: (value) => setState(() {
                   searchQuery = value;
@@ -73,7 +81,9 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
 
             // Filtro de tipo de cocina
             StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection('tipococina').snapshots(),
+              stream: FirebaseFirestore.instance
+                  .collection('tipococina')
+                  .snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
@@ -96,7 +106,8 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
                       return GestureDetector(
                         onTap: () {
                           setState(() {
-                            selectedTipoCocinaId = isSelected ? null : tipoCocina.id;
+                            selectedTipoCocinaId =
+                                isSelected ? null : tipoCocina.id;
                           });
                         },
                         child: AnimatedContainer(
@@ -104,10 +115,14 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
                           width: 90,
                           margin: const EdgeInsets.symmetric(horizontal: 8.0),
                           decoration: BoxDecoration(
-                            color: isSelected ? Colors.purple.shade50 : Colors.white,
+                            color: isSelected
+                                ? Colors.purple.shade50
+                                : Colors.white,
                             borderRadius: BorderRadius.circular(15),
                             border: Border.all(
-                              color: isSelected ? Colors.purple : Colors.grey.shade300,
+                              color: isSelected
+                                  ? Colors.purple
+                                  : Colors.grey.shade300,
                               width: 2,
                             ),
                             boxShadow: [
@@ -130,8 +145,11 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
                                         width: 70,
                                         height: 50,
                                         fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stackTrace) {
-                                          return const Icon(Icons.image_not_supported, size: 50);
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return const Icon(
+                                              Icons.image_not_supported,
+                                              size: 50);
                                         },
                                       ),
                                     )
@@ -158,7 +176,8 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
 
             // Lista de negocios
             StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection('negocios').snapshots(),
+              stream:
+                  FirebaseFirestore.instance.collection('negocios').snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
@@ -185,7 +204,8 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
                           return const SizedBox.shrink();
                         }
 
-                        var negocioData = negocio.data() as Map<String, dynamic>;
+                        var negocioData =
+                            negocio.data() as Map<String, dynamic>;
 
                         return GestureDetector(
                           onTap: () {
@@ -203,14 +223,16 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 16),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 negocioData['logo'] != null
                                     ? ClipRRect(
                                         borderRadius:
-                                            const BorderRadius.vertical(top: Radius.circular(12)),
+                                            const BorderRadius.vertical(
+                                                top: Radius.circular(12)),
                                         child: Image.network(
                                           negocioData['logo'],
                                           width: double.infinity,
@@ -224,22 +246,27 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
                                   child: Row(
                                     children: [
                                       negocioData['logo'] != null
-                                          ? Image.network(negocioData['logo'], width: 50, height: 50)
+                                          ? Image.network(negocioData['logo'],
+                                              width: 50, height: 50)
                                           : const Icon(Icons.store, size: 50),
                                       const SizedBox(width: 10),
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               negocioData['nombre'],
                                               style: const TextStyle(
-                                                  fontWeight: FontWeight.bold, fontSize: 16),
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16),
                                             ),
                                             const SizedBox(height: 5),
                                             Text(
                                               'Dirección: ${negocioData['direccion']}',
-                                              style: const TextStyle(color: Colors.grey, fontSize: 12),
+                                              style: const TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 12),
                                             ),
                                           ],
                                         ),
@@ -263,12 +290,6 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
     );
   }
 }
-
-
-
-
-
-
 
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:flutter/material.dart';
@@ -295,7 +316,7 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
 //       body: SingleChildScrollView(
 //         child: Column(
 //           children: [
-         
+
 //             Padding(
 //               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
 //               child: TextField(
@@ -310,8 +331,7 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
 //                 ),
 //               ),
 //             ),
-            
-          
+
 //             StreamBuilder<QuerySnapshot>(
 //               stream: FirebaseFirestore.instance.collection('tipococina').snapshots(),
 //               builder: (context, snapshot) {
@@ -322,7 +342,7 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
 //                 var tiposCocina = snapshot.data!.docs;
 
 //                 return Container(
-//                   height: 120, 
+//                   height: 120,
 //                   padding: const EdgeInsets.symmetric(vertical: 10.0),
 //                   child: ListView.builder(
 //                     scrollDirection: Axis.horizontal,
@@ -336,7 +356,7 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
 //                       return GestureDetector(
 //                         onTap: () {
 //                           setState(() {
-                          
+
 //                             if (isSelected) {
 //                               selectedTipoCocinaId = null;
 //                             } else {
@@ -367,7 +387,7 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
 //                           child: Column(
 //                             mainAxisAlignment: MainAxisAlignment.center,
 //                             children: [
-                              
+
 //                               tipoData['imagen'] != null
 //                                   // ? ClipOval(
 //                                   ? ClipRRect(
@@ -403,7 +423,6 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
 //               },
 //             ),
 
-            
 //             StreamBuilder<QuerySnapshot>(
 //               stream: FirebaseFirestore.instance.collection('negocios').snapshots(),
 //               builder: (context, snapshot) {
@@ -428,27 +447,24 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
 //                       builder: (context, cartaSnapshot) {
 //                         if (!cartaSnapshot.hasData) return CircularProgressIndicator();
 
-                     
 //                         if (cartaSnapshot.data!.docs.isEmpty) {
 //                           return SizedBox.shrink();
 //                         }
 
 //                         var carta = cartaSnapshot.data!.docs.first.data() as Map<String, dynamic>;
 
-                   
 //                         if (carta['carta'] == null || (carta['carta'] as List).isEmpty) {
 //                           return SizedBox.shrink();
 //                         }
 
 //                         var productos = carta['carta'] as List;
 
-                      
 //                         var randomProduct = (productos..shuffle()).first;
 //                         var productImage = randomProduct['urlImagen'] ?? '';
 
 //                         return GestureDetector(
 //                           onTap: () {
-                          
+
 //                             Navigator.push(
 //                               context,
 //                               MaterialPageRoute(
@@ -467,7 +483,7 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
 //                             child: Column(
 //                               crossAxisAlignment: CrossAxisAlignment.start,
 //                               children: [
-                            
+
 //                                 productImage.isNotEmpty
 //                                     ? ClipRRect(
 //                                         borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
@@ -483,12 +499,12 @@ class _NegocioListaPageState extends State<NegocioListaPage> {
 //                                   padding: const EdgeInsets.all(8.0),
 //                                   child: Row(
 //                                     children: [
-                                   
+
 //                                       negocio['logo'] != null
 //                                           ? Image.network(negocio['logo'], width: 50, height: 50)
 //                                           : Icon(Icons.store, size: 50),
 //                                       SizedBox(width: 10),
-                                    
+
 //                                       Expanded(
 //                                         child: Column(
 //                                           crossAxisAlignment: CrossAxisAlignment.start,

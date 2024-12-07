@@ -8,11 +8,14 @@ class NegociosDetallePage extends StatelessWidget {
   final String negocioId;
   final LatLng userLocation;
 
-  const NegociosDetallePage({super.key, required this.negocioId, required this.userLocation});
+  const NegociosDetallePage(
+      {super.key, required this.negocioId, required this.userLocation});
 
   Future<Map<String, dynamic>?> _getNegocioData() async {
-    DocumentSnapshot negocioSnapshot =
-        await FirebaseFirestore.instance.collection('negocios').doc(negocioId).get();
+    DocumentSnapshot negocioSnapshot = await FirebaseFirestore.instance
+        .collection('negocios')
+        .doc(negocioId)
+        .get();
     return negocioSnapshot.data() as Map<String, dynamic>?;
   }
 
@@ -27,8 +30,8 @@ class NegociosDetallePage extends StatelessWidget {
       var productos = carta['carta'] as List<dynamic>;
 
       if (productos.isNotEmpty) {
-        var productoMasBarato = productos.reduce((curr, next) =>
-            curr['precio'] < next['precio'] ? curr : next);
+        var productoMasBarato = productos.reduce(
+            (curr, next) => curr['precio'] < next['precio'] ? curr : next);
         return productoMasBarato;
       }
     }
@@ -37,7 +40,8 @@ class NegociosDetallePage extends StatelessWidget {
   }
 
   Future<void> _iniciarRuta(double lat, double lng) async {
-    final url = 'https://www.google.com/maps/dir/?api=1&destination=$lat,$lng&travelmode=driving';
+    final url =
+        'https://www.google.com/maps/dir/?api=1&destination=$lat,$lng&travelmode=driving';
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -46,13 +50,16 @@ class NegociosDetallePage extends StatelessWidget {
   }
 
   // Método para calcular la distancia entre dos puntos geográficos
-  double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+  double _calculateDistance(
+      double lat1, double lon1, double lat2, double lon2) {
     const R = 6371; // Radio de la Tierra en Km
     var dLat = _deg2rad(lat2 - lat1);
     var dLon = _deg2rad(lon2 - lon1);
     var a = math.sin(dLat / 2) * math.sin(dLat / 2) +
-        math.cos(_deg2rad(lat1)) * math.cos(_deg2rad(lat2)) *
-        math.sin(dLon / 2) * math.sin(dLon / 2);
+        math.cos(_deg2rad(lat1)) *
+            math.cos(_deg2rad(lat2)) *
+            math.sin(dLon / 2) *
+            math.sin(dLon / 2);
     var c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
     return R * c;
   }
@@ -179,11 +186,6 @@ class NegociosDetallePage extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
 
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:flutter/material.dart';

@@ -7,12 +7,13 @@ class FirebaseMessagingService {
 
   Future<void> initialize() async {
     // Solicitar permiso para notificaciones
-    NotificationSettings settings = await _firebaseMessaging.requestPermission();
+    NotificationSettings settings =
+        await _firebaseMessaging.requestPermission();
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       // Obtener el token FCM
       String? token = await _firebaseMessaging.getToken();
-      print('FCM Token: $token');
-      
+      //print('FCM Token: $token');
+
       // Guardar el token en Firestore
       if (token != null) {
         await saveTokenToFirestore(token);
@@ -21,13 +22,14 @@ class FirebaseMessagingService {
 
     // Configurar el manejo de notificaciones en primer plano
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Received message: ${message.notification?.title}, ${message.notification?.body}');
+      //print('Received message: ${message.notification?.title}, ${message.notification?.body}');
     });
   }
 
   Future<void> saveTokenToFirestore(String token) async {
     String userId = FirebaseAuth.instance.currentUser!.uid;
-    DocumentReference userRef = FirebaseFirestore.instance.collection('usuarios').doc(userId);
+    DocumentReference userRef =
+        FirebaseFirestore.instance.collection('usuarios').doc(userId);
     await userRef.update({'fcmToken': token});
   }
 }

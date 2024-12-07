@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, deprecated_member_use, avoid_types_as_parameter_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:restmap/views/customer/detallepedido.dart';
@@ -35,15 +37,18 @@ class _CartaPageState extends State<CartaPage> {
     if (cartaSnapshot.exists) {
       var cartaData = cartaSnapshot.data();
       if (cartaData != null) {
-        var productos = List<Map<String, dynamic>>.from(cartaData['carta'] ?? []);
-        var categorias = List<Map<String, dynamic>>.from(cartaData['categoriasprod'] ?? []);
+        var productos =
+            List<Map<String, dynamic>>.from(cartaData['carta'] ?? []);
+        var categorias =
+            List<Map<String, dynamic>>.from(cartaData['categoriasprod'] ?? []);
         _agruparProductosPorCategoria(productos, categorias);
       }
     }
   }
 
   Future<void> _agruparProductosPorCategoria(
-      List<Map<String, dynamic>> productos, List<Map<String, dynamic>> categorias) async {
+      List<Map<String, dynamic>> productos,
+      List<Map<String, dynamic>> categorias) async {
     Map<String, String> categoriaIdToNombre = {};
 
     for (var cat in categorias) {
@@ -54,7 +59,8 @@ class _CartaPageState extends State<CartaPage> {
 
     for (var producto in productos) {
       String categoriaId = producto['catprod'] ?? 'Sin Categoría';
-      String categoriaNombre = categoriaIdToNombre[categoriaId] ?? 'Sin Categoría';
+      String categoriaNombre =
+          categoriaIdToNombre[categoriaId] ?? 'Sin Categoría';
 
       if (!agrupados.containsKey(categoriaNombre)) {
         agrupados[categoriaNombre] = [];
@@ -68,7 +74,8 @@ class _CartaPageState extends State<CartaPage> {
   }
 
   Future<void> _iniciarRuta(double lat, double lng) async {
-    final url = 'https://www.google.com/maps/dir/?api=1&destination=$lat,$lng&travelmode=driving';
+    final url =
+        'https://www.google.com/maps/dir/?api=1&destination=$lat,$lng&travelmode=driving';
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -80,7 +87,9 @@ class _CartaPageState extends State<CartaPage> {
     total = 0.0;
     totalProducts = 0;
     selectedQuantities.forEach((key, value) {
-      var producto = productosPorCategoria.values.expand((prod) => prod).firstWhere((p) => p['codigo'] == key);
+      var producto = productosPorCategoria.values
+          .expand((prod) => prod)
+          .firstWhere((p) => p['codigo'] == key);
       total += (producto['precio'] * value);
       totalProducts += value;
     });
@@ -225,75 +234,72 @@ class _CartaPageState extends State<CartaPage> {
 //   }
 // }
 
-void agregarProductoaCarrito() async {
-  final userDoc = FirebaseFirestore.instance.collection('usuarios').doc(widget.userId);
+  void agregarProductoaCarrito() async {
+    final userDoc =
+        FirebaseFirestore.instance.collection('usuarios').doc(widget.userId);
 
-  try {
-    final List<Map<String, dynamic>> carritoActual = [];
+    try {
+      final List<Map<String, dynamic>> carritoActual = [];
 
-    // Obtener el carrito actual del usuario o inicializarlo vacío
-    final userSnapshot = await userDoc.get();
-    if (userSnapshot.exists) {
-      carritoActual.addAll(List<Map<String, dynamic>>.from(userSnapshot.data()?['carrito'] ?? []));
-    }
+      // Obtener el carrito actual del usuario o inicializarlo vacío
+      final userSnapshot = await userDoc.get();
+      if (userSnapshot.exists) {
+        carritoActual.addAll(List<Map<String, dynamic>>.from(
+            userSnapshot.data()?['carrito'] ?? []));
+      }
 
-    for (var entry in selectedQuantities.entries) {
-      // Buscar el producto en la carta local
-      var productoLocal = productosPorCategoria.values
-          .expand((prod) => prod)
-          .firstWhere((p) => p['codigo'] == entry.key);
+      for (var entry in selectedQuantities.entries) {
+        // Buscar el producto en la carta local
+        var productoLocal = productosPorCategoria.values
+            .expand((prod) => prod)
+            .firstWhere((p) => p['codigo'] == entry.key);
 
-      // Verificar si el producto ya está en el carrito
-      bool productoExiste = false;
-      for (var productoCarrito in carritoActual) {
-        if (productoCarrito['codigo'] == entry.key) {
-          // Reemplazar la cantidad con la nueva cantidad
-          productoCarrito['cantidad'] = entry.value;
-          productoExiste = true;
-          break;
+        // Verificar si el producto ya está en el carrito
+        bool productoExiste = false;
+        for (var productoCarrito in carritoActual) {
+          if (productoCarrito['codigo'] == entry.key) {
+            // Reemplazar la cantidad con la nueva cantidad
+            productoCarrito['cantidad'] = entry.value;
+            productoExiste = true;
+            break;
+          }
+        }
+
+        // Si no existe en el carrito, agregarlo como nuevo
+        if (!productoExiste) {
+          carritoActual.add({
+            'nombre': productoLocal['nombre'],
+            'cantidad': entry.value,
+            'precio': productoLocal['precio'],
+            'codigo': productoLocal['codigo'],
+          });
         }
       }
 
-      // Si no existe en el carrito, agregarlo como nuevo
-      if (!productoExiste) {
-        carritoActual.add({
-          'nombre': productoLocal['nombre'],
-          'cantidad': entry.value,
-          'precio': productoLocal['precio'],
-          'codigo': productoLocal['codigo'],
-        });
-      }
-    }
+      // Actualizar el carrito en Firestore
+      await userDoc.update({
+        'carrito': carritoActual,
+        'negocioId': widget.negocioId,
+      });
 
-    // Actualizar el carrito en Firestore
-    await userDoc.update({
-      'carrito': carritoActual,
-      'negocioId': widget.negocioId,
-    });
-
-    // Navegar al detalle del pedido con el carrito actualizado
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => DetallePedidoPage(
-          negocioId: widget.negocioId,
-          productosSeleccionados: carritoActual,
-          total: carritoActual.fold(
-            0.0,
-            (sum, item) => sum + (item['cantidad'] * item['precio']),
+      // Navegar al detalle del pedido con el carrito actualizado
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DetallePedidoPage(
+            negocioId: widget.negocioId,
+            productosSeleccionados: carritoActual,
+            total: carritoActual.fold(
+              0.0,
+              (sum, item) => sum + (item['cantidad'] * item['precio']),
+            ),
           ),
         ),
-      ),
-    );
-  } catch (e) {
-    print("Error al agregar productos al carrito: $e");
+      );
+    } catch (e) {
+      //print("Error al agregar productos al carrito: $e");
+    }
   }
-}
-
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -304,35 +310,48 @@ void agregarProductoaCarrito() async {
       body: Stack(
         children: [
           FutureBuilder<DocumentSnapshot>(
-            future: FirebaseFirestore.instance.collection('negocios').doc(widget.negocioId).get(),
+            future: FirebaseFirestore.instance
+                .collection('negocios')
+                .doc(widget.negocioId)
+                .get(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return Center(child: Image.asset('assets/loadingbeli.gif', width: 100, height: 100));
+                return Center(
+                    child: Image.asset('assets/loadingbeli.gif',
+                        width: 100, height: 100));
               }
 
               var negocio = snapshot.data!.data() as Map<String, dynamic>;
-              var ubicacion = negocio['ubicacion'] as GeoPoint?; // Asegúrate de que los datos de ubicación estén en Firestore
+              var ubicacion = negocio['ubicacion']
+                  as GeoPoint?; // Asegúrate de que los datos de ubicación estén en Firestore
 
               return SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    productosPorCategoria.isNotEmpty && productosPorCategoria.entries.first.value.isNotEmpty
-                        ? Image.network(productosPorCategoria.entries.first.value[0]['urlImagen'],
-                            width: double.infinity, height: 200, fit: BoxFit.cover)
-                        : const SizedBox(height: 200, child: Icon(Icons.store, size: 100)),
-
+                    productosPorCategoria.isNotEmpty &&
+                            productosPorCategoria.entries.first.value.isNotEmpty
+                        ? Image.network(
+                            productosPorCategoria.entries.first.value[0]
+                                ['urlImagen'],
+                            width: double.infinity,
+                            height: 200,
+                            fit: BoxFit.cover)
+                        : const SizedBox(
+                            height: 200, child: Icon(Icons.store, size: 100)),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
                         children: [
                           negocio['logo'] != null
-                              ? Image.network(negocio['logo'], width: 50, height: 50)
+                              ? Image.network(negocio['logo'],
+                                  width: 50, height: 50)
                               : const Icon(Icons.store, size: 50),
                           const SizedBox(width: 10),
                           Text(
                             negocio['nombre'],
-                            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
@@ -346,9 +365,11 @@ void agregarProductoaCarrito() async {
                     ),
                     if (ubicacion != null)
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 8.0),
                         child: ElevatedButton.icon(
-                          onPressed: () => _iniciarRuta(ubicacion.latitude, ubicacion.longitude),
+                          onPressed: () => _iniciarRuta(
+                              ubicacion.latitude, ubicacion.longitude),
                           icon: const Icon(Icons.directions),
                           label: const Text('Iniciar Ruta'),
                           style: ElevatedButton.styleFrom(
@@ -357,13 +378,14 @@ void agregarProductoaCarrito() async {
                         ),
                       ),
                     const Divider(),
-
                     productosPorCategoria.isNotEmpty
                         ? Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: productosPorCategoria.entries.map((entry) {
+                            children:
+                                productosPorCategoria.entries.map((entry) {
                               String categoria = entry.key;
-                              List<Map<String, dynamic>> productos = entry.value;
+                              List<Map<String, dynamic>> productos =
+                                  entry.value;
 
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -372,84 +394,129 @@ void agregarProductoaCarrito() async {
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(
                                       categoria,
-                                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                      style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                   ListView.builder(
                                     shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
                                     itemCount: productos.length,
                                     itemBuilder: (context, index) {
                                       var producto = productos[index];
-                                      String codigoProducto = producto['codigo'];
-                                      bool mostrarDescripcionCompleta = showFullDescription[codigoProducto] ?? false;
+                                      String codigoProducto =
+                                          producto['codigo'];
+                                      bool mostrarDescripcionCompleta =
+                                          showFullDescription[codigoProducto] ??
+                                              false;
 
                                       int stock = producto['stock'];
                                       String estado = producto['estado'];
-                                      int selectedQuantity = selectedQuantities[producto['codigo']] ?? 0;
+                                      int selectedQuantity = selectedQuantities[
+                                              producto['codigo']] ??
+                                          0;
 
-                                      bool isAvailable = estado == 'disponible' || estado == 'promocion';
+                                      bool isAvailable =
+                                          estado == 'disponible' ||
+                                              estado == 'promocion';
                                       bool isStockLimited = stock > 0;
-                                      bool canAddMore = isStockLimited ? selectedQuantity < stock : true;
+                                      bool canAddMore = isStockLimited
+                                          ? selectedQuantity < stock
+                                          : true;
 
                                       return Card(
-                                        margin: const EdgeInsets.symmetric(vertical: 8),
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 8),
                                         child: ListTile(
                                           leading: producto['urlImagen'] != null
-                                              ? Image.network(producto['urlImagen'], width: 80, height: 80, fit: BoxFit.cover)
-                                              : const Icon(Icons.fastfood, size: 50),
+                                              ? Image.network(
+                                                  producto['urlImagen'],
+                                                  width: 80,
+                                                  height: 80,
+                                                  fit: BoxFit.cover)
+                                              : const Icon(Icons.fastfood,
+                                                  size: 50),
                                           title: Text(producto['nombre']),
                                           subtitle: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 producto['descripcion'],
-                                                maxLines: mostrarDescripcionCompleta ? null : 2,
-                                                overflow: mostrarDescripcionCompleta ? TextOverflow.visible : TextOverflow.ellipsis,
+                                                maxLines:
+                                                    mostrarDescripcionCompleta
+                                                        ? null
+                                                        : 2,
+                                                overflow:
+                                                    mostrarDescripcionCompleta
+                                                        ? TextOverflow.visible
+                                                        : TextOverflow.ellipsis,
                                                 textAlign: TextAlign.justify,
                                               ),
-                                              if (producto['descripcion'].length > 50)
+                                              if (producto['descripcion']
+                                                      .length >
+                                                  50)
                                                 GestureDetector(
                                                   onTap: () {
                                                     setState(() {
-                                                      showFullDescription[codigoProducto] = !mostrarDescripcionCompleta;
+                                                      showFullDescription[
+                                                              codigoProducto] =
+                                                          !mostrarDescripcionCompleta;
                                                     });
                                                   },
                                                   child: Text(
-                                                    mostrarDescripcionCompleta ? 'Leer menos' : 'Leer más',
-                                                    style: const TextStyle(color: Colors.blue),
+                                                    mostrarDescripcionCompleta
+                                                        ? 'Leer menos'
+                                                        : 'Leer más',
+                                                    style: const TextStyle(
+                                                        color: Colors.blue),
                                                   ),
                                                 ),
                                               Text('S/${producto['precio']}'),
                                               if (isStockLimited)
-                                                Text('Stock: $stock', style: const TextStyle(color: Colors.green)),
+                                                Text('Stock: $stock',
+                                                    style: const TextStyle(
+                                                        color: Colors.green)),
                                               if (estado == 'agotado')
-                                                const Text('Agotado', style: TextStyle(color: Colors.red)),
+                                                const Text('Agotado',
+                                                    style: TextStyle(
+                                                        color: Colors.red)),
                                             ],
                                           ),
                                           trailing: isAvailable
                                               ? Row(
-                                                  mainAxisSize: MainAxisSize.min,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
                                                   children: [
                                                     if (selectedQuantity > 0)
                                                       IconButton(
-                                                        icon: const Icon(Icons.remove),
+                                                        icon: const Icon(
+                                                            Icons.remove),
                                                         onPressed: () {
                                                           setState(() {
-                                                            selectedQuantities[producto['codigo']] =
-                                                                selectedQuantity - 1;
+                                                            selectedQuantities[
+                                                                    producto[
+                                                                        'codigo']] =
+                                                                selectedQuantity -
+                                                                    1;
                                                             _updateTotal();
                                                           });
                                                         },
                                                       ),
                                                     Text('$selectedQuantity'),
                                                     IconButton(
-                                                      icon: const Icon(Icons.add),
+                                                      icon:
+                                                          const Icon(Icons.add),
                                                       onPressed: canAddMore
                                                           ? () {
                                                               setState(() {
-                                                                selectedQuantities[producto['codigo']] =
-                                                                    selectedQuantity + 1;
+                                                                selectedQuantities[
+                                                                        producto[
+                                                                            'codigo']] =
+                                                                    selectedQuantity +
+                                                                        1;
                                                                 _updateTotal();
                                                               });
                                                             }
@@ -461,7 +528,8 @@ void agregarProductoaCarrito() async {
                                                   onPressed: null,
                                                   child: Text(
                                                     'Agotado',
-                                                    style: TextStyle(fontSize: 12),
+                                                    style:
+                                                        TextStyle(fontSize: 12),
                                                   ),
                                                 ),
                                         ),
@@ -484,18 +552,21 @@ void agregarProductoaCarrito() async {
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 color: Colors.white,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       '$totalProducts producto(s)',
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     Text(
                       'S/${total.toStringAsFixed(1)}',
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -503,12 +574,14 @@ void agregarProductoaCarrito() async {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
                       ),
                       onPressed: agregarProductoaCarrito,
                       child: const Text(
                         'Ordenar',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
@@ -520,9 +593,6 @@ void agregarProductoaCarrito() async {
     );
   }
 }
-
-
-
 
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:flutter/material.dart';
@@ -802,7 +872,6 @@ void agregarProductoaCarrito() async {
 //             },
 //           ),
 
-          
 //           if (total > 0)
 //             Align(
 //               alignment: Alignment.bottomCenter,

@@ -131,9 +131,11 @@ class _DriverProfilePageState extends State<DriverProfilePage> {
                 radius: 50,
                 backgroundImage: _photoUrl != null
                     ? NetworkImage(_photoUrl!)
-                    : const AssetImage('assets/placeholder.png') as ImageProvider,
-                child:
-                    _photoUrl == null ? const Icon(Icons.camera_alt, size: 50) : null,
+                    : const AssetImage('assets/placeholder.png')
+                        as ImageProvider,
+                child: _photoUrl == null
+                    ? const Icon(Icons.camera_alt, size: 50)
+                    : null,
               ),
             ),
             const SizedBox(height: 20),

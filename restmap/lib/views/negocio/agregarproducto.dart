@@ -37,7 +37,8 @@ class _AgregarProductoPageState extends State<AgregarProductoPage> {
 
   Future<void> seleccionarImagen() async {
     try {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.image);
+      FilePickerResult? result =
+          await FilePicker.platform.pickFiles(type: FileType.image);
       if (result != null) {
         File imagenArchivo = File(result.files.single.path!);
         String? nombreImagen = await _subirImagen(imagenArchivo);
@@ -60,9 +61,8 @@ class _AgregarProductoPageState extends State<AgregarProductoPage> {
 
   Future<String?> _subirImagen(File imagen) async {
     try {
-      final storageRef = FirebaseStorage.instance
-          .ref()
-          .child('productos/${_nombreController.text}_${DateTime.now().millisecondsSinceEpoch}.png');
+      final storageRef = FirebaseStorage.instance.ref().child(
+          'productos/${_nombreController.text}_${DateTime.now().millisecondsSinceEpoch}.png');
       UploadTask uploadTask = storageRef.putFile(imagen);
       TaskSnapshot snapshot = await uploadTask;
       return await snapshot.ref.getDownloadURL();
@@ -89,7 +89,6 @@ class _AgregarProductoPageState extends State<AgregarProductoPage> {
       _generarCodigo();
     }
 
-    
     int stock = int.tryParse(_stockController.text) ?? 0;
     if (stock < 0) {
       stock = 0;
@@ -113,20 +112,22 @@ class _AgregarProductoPageState extends State<AgregarProductoPage> {
       'productos': FieldValue.arrayUnion([nuevoProducto])
     });
 
-    ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text('Producto agregado exitosamente')));
+    ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Producto agregado exitosamente')));
 
     _limpiarFormulario();
   }
 
   Future<void> _cargarCategorias() async {
-    DocumentSnapshot negocio = await FirebaseFirestore.instance.collection('cartasnegocio').doc(widget.negocioId).get();
+    DocumentSnapshot negocio = await FirebaseFirestore.instance
+        .collection('cartasnegocio')
+        .doc(widget.negocioId)
+        .get();
     List categorias = negocio['categoriasprod'] ?? [];
     setState(() {
-      _categorias = categorias.map((cat) => {
-        'nombre': cat['nombre'],
-        'id': cat['id'] 
-      }).toList();
+      _categorias = categorias
+          .map((cat) => {'nombre': cat['nombre'], 'id': cat['id']})
+          .toList();
     });
   }
 
@@ -142,7 +143,6 @@ class _AgregarProductoPageState extends State<AgregarProductoPage> {
       _isImageUploaded = false;
     });
   }
-
 
   List<Map<String, dynamic>> _categorias = [];
 
@@ -164,12 +164,14 @@ class _AgregarProductoPageState extends State<AgregarProductoPage> {
           children: [
             TextField(
               controller: _idProdController,
-              decoration: const InputDecoration(labelText: 'Código del Producto'),
+              decoration:
+                  const InputDecoration(labelText: 'Código del Producto'),
               enabled: false,
             ),
             TextField(
               controller: _nombreController,
-              decoration: const InputDecoration(labelText: 'Nombre del Producto'),
+              decoration:
+                  const InputDecoration(labelText: 'Nombre del Producto'),
               onEditingComplete: _generarCodigo,
             ),
             TextField(
@@ -208,7 +210,8 @@ class _AgregarProductoPageState extends State<AgregarProductoPage> {
                   _estadoSeleccionado = newValue!;
                 });
               },
-              items: _opcionesEstado.map<DropdownMenuItem<String>>((String value) {
+              items:
+                  _opcionesEstado.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(value),
@@ -220,20 +223,18 @@ class _AgregarProductoPageState extends State<AgregarProductoPage> {
             _imagen == null
                 ? const Icon(Icons.image_not_supported, size: 150)
                 : Image.file(_imagen!, height: 150, width: 150),
-            ElevatedButton(onPressed: seleccionarImagen, child: const Text('Seleccionar Imagen')),
-            ElevatedButton(onPressed: agregarProducto, child: const Text('Agregar Producto')),
+            ElevatedButton(
+                onPressed: seleccionarImagen,
+                child: const Text('Seleccionar Imagen')),
+            ElevatedButton(
+                onPressed: agregarProducto,
+                child: const Text('Agregar Producto')),
           ],
         ),
       ),
     );
   }
 }
-
-
-
-
-
-
 
 // import 'dart:io';
 // import 'package:cloud_firestore/cloud_firestore.dart';
@@ -330,7 +331,6 @@ class _AgregarProductoPageState extends State<AgregarProductoPage> {
 //     if (stock < 0) {
 //       stock = 0; // No permitir valores negativos
 //     }
-
 
 //     final nuevoProducto = {
 //       'codigo': _idProdController.text,

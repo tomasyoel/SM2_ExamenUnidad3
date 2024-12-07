@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, deprecated_member_use, library_private_types_in_public_api
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -55,7 +57,7 @@ class _MapaNegocioPageState extends State<MapaNegocioPage> {
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
-    mapController!.setMapStyle(''' 
+    mapController!.setMapStyle('''
     [
       {
         "featureType": "poi.business",
@@ -106,36 +108,33 @@ class _MapaNegocioPageState extends State<MapaNegocioPage> {
   }
 
   void _saveLocation() async {
-  if (_selectedPosition == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Selecciona una ubicación en el mapa')),
+    if (_selectedPosition == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Selecciona una ubicación en el mapa')),
+      );
+      return;
+    }
+
+    GeoPoint nuevaUbicacion = GeoPoint(
+      _selectedPosition!.latitude,
+      _selectedPosition!.longitude,
     );
-    return;
+
+    DocumentReference negocioRef =
+        FirebaseFirestore.instance.collection('negocios').doc(widget.negocioId);
+
+    await negocioRef.update({
+      'ubicacion': nuevaUbicacion,
+    }).then((_) {
+      //print('Ubicación guardada correctamente para el negocio: ${widget.negocioId}');
+      Navigator.pop(context, _selectedPosition);
+    }).catchError((error) {
+      //print('Error al guardar la ubicación: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al guardar la ubicación: $error')),
+      );
+    });
   }
-
-
-  GeoPoint nuevaUbicacion = GeoPoint(
-    _selectedPosition!.latitude,
-    _selectedPosition!.longitude,
-  );
-
-  DocumentReference negocioRef =
-      FirebaseFirestore.instance.collection('negocios').doc(widget.negocioId);
-
-  await negocioRef.update({
-    'ubicacion': nuevaUbicacion,
-  }).then((_) {
-
-    print('Ubicación guardada correctamente para el negocio: ${widget.negocioId}');
-    Navigator.pop(context, _selectedPosition);
-  }).catchError((error) {
-    print('Error al guardar la ubicación: $error');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error al guardar la ubicación: $error')),
-    );
-  });
-}
-
 
   @override
   Widget build(BuildContext context) {

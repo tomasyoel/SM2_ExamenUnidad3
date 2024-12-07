@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'dart:io';
 
 import 'package:restmap/services/firestore_service.dart';
@@ -75,16 +77,15 @@ class _PerfilAdminPageState extends State<PerfilAdminPage> {
         await _uploadImage();
       } else {
         // El usuario canceló la selección
-        print('No se seleccionó ninguna imagen.');
+        //print('No se seleccionó ninguna imagen.');
       }
     } catch (e) {
-      print('Error al seleccionar la imagen: $e');
+      //print('Error al seleccionar la imagen: $e');
     }
   }
 
   Future<void> _takePicture() async {
-
-    print('Tomar foto no implementado.');
+    //print('Tomar foto no implementado.');
   }
 
   Future<void> _uploadImage() async {
@@ -98,7 +99,7 @@ class _PerfilAdminPageState extends State<PerfilAdminPage> {
           await _updateUserData();
         }
       } catch (e) {
-        print('Error al subir la imagen: $e');
+        //print('Error al subir la imagen: $e');
       }
     }
   }
@@ -125,9 +126,11 @@ class _PerfilAdminPageState extends State<PerfilAdminPage> {
                 radius: 50,
                 backgroundImage: _photoUrl != null
                     ? NetworkImage(_photoUrl!)
-                    : const AssetImage('assets/placeholder.png') as ImageProvider,
+                    : const AssetImage('assets/placeholder.png')
+                        as ImageProvider,
                 child: _photoUrl == null
-                    ? const Icon(Icons.camera_alt, size: 50, color: Colors.white70)
+                    ? const Icon(Icons.camera_alt,
+                        size: 50, color: Colors.white70)
                     : null,
               ),
             ),
@@ -143,11 +146,13 @@ class _PerfilAdminPageState extends State<PerfilAdminPage> {
                 if (user != null && user!.email != null) {
                   await FirebaseAuth.instance
                       .sendPasswordResetEmail(email: user!.email!);
-                  _showInfoDialog('Correo para restablecer contraseña enviado.');
+                  _showInfoDialog(
+                      'Correo para restablecer contraseña enviado.');
                 }
               },
               style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white, backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.blue,
                 minimumSize: const Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),

@@ -3,7 +3,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/foundation.dart';
 
 class VersionCheckerService {
-  static final VersionCheckerService _instance = VersionCheckerService._internal();
+  static final VersionCheckerService _instance =
+      VersionCheckerService._internal();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   bool _initialized = false;
 
@@ -24,11 +25,16 @@ class VersionCheckerService {
     String currentVersion = packageInfo.version;
 
     // Configura un listener para cambios en el documento de versión mínima en Firestore
-    _firestore.collection('version').doc('n4gJAQPr09uWNTFKaMOP').snapshots().listen((snapshot) {
+    _firestore
+        .collection('version')
+        .doc('n4gJAQPr09uWNTFKaMOP')
+        .snapshots()
+        .listen((snapshot) {
       if (snapshot.exists) {
         String minAppVersion = snapshot.data()?['versionmin'] ?? '';
 
-        debugPrint('Versión mínima requerida desde Firestore (escuchada): $minAppVersion');
+        debugPrint(
+            'Versión mínima requerida desde Firestore (escuchada): $minAppVersion');
         debugPrint('Versión actual de la aplicación: $currentVersion');
 
         // Compara las versiones y ejecuta el callback si no es válida
@@ -36,7 +42,8 @@ class VersionCheckerService {
           onVersionMismatch();
         }
       } else {
-        debugPrint('Advertencia: El documento de versión mínima no existe en Firestore');
+        debugPrint(
+            'Advertencia: El documento de versión mínima no existe en Firestore');
       }
     });
   }
@@ -44,17 +51,22 @@ class VersionCheckerService {
   Future<bool> isVersionValid() async {
     try {
       // Obtener la versión mínima desde Firestore sin listener (solo para la verificación inicial)
-      final DocumentSnapshot doc = await _firestore.collection('version').doc('n4gJAQPr09uWNTFKaMOP').get();
+      final DocumentSnapshot doc = await _firestore
+          .collection('version')
+          .doc('n4gJAQPr09uWNTFKaMOP')
+          .get();
 
       if (!doc.exists) {
-        debugPrint('Advertencia: El documento de versión mínima no existe en Firestore');
+        debugPrint(
+            'Advertencia: El documento de versión mínima no existe en Firestore');
         return true; // Permitir acceso si no hay versión mínima configurada
       }
 
       // Obtener el campo 'versionmin' desde Firestore
       String minAppVersion = doc['versionmin'] ?? '';
       if (minAppVersion.isEmpty) {
-        debugPrint('Advertencia: El campo versionmin no se encontró en Firestore');
+        debugPrint(
+            'Advertencia: El campo versionmin no se encontró en Firestore');
         return true; // Permitir acceso si no hay versión mínima configurada
       }
 
@@ -67,7 +79,8 @@ class VersionCheckerService {
       debugPrint('Versión actual de la aplicación: $currentVersion');
 
       bool isValid = _isVersionValid(currentVersion, minAppVersion);
-      debugPrint('Resultado de verificación de versión: ${isValid ? 'válida' : 'actualización requerida'}');
+      debugPrint(
+          'Resultado de verificación de versión: ${isValid ? 'válida' : 'actualización requerida'}');
 
       return isValid;
     } catch (e, stackTrace) {
@@ -79,8 +92,10 @@ class VersionCheckerService {
 
   bool _isVersionValid(String currentVersion, String minVersion) {
     try {
-      List<int> current = currentVersion.split('.').map((e) => int.parse(e.trim())).toList();
-      List<int> minimum = minVersion.split('.').map((e) => int.parse(e.trim())).toList();
+      List<int> current =
+          currentVersion.split('.').map((e) => int.parse(e.trim())).toList();
+      List<int> minimum =
+          minVersion.split('.').map((e) => int.parse(e.trim())).toList();
 
       // Normalizar longitudes
       while (current.length < minimum.length) {
